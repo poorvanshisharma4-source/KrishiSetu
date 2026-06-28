@@ -33,7 +33,7 @@ export function Hero() {
             AI-Powered Demand-Driven Farming
           </span>
           <h1 className="mt-6 font-heading text-4xl font-extrabold leading-tight text-foreground text-balance sm:text-5xl lg:text-6xl">
-            Why grow, withou knowing{' '}
+            Why grow, without knowing{' '}
             <span className="text-primary">who will buy?</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty">
