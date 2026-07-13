@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "KrishiSetu",
-=======
-  "name": "my-project",
->>>>>>> 8d282be6528be5fa383e82fa7a58c9ffcd476c18
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -46,12 +42,8 @@
     "overrides": {
       "hono": "4.12.25"
     }
-<<<<<<< HEAD
   },
   "engines": {
   "node": "22.x"
 }
-=======
-  }
->>>>>>> 8d282be6528be5fa383e82fa7a58c9ffcd476c18
 }
