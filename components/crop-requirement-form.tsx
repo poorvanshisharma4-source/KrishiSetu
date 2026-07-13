@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { ArrowLeft, MapPin, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 
 interface FormData {
   crop: string;
@@ -134,18 +133,6 @@ export default function CropRequirementForm() {
             proposals from verified farmers.
           </p>
         </div>
-        
-      {/* Banner Image */}
-      <div className="w-full mb-6 overflow-hidden rounded-lg border border-border">
-        <Image
-          src="/requirement-banner.png"
-          alt="Looking for specific crops"
-          width={800}
-          height={400}
-          className="w-full h-auto object-cover"
-          priority
-        />
-      </div>
 
         {/* Form Card */}
         <div className="bg-card rounded-lg shadow-md border border-border p-6 md:p-8">
