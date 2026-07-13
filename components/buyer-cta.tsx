@@ -27,7 +27,7 @@ export function BuyerCta() {
 
           <div className="mt-8 flex justify-start">
             <Link href="/buyer/post-requirement" passHref>
-              <Button size="lg" className="h-12 bg-[#02e7d3] hover:bg-[#01b4d1] text-white px-6 rounded-xl flex items-center gap-2">
+              <Button size="lg" className="h-12 bg-[#00872e] hover:bg-[#006e25] text-white px-6 rounded-xl flex items-center gap-2">
                 Post Your Requirement
                 <ArrowRight className="h-5 w-5" />
               </Button>
