@@ -77,7 +77,7 @@ export default function BuyerOnboarding() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl shadow-lg p-8">
             <Button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/contact')}
               variant="outline"
               className="mb-8 flex items-center gap-2"
             >

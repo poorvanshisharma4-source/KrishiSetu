@@ -85,7 +85,7 @@ export default function PlatformFeatures() {
       <section className="py-16 -mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <Button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/contact')}
             variant="outline"
             className="mb-8 flex items-center gap-2 bg-white"
           >
