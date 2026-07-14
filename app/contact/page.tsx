@@ -311,7 +311,7 @@ export default function ContactPage() {
                     {[
                       { icon: FileText, label: 'FAQ - Frequently Asked Questions', href: '/faq' },
                       { icon: User, label: 'Farmer Registration Guide', href: '/farmer/register' },
-                      { icon: Building2, label: 'Buyer Onboarding', href: '/buyer/register' },
+                      { icon: Building2, label: 'Buyer Onboarding', href: '/buyer-onboarding' },
                       { icon: Globe, label: 'Platform Features', href: '/features' },
                     ].map((link, index) => (
                       <Link
