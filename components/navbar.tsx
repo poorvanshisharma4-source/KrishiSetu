@@ -117,15 +117,19 @@ export function Navbar() {
                   Buyer Login
                 </Link>
                 <div className="my-1 border-t border-border" />
+                
+                {/* 🚜 Redirects directly to the consolidated authentication view */}
                 <Link
-                  href="/farmer/register"
+                  href="/farmer/login"
                   onClick={() => setLoginOpen(false)}
                   className="block px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary/40 hover:text-primary"
                 >
                   Register as Farmer
                 </Link>
+                
+                {/* 💼 Redirects corporate buyers safely to their target credentials panel */}
                 <Link
-                  href="/buyer/register"
+                  href="/buyer/login"
                   onClick={() => setLoginOpen(false)}
                   className="block px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary/40 hover:text-primary"
                 >
