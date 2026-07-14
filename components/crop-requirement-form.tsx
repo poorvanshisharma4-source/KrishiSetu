@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { useState } from 'react';
 import { ArrowLeft, MapPin, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -118,6 +118,7 @@ export default function CropRequirementForm() {
         {/* Header */}
         <div className="mb-8">
           <button
+            type="button"
             onClick={() => window.history.back()}
             className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-6 font-medium"
           >
@@ -200,7 +201,7 @@ export default function CropRequirementForm() {
                 <label htmlFor="quantity" className="block text-sm font-semibold text-foreground mb-2">
                   Quantity Needed <span className="text-destructive">*</span>
                 </label>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <input
                     id="quantity"
                     type="number"
@@ -210,13 +211,15 @@ export default function CropRequirementForm() {
                     placeholder="Enter quantity"
                     step="0.01"
                     min="0"
-                    className="flex-1 px-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-[68%] px-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   />
+
                   <select
                     name="unit"
+                    aria-label="Select Unit"
                     value={formData.unit}
                     onChange={handleChange}
-                    className="px-4 py-3 border border-border rounded-lg bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-[32%] px-3 py-3 border border-border rounded-lg bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   >
                     {unitOptions.map((option) => (
                       <option key={option} value={option}>

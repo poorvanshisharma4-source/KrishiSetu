@@ -310,9 +310,9 @@ export default function ContactPage() {
                   <div className="space-y-3">
                     {[
                       { icon: FileText, label: 'FAQ - Frequently Asked Questions', href: '/faq' },
-                      { icon: User, label: 'Farmer Registration Guide', href: '/farmer/register' },
+                      { icon: User, label: 'Farmer Registration Guide', href: '/farmer-registration-guide' },
                       { icon: Building2, label: 'Buyer Onboarding', href: '/buyer-onboarding' },
-                      { icon: Globe, label: 'Platform Features', href: '/features' },
+                      { icon: Globe, label: 'Platform Features', href: '/platform-features' },
                     ].map((link, index) => (
                       <Link
                         key={index}
