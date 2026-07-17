@@ -1,5 +1,6 @@
 'use client';
 
+import { Navbar } from "@/components/navbar";
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -534,45 +535,10 @@ export default function FarmerAIPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-      {/* Top Navigation */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-9 h-9 bg-primary-800 rounded-lg flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-display font-bold text-gray-900">
-                Krishi<span className="text-primary-800">Setu</span>
-              </span>
-            </Link>
+  <>
+    <Navbar />
 
-            <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
-              <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <Image
-                  src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100"
-                  alt="Farmer"
-                  width={36}
-                  height={36}
-                  className="rounded-full object-cover border-2 border-primary-200"
-                />
-                <div className="hidden md:block">
-                  <div className="text-sm font-semibold text-gray-900">Rajesh Kumar</div>
-                  <div className="flex items-center text-xs text-gray-500">
-                    <Award className="w-3 h-3 mr-1 text-gray-400" />
-                    Silver Farmer
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
@@ -680,6 +646,7 @@ export default function FarmerAIPage() {
           </div>
         </div>
       </div>
-    </div>
-  );
+       </div>
+  </>
+);
 }
