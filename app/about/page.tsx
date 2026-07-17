@@ -1,5 +1,7 @@
+
 'use client';
 
+import React, { useState } from 'react'; // React aur useState ko add kiya
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,9 +20,15 @@ import {
 } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
-import {Button} from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
+
+// AI Copilot Panel Drawer Component Import kiya
+import AICopilotPanel from '@/components/ai-copilot/AICopilotPanel';
 
 export default function AboutPage() {
+  // State handle karne ke liye variable add kiya
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+
   const values = [
     { icon: Heart, title: 'Farmer First', description: 'Every decision we make prioritizes farmer welfare and sustainable livelihoods.' },
     { icon: Shield, title: 'Trust & Transparency', description: 'Blockchain-backed contracts ensure fair dealings for all parties.' },
@@ -44,33 +52,34 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-beige-200">
-      <Navbar />
+      {/* FIX: Ab Navbar ko click handler mil gaya hai, toh TypeScript/Next.js build error nahi dega */}
+      <Navbar onCopilotClick={() => setIsCopilotOpen(true)} />
 
       <main>
         {/* Hero Section */}
-       <section className="pt-15 pb-14 bg-[#2E8B3C] text-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center max-w-4xl mx-auto"
-    >
-      <div className="inline-flex items-center px-4 py-3 bg-[#2E7D32] rounded-full mb-6">
-        <Leaf className="w-4 h-4 mr-2" />
-        <span className="text-sm font-medium">Our Story</span>
-      </div>
+        <section className="py-16 bg-[#2E8B3C] text-white flex items-center justify-center min-h-[40vh]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center max-w-3xl mx-auto space-y-6"
+            >
+              <div className="inline-flex items-center px-4 py-1.5 bg-[#2E7D32] rounded-full mx-auto">
+                <Leaf className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Our Story</span>
+              </div>
 
-      <h1 className="text-4xl md:text-5xl lg:text-8xl font-extrabold text-white mb-8 leading-tight">
-        Empowering Farmers, Transforming Agriculture
-      </h1>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                Empowering Farmers, <br className="hidden sm:inline" /> Transforming Agriculture
+              </h1>
 
-      <p className="text-xl md:text-2xl text-green-100 max-w-3xl mx-auto mb-8">
-        KrishiSetu bridges the gap between farmers and buyers through AI-powered demand-driven farming,
-        ensuring fair prices and sustainable practices.
-      </p>
-    </motion.div>
-  </div>
-</section>
+              <p className="text-base md:text-lg text-green-50 max-w-2xl mx-auto opacity-90 leading-relaxed">
+                KrishiSetu bridges the gap between farmers and buyers through AI-powered demand-driven farming,
+                ensuring fair prices and sustainable practices.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Mission Section */}
         <section className="py-20">
@@ -115,103 +124,89 @@ export default function AboutPage() {
         </section>
 
         {/* Values Section */}
-<section className="py-20 bg-[#F7F4EC]">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-    <div className="text-center mb-12">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-        Our Core Values
-      </h2>
-      <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-        The principles that guide everything we do at KrishiSetu
-      </p>
-    </div>
-
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {values.map((value, index) => (
-        <div key={index}>
-          <div className="bg-white rounded-2xl border border-[#E5DCCB] shadow-sm p-8 text-center h-full">
-
-            <div className="w-16 h-16 bg-[#D7E8D2] rounded-2xl flex items-center justify-center mx-auto mb-5">
-              <value.icon className="w-8 h-8 text-[#2F8A3A]" />
+        <section className="py-20 bg-[#F7F4EC]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Our Core Values
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                The principles that guide everything we do at KrishiSetu
+              </p>
             </div>
 
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              {value.title}
-            </h3>
-
-            <p className="text-gray-600 leading-relaxed">
-              {value.description}
-            </p>
-
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {values.map((value, index) => (
+                <div key={index}>
+                  <div className="bg-white rounded-2xl border border-[#E5DCCB] shadow-sm p-8 text-center h-full">
+                    <div className="w-16 h-16 bg-[#D7E8D2] rounded-2xl flex items-center justify-center mx-auto mb-5">
+                      <value.icon className="w-8 h-8 text-[#2F8A3A]" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      {value.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {value.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
-
-  </div>
-</section>
+        </section>
 
         {/* Timeline Section */}
-<section className="py-20 bg-[#F7F4EC]">
-  <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="text-center mb-12"
-    >
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-        Our Journey
-      </h2>
+        <section className="py-20 bg-[#F7F4EC]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Our Journey
+              </h2>
+              <p className="text-lg text-gray-600">
+                Key milestones in our mission to transform Indian agriculture
+              </p>
+            </motion.div>
 
-      <p className="text-lg text-gray-600">
-        Key milestones in our mission to transform Indian agriculture
-      </p>
-    </motion.div>
+            <div className="space-y-12">
+              {milestones.map((milestone, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex gap-8 items-start"
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full bg-[#2F8A3A] text-white font-bold flex items-center justify-center shadow-md">
+                      {milestone.year.slice(2)}
+                    </div>
+                    {index < milestones.length - 1 && (
+                      <div className="w-[2px] h-32 bg-[#8BC48A] mt-2"></div>
+                    )}
+                  </div>
 
-    <div className="space-y-12">
-      {milestones.map((milestone, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.1 }}
-          className="flex gap-8 items-start"
-        >
-          {/* Timeline Circle + Line */}
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-[#2F8A3A] text-white font-bold flex items-center justify-center shadow-md">
-              {milestone.year.slice(2)}
+                  <div className="flex-1 bg-white rounded-3xl border border-[#E5DCCB] shadow-md p-8">
+                    <div className="text-[#2F8A3A] font-semibold mb-2">
+                      {milestone.year}
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                      {milestone.title}
+                    </h3>
+                    <p className="text-gray-600 text-lg">
+                      {milestone.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-
-            {index < milestones.length - 1 && (
-              <div className="w-[2px] h-32 bg-[#8BC48A] mt-2"></div>
-            )}
           </div>
-
-          {/* Timeline Card */}
-          <div className="flex-1 bg-white rounded-3xl border border-[#E5DCCB] shadow-md p-8">
-            <div className="text-[#2F8A3A] font-semibold mb-2">
-              {milestone.year}
-            </div>
-
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              {milestone.title}
-            </h3>
-
-            <p className="text-gray-600 text-lg">
-              {milestone.description}
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-
-  </div>
-</section>
+        </section>
 
         {/* Team Section */}
         <section className="py-20 bg-white">
@@ -308,15 +303,15 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/farmer/login">
                   <Button variant="default" size="lg">
-                  Join as Farmer
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                    Join as Farmer
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href="/buyer/login">
                   <Button variant="secondary" size="lg">
                     Join as Buyer
                     <ArrowRight className="w-5 h-5 ml-2" />
-                 </Button>
+                  </Button>
                 </Link>
               </div>
             </motion.div>
@@ -325,6 +320,13 @@ export default function AboutPage() {
       </main>
 
       <Footer />
+
+      {/* Floating Copilot Sliding Panel Context */}
+      <AICopilotPanel 
+        isOpen={isCopilotOpen} 
+        onClose={() => setIsCopilotOpen(false)} 
+        userRole="farmer"
+      />
     </div>
   );
 }
