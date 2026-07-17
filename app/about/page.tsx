@@ -48,29 +48,29 @@ export default function AboutPage() {
 
       <main>
         {/* Hero Section */}
-       <section className="pt-15 pb-14 bg-[#2E8B3C] text-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center max-w-4xl mx-auto"
-    >
-      <div className="inline-flex items-center px-4 py-3 bg-[#2E7D32] rounded-full mb-6">
-        <Leaf className="w-4 h-4 mr-2" />
-        <span className="text-sm font-medium">Our Story</span>
-      </div>
+        <section className="py-16 bg-[#2E8B3C] text-white flex items-center justify-center min-h-[40vh]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center max-w-3xl mx-auto space-y-6"
+            >
+              <div className="inline-flex items-center px-4 py-1.5 bg-[#2E7D32] rounded-full mx-auto">
+                <Leaf className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Our Story</span>
+              </div>
 
-      <h1 className="text-4xl md:text-5xl lg:text-8xl font-extrabold text-white mb-8 leading-tight">
-        Empowering Farmers, Transforming Agriculture
-      </h1>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                Empowering Farmers, <br className="hidden sm:inline" /> Transforming Agriculture
+              </h1>
 
-      <p className="text-xl md:text-2xl text-green-100 max-w-3xl mx-auto mb-8">
-        KrishiSetu bridges the gap between farmers and buyers through AI-powered demand-driven farming,
-        ensuring fair prices and sustainable practices.
-      </p>
-    </motion.div>
-  </div>
-</section>
+              <p className="text-base md:text-lg text-green-50 max-w-2xl mx-auto opacity-90 leading-relaxed">
+                KrishiSetu bridges the gap between farmers and buyers through AI-powered demand-driven farming,
+                ensuring fair prices and sustainable practices.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Mission Section */}
         <section className="py-20">
