@@ -60,7 +60,7 @@ export default function ConnectedFarmersPage(){
           className="flex items-center gap-2 text-green-700 mb-6"
         >
           <ArrowLeft size={20}/>
-          Back
+          Back to Dashboard
         </button>
 
 
