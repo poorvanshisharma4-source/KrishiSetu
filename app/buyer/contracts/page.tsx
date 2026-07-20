@@ -1,5 +1,5 @@
 'use client'
-
+import { useEffect } from 'react'
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -83,11 +83,37 @@ const mockContracts: Contract[] = [
 
 export default function MyContractsScreen() {
   const router = useRouter()
+  const [contracts, setContracts] = useState<Contract[]>(mockContracts)
+
+useEffect(() => {
+
+  
+
+  const savedContracts = JSON.parse(
+    localStorage.getItem("contracts") || "[]"
+  ) 
+  console.log("Saved Contracts:", savedContracts)
+  console.log("All Contracts:", [
+  ...mockContracts,
+  ...savedContracts
+])
+
+  setContracts([
+  ...mockContracts,
+  ...savedContracts.filter(
+    (saved:any) =>
+      !mockContracts.some(
+        (mock)=> mock.id === saved.id
+      )
+  )
+])
+
+}, [])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
   const filteredContracts = useMemo(() => {
-    return mockContracts.filter((contract) => {
+  return contracts.filter((contract) => {
       const matchesSearch =
         contract.farmerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contract.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,7 +129,7 @@ export default function MyContractsScreen() {
 
       return matchesSearch && matchesStatus
     })
-  }, [searchTerm, statusFilter])
+  }, [contracts, searchTerm, statusFilter])
 
   const getStatusBadgeStyles = (status: string) => {
     switch (status) {
@@ -138,6 +164,7 @@ export default function MyContractsScreen() {
                 <h1 className="text-4xl font-bold text-gray-900">
                   Procurement Contracts
                 </h1>
+              
               </div>
             </div>
             <ShieldCheck
@@ -259,22 +286,23 @@ export default function MyContractsScreen() {
                     {/* Action Button */}
                     <div className="flex items-end justify-start md:justify-end">
                       <button
-                        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
-                        style={{
-                          color: '#2E7D32',
-                          border: '1.5px solid #2E7D32',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#F1F5F2'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                        }}
-                      >
-                        <FileText size={16} />
-                        View Legal Terms
-                        <ChevronRight size={16} />
-                      </button>
+  onClick={() => router.push(`/buyer/contracts/${contract.id}`)}
+  className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
+  style={{
+    color: '#2E7D32',
+    border: '1.5px solid #2E7D32',
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.backgroundColor = '#F1F5F2'
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.backgroundColor = 'transparent'
+  }}
+>
+  <FileText size={16} />
+  Manage Contract
+  <ChevronRight size={16} />
+</button>
                     </div>
                   </div>
                 </div>
@@ -297,7 +325,7 @@ export default function MyContractsScreen() {
 
         {/* Results Counter */}
         <div className="mt-6 text-center text-sm text-gray-600">
-          Showing {filteredContracts.length} of {mockContracts.length} contracts
+          Showing {filteredContracts.length} of {contracts.length} contracts
         </div>
       </div>
     </div>
