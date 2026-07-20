@@ -182,6 +182,7 @@
 //     </header>
 //   )
 // }
+
 'use client'
 
 import { useState } from 'react'
@@ -189,6 +190,9 @@ import Link from 'next/link'
 import { Sprout, Globe, Menu, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AICopilotToggle } from '@/components/ai-copilot/AICopilotToggle'
+
+// 1. Global AI Context ko import kiya
+import { useAICopilot } from '@/components/ai-copilot/AICopilotContext'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -201,16 +205,15 @@ const navLinks = [
 
 const languages = ['English', 'हिन्दी', 'मराठी', 'বাংলা', 'தமிழ்', 'తెలుగు']
 
-// Page.tsx se action receive karne ke liye prop types define kiya
-interface NavbarProps {
-  onCopilotClick: () => void;
-}
-
-export function Navbar({ onCopilotClick }: NavbarProps) {
+// Interface/Props se `onCopilotClick` hata diya kyunki ab hum global state use kar rahe hain
+export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [loginOpen, setLoginOpen] = useState(false)
   const [activeLang, setActiveLang] = useState('English')
+
+  // 2. Global state se openCopilot function extract kiya
+  const { openCopilot } = useAICopilot()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -240,11 +243,11 @@ export function Navbar({ onCopilotClick }: NavbarProps) {
           ))}
         </ul>
 
-        <div className="flex items-center gap-4"> {/* Gap ko badha kar 4 kiya taaki toggle clean dikhe */}
+        <div className="flex items-center gap-4">
           
-          {/* ✨ AI Copilot Button - English Option ke exact left side me placement */}
+          {/* ✨ AI Copilot Button - Ab yeh openCopilot trigger use kar raha hai global wala */}
           <div className="hidden sm:block">
-            <AICopilotToggle onClick={onCopilotClick} />
+            <AICopilotToggle onClick={openCopilot} />
           </div>
 
           <div className="relative hidden sm:block">
