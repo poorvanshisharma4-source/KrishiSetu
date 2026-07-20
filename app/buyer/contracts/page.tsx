@@ -158,7 +158,7 @@ useEffect(() => {
                 className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-200"
               >
                 <ArrowLeft size={18} />
-                Back
+                Back to Dashboard
               </button>
               <div>
                 <h1 className="text-4xl font-bold text-gray-900">

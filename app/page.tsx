@@ -25,7 +25,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navbar:  */}
-      <Navbar onCopilotClick={() => setIsCopilotOpen(true)} />
+      <Navbar/>
       
       <main>
         <Hero />
@@ -56,3 +56,4 @@ export default function Page() {
     </div>
   );
 }
+
