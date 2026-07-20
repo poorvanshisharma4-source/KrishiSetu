@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Send, Paperclip, ArrowLeft, Check, Shield } from 'lucide-react';
 
 interface Message {
@@ -27,111 +27,137 @@ interface Farmer {
 
 export default function BuyerFarmerChatDashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+const farmerName = searchParams.get("farmer");
   const [selectedFarmerId, setSelectedFarmerId] = useState<string>('1');
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data for farmers
   const farmers: Farmer[] = [
-    {
-      id: '1',
-      name: 'Rajesh Kumar',
-      initials: 'RK',
-      cropType: 'Wheat',
-      lastMessage: 'I can supply 500kg next week',
-      timestamp: '2 min ago',
-      unread: true,
-      verified: true,
-      trustScore: 4.8,
-      location: 'Mandi, Punjab',
-    },
-    {
-      id: '2',
-      name: 'Priya Singh',
-      initials: 'PS',
-      cropType: 'Rice',
-      lastMessage: 'Quality premium this season',
-      timestamp: '15 min ago',
-      unread: false,
-      verified: true,
-      trustScore: 4.6,
-      location: 'Mandi, UP',
-    },
-    {
-      id: '3',
-      name: 'Vikram Patel',
-      initials: 'VP',
-      cropType: 'Cotton',
-      lastMessage: 'Yield is good this harvest',
-      timestamp: '1 hour ago',
-      unread: false,
-      verified: false,
-      trustScore: 4.2,
-      location: 'Mandi, Gujarat',
-    },
-    {
-      id: '4',
-      name: 'Anita Devi',
-      initials: 'AD',
-      cropType: 'Sugarcane',
-      lastMessage: 'Ready for pickup tomorrow',
-      timestamp: '3 hours ago',
-      unread: true,
-      verified: true,
-      trustScore: 4.9,
-      location: 'Mandi, Maharashtra',
-    },
-  ];
+  {
+    id: "1",
+    name: "Ramesh Kumar",
+    initials: "RK",
+    cropType: "Wheat Farmer",
+    lastMessage: "Hello Buyer, my wheat crop is ready.",
+    timestamp: "2 min ago",
+    unread: true,
+    verified: true,
+    trustScore: 4.9,
+    location: "Indore, MP",
+  },
+  {
+    id: "2",
+    name: "Mohan Patel",
+    initials: "MP",
+    cropType: "Tomato Farmer",
+    lastMessage: "Fresh tomatoes are available.",
+    timestamp: "10 min ago",
+    unread: false,
+    verified: true,
+    trustScore: 4.8,
+    location: "Dewas, MP",
+  },
+  {
+    id: "3",
+    name: "Ajay Singh",
+    initials: "AS",
+    cropType: "Vegetable Farmer",
+    lastMessage: "Ready to deliver vegetables.",
+    timestamp: "30 min ago",
+    unread: false,
+    verified: true,
+    trustScore: 4.7,
+    location: "Ujjain, MP",
+  },
+];
 
-  // Mock messages for selected farmer
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      sender: 'farmer',
-      text: 'Hello! I have premium wheat available this season.',
-      timestamp: '10:30 AM',
-    },
-    {
-      id: '2',
-      sender: 'buyer',
-      text: 'What&apos;s the minimum order quantity?',
-      timestamp: '10:32 AM',
-    },
-    {
-      id: '3',
-      sender: 'farmer',
-      text: 'Minimum 500kg. I can supply 500kg next week',
-      timestamp: '10:35 AM',
-    },
-    {
-      id: '4',
-      sender: 'buyer',
-      text: 'Great! What&apos;s the current price per kg?',
-      timestamp: '10:36 AM',
-    },
-  ]);
+useEffect(() => {
+  if (!farmerName) return;
 
-  const selectedFarmer = farmers.find((f) => f.id === selectedFarmerId);
-  const filteredFarmers = farmers.filter((farmer) =>
-    farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    farmer.cropType.toLowerCase().includes(searchQuery.toLowerCase())
+  const farmer = farmers.find(
+    (f) => f.name === farmerName
   );
 
+  if (farmer) {
+    setSelectedFarmerId(farmer.id);
+  }
+}, [farmerName, farmers]);
+
+  // Mock messages for selected farmer
+  const [messages, setMessages] = useState<Record<string, Message[]>>({
+  "1": [
+    {
+      id: "1",
+      sender: "farmer",
+      text: "Hello! I have premium wheat available this season.",
+      timestamp: "10:30 AM",
+    },
+    {
+      id: "2",
+      sender: "buyer",
+      text: "What's the minimum order quantity?",
+      timestamp: "10:32 AM",
+    },
+    {
+      id: "3",
+      sender: "farmer",
+      text: "Minimum 500kg. I can supply 500kg next week",
+      timestamp: "10:35 AM",
+    },
+  ],
+
+  "2": [
+    {
+      id: "1",
+      sender: "farmer",
+      text: "Fresh tomatoes are available.",
+      timestamp: "09:10 AM",
+    },
+  ],
+
+  "3": [
+    {
+      id: "1",
+      sender: "farmer",
+      text: "Ready to deliver vegetables.",
+      timestamp: "08:45 AM",
+    },
+  ],
+});
+
+  const selectedFarmer = farmers.find((f) => f.id === selectedFarmerId);
+  const filteredFarmers = farmerName
+  ? farmers.filter((farmer) => farmer.name === farmerName)
+  : farmers.filter(
+      (farmer) =>
+        farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        farmer.cropType.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   const handleSendMessage = () => {
-    if (messageInput.trim()) {
-      const newMessage: Message = {
-        id: String(messages.length + 1),
-        sender: 'buyer',
-        text: messageInput,
-        timestamp: new Date().toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      };
-      setMessages([...messages, newMessage]);
-      setMessageInput('');
-    }
+  if (!messageInput.trim()) return;
+
+  const newMessage: Message = {
+    id: Date.now().toString(),
+    sender: "buyer",
+    text: messageInput,
+    timestamp: new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   };
+
+  setMessages((prev) => ({
+    ...prev,
+    [selectedFarmerId]: [
+      ...(prev[selectedFarmerId] || []),
+      newMessage,
+    ],
+  }));
+
+  setMessageInput("");
+};
 
   return (
     <div className="flex h-screen bg-[#F5F0E6]">
@@ -233,7 +259,7 @@ export default function BuyerFarmerChatDashboard() {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
+            {(messages[selectedFarmerId] || []).map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'buyer' ? 'justify-end' : 'justify-start'}`}
@@ -309,7 +335,7 @@ export default function BuyerFarmerChatDashboard() {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
+            {(messages[selectedFarmerId] || []).map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'buyer' ? 'justify-end' : 'justify-start'}`}

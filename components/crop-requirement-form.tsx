@@ -94,7 +94,34 @@ export default function CropRequirementForm() {
     e.preventDefault();
     if (validateForm()) {
       setSubmitted(true);
-      console.log('Form submitted:', formData);
+      alert("Request submitted successfully");
+      const requestData = {
+  id: Date.now(),
+  buyerId: "buyer_001",
+  buyerName: "FreshMart Pvt Ltd",
+  crop: formData.crop,
+  grade: formData.grade,
+  quantity: formData.quantity,
+  unit: formData.unit,
+  targetPrice: formData.targetPrice,
+  deliveryDate: formData.deliveryDate,
+  deliveryLocation: formData.deliveryLocation,
+  additionalTerms: formData.additionalTerms,
+  status: "Pending",
+  createdAt: new Date().toISOString(),
+};
+      console.log('Request Created:', requestData);
+      const existingRequests = JSON.parse(
+  localStorage.getItem("buyerRequests") || "[]"
+);
+
+localStorage.setItem(
+  "buyerRequests",
+  JSON.stringify([
+    ...existingRequests,
+    requestData
+  ])
+);
       // Reset form after submission
       setTimeout(() => {
         setFormData({

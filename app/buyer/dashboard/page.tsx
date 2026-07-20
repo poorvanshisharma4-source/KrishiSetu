@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { LayoutDashboard, FileText, Users, Plus, Search, Bell, Settings, LogOut, Wallet, BarChart3, MessageSquare, Package, Sprout, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+
 export default function BuyerDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -32,110 +33,249 @@ export default function BuyerDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] text-black">
-      {/* Top Navigation */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Sprout className="h-5 w-5" />
-              </span>
-              <span className="font-heading text-xl font-bold text-foreground">
-                Krishi<span className="text-primary">Setu</span>
-              </span>
+     
+
+      <div className="min-h-screen bg-[#F8F6F0] text-black">
+
+  {/* ================= HEADER ================= */}
+
+  <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+
+    <div className="max-w-[1600px] mx-auto h-20 px-8 flex items-center">
+
+      {/* Logo */}
+
+      <div className="flex items-center gap-3 w-72">
+
+        <div className="h-11 w-11 rounded-xl bg-green-700 flex items-center justify-center">
+          <Sprout className="h-6 w-6 text-white" />
+        </div>
+
+        <h1 className="text-2xl font-bold">
+          Krishi<span className="text-green-700">Setu</span>
+        </h1>
+
+      </div>
+
+      {/* Search */}
+
+      <div className="flex-1 flex justify-center">
+
+        <div className="relative w-full max-w-xl">
+
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+
+          <input
+            type="text"
+            placeholder="Search farmers, crops, contracts..."
+            className="w-full h-12 rounded-xl border border-gray-200 bg-gray-50 pl-12 pr-4 outline-none focus:ring-2 focus:ring-green-600"
+          />
+
+        </div>
+
+      </div>
+
+      {/* Right */}
+
+      <div className="flex items-center gap-5 ml-8">
+
+        <Button
+          onClick={() => router.push("/buyer/post-requirement")}
+          className="bg-orange-500 hover:bg-orange-600 rounded-xl px-5 h-11"
+        >
+          + Post Requirement
+        </Button>
+
+        <button
+  onClick={() => router.push("/buyer/notifications")}
+  className="relative"
+>
+
+  <Bell className="w-6 h-6 text-gray-600"/>
+
+  <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-red-500"/>
+
+</button>
+
+        <div className="flex items-center gap-3 border-l pl-5">
+
+          <div className="h-11 w-11 rounded-full bg-green-700 flex items-center justify-center text-white font-bold">
+            FM
+          </div>
+
+          <div>
+
+            <p className="font-semibold">
+              FreshMart Pvt Ltd
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Verified Buyer
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  {/* BODY */}
+
+  <div className="max-w-[1600px] mx-auto flex gap-6 px-8 py-6">
+
+    {/* Sidebar */}
+
+    <aside className="w-64">
+
+      <div className="bg-white rounded-2xl shadow-sm border p-5 sticky top-28">
+
+        <nav className="space-y-2">
+
+          {sidebarItems.map((item)=>(
+            <Link
+              key={item.id}
+              href={item.path}
+              onClick={()=>setActiveTab(item.id)}
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
+                activeTab===item.id
+                ? "bg-amber-500 text-white"
+                : "hover:bg-amber-50 text-gray-700"
+              }`}
+            >
+              <item.icon size={18}/>
+              {item.label}
             </Link>
+          ))}
 
-            <div className="hidden md:flex flex-1 max-w-md mx-8">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search farmers, crops, contracts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none"
-                />
-              </div>
-            </div>
+          <div className="border-t pt-4 mt-4">
 
-            <div className="flex items-center space-x-4">
-              <Link href="/buyer/post-requirement">
-                <Button variant="default" size="sm" className="bg-amber-600 hover:bg-amber-700">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Post Requirement
-                </Button>
-              </Link>
-              <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
-              <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <Image src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Buyer" width={36} height={36} className="rounded-full object-cover border-2 border-amber-200" />
-                <div className="hidden md:block">
-                  <div className="text-sm font-semibold text-gray-900">FreshMart Pvt Ltd</div>
-                  <div className="text-xs text-gray-500">Verified Buyer</div>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={()=>setShowLogoutModal(true)}
+              className="flex items-center gap-3 text-red-600 px-4 py-3 w-full rounded-xl hover:bg-red-50"
+            >
+              <LogOut size={18}/>
+              Logout
+            </button>
+
           </div>
-        </div>
+
+        </nav>
+
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar Layout Section */}
-          <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-sm p-4 sticky top-24">
-              <nav className="space-y-1">
-                {sidebarItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.path}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${activeTab === item.id ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-                    onClick={() => setActiveTab(item.id)}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span className="font-medium">{item.label}</span>
-                  </Link>
-                ))}
-                
-                {/* 🚪 Custom Intercept Logout Trigger Button */}
-                <div className="border-t border-gray-200 mt-4 pt-4">
-                  <button 
-                    type="button"
-                    onClick={() => setShowLogoutModal(true)}
-                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all text-left font-medium"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </nav>
-            </div>
-          </div>
+    </aside>
 
-          {/* Main Dashboard Panel Workspaces */}
-          <div className="flex-1 space-y-6">
-            <div className="bg-gradient-to-r from-amber-600 to-amber-500 text-white rounded-2xl p-8 shadow-md">
-              <h1 className="text-3xl font-bold">Welcome Back, FreshMart!</h1>
-              <p className="text-amber-100 text-sm mt-1">Manage corporate contracts, review farm postings, and dispatch fleet logistics parameters</p>
-            </div>
+    {/* Main */}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quickStats.map((stat, idx) => (
-                <div key={idx} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${stat.color}`}><stat.icon size={22} /></div>
-                  <div>
-                    <span className="block text-xs text-gray-500 font-semibold">{stat.label}</span>
-                    <span className="text-xl font-bold text-gray-900">{stat.value}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <main className="flex-1 space-y-8">
+    {/* Welcome Card */}
+<div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl px-8 py-6 shadow-md">
+
+  <p className="text-amber-100 text-sm font-medium">
+    Buyer Dashboard
+  </p>
+
+  <h1 className="text-3xl font-bold mt-2">
+    Welcome Back, FreshMart 👋
+  </h1>
+
+  <p className="mt-2 text-amber-100 max-w-2xl">
+    Manage requirements, monitor contracts, connect with trusted farmers
+    and track all procurement activities from one place.
+  </p>
+
+</div>
+
+{/* Stats */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+  {quickStats.map((stat, idx) => (
+
+    <div
+      key={idx}
+      className="bg-white rounded-2xl border border-gray-100 shadow-md p-5 flex items-center gap-4"
+    >
+
+      <div className={`p-3 rounded-xl ${stat.color}`}>
+        <stat.icon size={22}/>
       </div>
+
+      <div>
+        <p className="text-xs text-gray-500">
+          {stat.label}
+        </p>
+
+        <p className="text-xl font-bold">
+          {stat.value}
+        </p>
+
+        <p className="text-xs text-gray-400">
+          {stat.change}
+        </p>
+      </div>
+
+    </div>
+
+  ))}
+
+</div>
+
+{/* AI Card */}
+<div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6">
+
+  <div className="flex items-center gap-3">
+
+    <div className="bg-green-100 p-3 rounded-xl">
+      <Sprout className="w-6 h-6 text-green-700"/>
+    </div>
+
+    <div>
+
+      <h2 className="text-xl font-bold">
+        AI Farmer Matching
+      </h2>
+
+      <p className="text-sm text-gray-500">
+        AI finds the best farmers according to your crop requirement.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div className="mt-5 bg-green-50 rounded-xl p-5 flex items-center justify-between">
+
+    <div>
+
+      <h3 className="font-semibold">
+        Smart Recommendations
+      </h3>
+
+      <p className="text-sm text-gray-600">
+        Match farmers based on location, crop quality and trust score.
+      </p>
+
+    </div>
+
+    <Button
+      onClick={() => router.push("/buyer/ai-recommendation")}
+      className="bg-green-600 hover:bg-green-700"
+    >
+      Find Farmers
+    </Button>
+
+  </div>
+
+</div>
+
+</main>
+
+</div>
+        
 
       {/* 🌟 Universal Interactive Logout Confirmation Modal Shell Wrapper */}
       {showLogoutModal && (

@@ -31,6 +31,7 @@ export default function FarmerDashboard() {
     { id: 'my-crops', icon: Sprout, label: 'My Crops', path: '/farmer/my-crops' },
     { id: 'contracts', icon: FileText, label: 'My Contracts', path: '/farmer/contracts' },
     { id: 'requirements', icon: ShoppingBag, label: 'Buyer Requirements', path: '/farmer/requirements' },
+    { id: 'requests', icon: FileText, label: 'Incoming Requests', path: '/farmer/requests' },
     { id: 'analytics', icon: BarChart3, label: 'AI Analytics', path: '/farmer/ai' },
     { id: 'messages', icon: MessageSquare, label: 'Messages', path: '/farmer/messages' },
     { id: 'profile', icon: Settings, label: 'Profile', path: '/farmer/profile' },
@@ -41,8 +42,16 @@ export default function FarmerDashboard() {
     { icon: Sprout, label: 'Active Crops', value: '8', change: '3 ready to harvest', color: 'text-green-700 bg-green-100' },
     { icon: Wallet, label: 'Expected Revenue', value: '₹2.4L', change: 'This season', color: 'text-amber-700 bg-amber-100' },
     { icon: Award, label: 'Trust Score', value: '4.8', change: 'Silver Badge', color: 'text-blue-700 bg-blue-100' },
+    { 
+  icon: FileText, 
+  label: 'New Requests', 
+  value: '2', 
+  change: 'Pending buyer requests', 
+  color: 'text-green-700 bg-green-100' 
+},
   ];
 
+  
   const quickActions = [
     { icon: Plus, label: 'Add Crop', color: 'bg-[#2E7D32] hover:bg-[#1b4d1e]', path: '/farmer/my-crops' },
     { icon: Eye, label: 'View Contracts', color: 'bg-green-700 hover:bg-green-800', path: '/farmer/contracts' },
@@ -112,8 +121,8 @@ export default function FarmerDashboard() {
             </div>
 
             {/* STATS MATRIX */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.map((stat, idx) => (
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {stats.map((stat, idx) => (
                 <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4">
                   <div className={`p-3 rounded-xl ${stat.color}`}>
                     <stat.icon className="w-6 h-6" />
