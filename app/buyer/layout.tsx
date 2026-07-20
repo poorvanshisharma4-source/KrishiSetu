@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -59,10 +60,15 @@ export default function BuyerRootLayout({ children }: { children: React.ReactNod
                   Post Requirement
                 </Button>
               </Link>
-              <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
+              
+              {/* Working Notification Bell Icon */}
+              <Link href="/buyer/notifications">
+                <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                </button>
+              </Link>
+
               <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
                 <Image src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=100" alt="Buyer" width={36} height={36} className="rounded-full object-cover border-2 border-amber-200" />
                 <div className="hidden md:block">
