@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const requirementRoutes = require("./routes/requirementRoutes");
 
 const app = express();
 
@@ -15,10 +16,20 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/requirements", requirementRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
   res.send("🚀 KrishiSetu Backend is Running...");
+});
+
+// Health Check Route
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "KrishiSetu Backend is Healthy",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Health Check Route

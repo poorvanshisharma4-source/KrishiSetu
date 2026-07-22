@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Search,
   MapPin,
@@ -11,6 +11,7 @@ import {
   Sliders,
   X,
 } from 'lucide-react'
+import api from '@/lib/api'
 
 interface RequirementCard {
   id: string
@@ -26,86 +27,25 @@ interface RequirementCard {
   description?: string
 }
 
-const mockRequirements: RequirementCard[] = [
-  {
-    id: '1',
-    company: 'FreshMart Retail',
-    verified: true,
-    cropNeeded: 'Potatoes',
-    quantity: '10 Tons',
-    qualityGrade: 'Grade A',
-    basePrice: '₹1,800',
-    currency: 'INR',
-    location: 'Delhi, India',
-    deliveryDate: '15 Aug 2026',
-    description: 'High-quality potatoes for retail distribution',
-  },
-  {
-    id: '2',
-    company: 'Reliance Agri Supply',
-    verified: true,
-    cropNeeded: 'Tomatoes',
-    quantity: '25 Tons',
-    qualityGrade: 'Grade A+',
-    basePrice: '₹2,500',
-    currency: 'INR',
-    location: 'Mumbai, India',
-    deliveryDate: '10 Aug 2026',
-    description: 'Premium tomatoes for food processing',
-  },
-  {
-    id: '3',
-    company: 'Green Valley Foods',
-    verified: false,
-    cropNeeded: 'Wheat',
-    quantity: '50 Tons',
-    qualityGrade: 'Grade B',
-    basePrice: '₹2,200',
-    currency: 'INR',
-    location: 'Punjab, India',
-    deliveryDate: '20 Aug 2026',
-    description: 'Bulk wheat procurement for milling',
-  },
-  {
-    id: '4',
-    company: 'AgroTech Exports',
-    verified: true,
-    cropNeeded: 'Onions',
-    quantity: '15 Tons',
-    qualityGrade: 'Grade A',
-    basePrice: '₹1,600',
-    currency: 'INR',
-    location: 'Maharashtra, India',
-    deliveryDate: '18 Aug 2026',
-    description: 'Export-quality onions for international market',
-  },
-  {
-    id: '5',
-    company: 'Fresh Logistics Ltd',
-    verified: true,
-    cropNeeded: 'Carrots',
-    quantity: '8 Tons',
-    qualityGrade: 'Grade A',
-    basePrice: '₹3,000',
-    currency: 'INR',
-    location: 'Bangalore, India',
-    deliveryDate: '12 Aug 2026',
-    description: 'Fresh carrots for restaurant chains',
-  },
-  {
-    id: '6',
-    company: 'Mega Distributors',
-    verified: true,
-    cropNeeded: 'Rice',
-    quantity: '100 Tons',
-    qualityGrade: 'Grade B+',
-    basePrice: '₹4,500',
-    currency: 'INR',
-    location: 'Kolkata, India',
-    deliveryDate: '25 Aug 2026',
-    description: 'High-volume rice procurement',
-  },
-]
+const mapRequirement = (item: any): RequirementCard => ({
+  id: item._id || item.id || String(Math.random()),
+  company: item.buyer || 'Buyer Request',
+  verified: true,
+  cropNeeded: item.cropName || 'Unknown Crop',
+  quantity: `${item.quantity ?? 0} ${item.unit || 'kg'}`,
+  qualityGrade: item.description ? item.description : 'Standard',
+  basePrice: `₹${item.expectedPrice ?? 0}`,
+  currency: 'INR',
+  location: item.location || 'Unknown',
+  deliveryDate: item.requiredBy
+    ? new Date(item.requiredBy).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : 'N/A',
+  description: item.description,
+})
 
 interface FilterState {
   minPrice: string
@@ -120,11 +60,50 @@ export default function BuyerMarketplace() {
     locationRadius: '',
   })
   const [showFilters, setShowFilters] = useState(false)
+  const [requirements, setRequirements] = useState<RequirementCard[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const categories = ['all', 'Vegetables', 'Grains', 'Fruits', 'Pulses']
 
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchRequirements = async () => {
+      try {
+        setLoading(true)
+        const response = await api.get('/requirements')
+        const list = response?.data ?? []
+
+        if (isMounted) {
+          setRequirements(
+            Array.isArray(list)
+              ? list.map(mapRequirement)
+              : []
+          )
+          setError(null)
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load requirements.')
+          setRequirements([])
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchRequirements()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const filteredRequirements = useMemo(() => {
-    return mockRequirements.filter((req) => {
+    return requirements.filter((req) => {
       const matchesSearch =
         req.cropNeeded.toLowerCase().includes(searchQuery.toLowerCase()) ||
         req.company.toLowerCase().includes(searchQuery.toLowerCase())
@@ -135,7 +114,7 @@ export default function BuyerMarketplace() {
 
       return matchesSearch && matchesCategory
     })
-  }, [searchQuery, selectedCategory])
+  }, [requirements, searchQuery, selectedCategory])
 
   const handleSendProposal = (companyName: string) => {
     alert(`Proposal sent to ${companyName}! You will be contacted shortly.`)

@@ -19,13 +19,21 @@ const requirementSchema = new mongoose.Schema(
       required: true,
     },
 
+    grade: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     unit: {
       type: String,
       default: "kg",
+      required: true,
     },
 
     expectedPrice: {
       type: Number,
+      required: true,
     },
 
     requiredBy: {

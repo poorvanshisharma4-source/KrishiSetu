@@ -38,17 +38,29 @@ export default function BuyerLoginPage() {
     if (isRegister) {
       // Register Buyer
       response = await api.post("/auth/register", {
-        name: formData.name,
+        fullName: formData.name,
         phone: formData.phone,
         password: formData.password,
         role: "buyer",
+        companyName: formData.companyName,
       });
 
       if (response.success) {
-        alert("Buyer Registration Successful!");
-        setIsRegister(false); // Registration ke baad Login tab open ho jayega
+        const loginResponse = await api.post("/auth/login", {
+          phone: formData.phone,
+          password: formData.password,
+        });
+
+        if (loginResponse.success) {
+          localStorage.setItem("token", loginResponse.token);
+          localStorage.setItem("user", JSON.stringify(loginResponse.user));
+          alert("Buyer Registration Successful!");
+          router.push("/buyer/dashboard");
+        } else {
+          alert(loginResponse.message || "Registration succeeded but login failed.");
+        }
       } else {
-        alert(response.message);
+        alert(response.message || "Registration failed.");
       }
 
     } else {
@@ -59,21 +71,21 @@ export default function BuyerLoginPage() {
       });
 
       if (response.success) {
-        // JWT Save
         localStorage.setItem("token", response.token);
         localStorage.setItem("user", JSON.stringify(response.user));
 
         alert("Buyer Login Successful!");
-
         router.push("/buyer/dashboard");
       } else {
-        alert(response.message);
+        alert(response.message || "Login failed.");
       }
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    alert("Something went wrong!");
+    const message =
+      error?.response?.data?.message || error?.message || "Something went wrong!";
+    alert(message);
   }
 };
 
