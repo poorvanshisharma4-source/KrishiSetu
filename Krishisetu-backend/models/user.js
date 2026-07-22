@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    // Common Fields
+
     name: {
       type: String,
       required: true,
@@ -25,6 +27,13 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    phone: {
+      type: String,
+    },
+
+
+    // Location Fields
+
     village: {
       type: String,
     },
@@ -36,10 +45,49 @@ const userSchema = new mongoose.Schema(
     state: {
       type: String,
     },
+
+    address: {
+      type: String,
+    },
+
+
+    // Farmer Fields
+
+    landSize: {
+      type: Number,
+    },
+
+    waterAvailability: {
+      type: String,
+    },
+
+    farmingExperience: {
+      type: Number,
+    },
+
+    crops: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Crop",
+      },
+    ],
+
+
+    // Buyer Fields
+
+    companyName: {
+      type: String,
+    },
+
+    businessType: {
+      type: String,
+    },
+
   },
   {
     timestamps: true,
   }
 );
+
 
 module.exports = mongoose.model("User", userSchema);
