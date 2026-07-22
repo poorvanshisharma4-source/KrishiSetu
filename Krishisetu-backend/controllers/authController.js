@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken");
 // Register User
 const register = async (req, res) => {
   try {
-    const { name, email, password, role, phone, village, district, state } =
+    const { name, phone, password, role, village, district, state } =
       req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ phone });
 
     if (existingUser) {
       return res.status(400).json({
@@ -24,10 +24,9 @@ const register = async (req, res) => {
     // Create user
     const user = await User.create({
       name,
-      email,
+      phone,
       password: hashedPassword,
       role,
-      phone,
       village,
       district,
       state,
@@ -51,15 +50,15 @@ const register = async (req, res) => {
 // Login User
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phone, password } = req.body;
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by phone
+    const user = await User.findOne({ phone });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid phone number or password",
       });
     }
 
@@ -69,7 +68,7 @@ const login = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(400).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid phone number or password",
       });
     }
 
@@ -91,7 +90,7 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
+        phone: user.phone,
         role: user.role,
       },
     });

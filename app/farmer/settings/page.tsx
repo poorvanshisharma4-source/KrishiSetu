@@ -1,24 +1,20 @@
 'use client';
 
 import { useState } from "react";
-import Link from "next/link";
 import { 
   Lock, 
   Bell, 
-  Globe, 
   ShieldAlert, 
   KeyRound, 
   Smartphone, 
   Check, 
-  Trash2,
-  ArrowLeft
+  Trash2
 } from "lucide-react";
 
 export default function FarmerSettingsPage() {
-  const [activeTab, setActiveTab] = useState<'security' | 'notifications' | 'preferences' | 'danger'>('notifications');
+  const [activeTab, setActiveTab] = useState<'security' | 'notifications' | 'danger'>('notifications');
   
   // States adjusted for KrishiSetu Direct Contracting Model
-  const [language, setLanguage] = useState('hi');
   const [buyerMatchAlerts, setBuyerMatchAlerts] = useState(true);
   const [contractAlerts, setContractAlerts] = useState(true);
   const [whatsappAlerts, setWhatsappAlerts] = useState(true);
@@ -32,7 +28,7 @@ export default function FarmerSettingsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Manage your password, notification alerts, and language preferences.
+            Manage your password and notification alerts.
           </p>
         </div>
 
@@ -44,7 +40,7 @@ export default function FarmerSettingsPage() {
             
             <button
               onClick={() => setActiveTab('security')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'security'
                   ? 'bg-emerald-700 text-white shadow-sm'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -55,7 +51,7 @@ export default function FarmerSettingsPage() {
 
             <button
               onClick={() => setActiveTab('notifications')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'notifications'
                   ? 'bg-emerald-700 text-white shadow-sm'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -64,21 +60,10 @@ export default function FarmerSettingsPage() {
               <Bell size={18} /> Notification Alerts
             </button>
 
-            <button
-              onClick={() => setActiveTab('preferences')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
-                activeTab === 'preferences'
-                  ? 'bg-emerald-700 text-white shadow-sm'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Globe size={18} /> App Language
-            </button>
-
             <div className="pt-2 border-t border-gray-100">
               <button
                 onClick={() => setActiveTab('danger')}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                   activeTab === 'danger'
                     ? 'bg-red-500 text-white shadow-sm'
                     : 'text-red-600 hover:bg-red-50'
@@ -205,7 +190,7 @@ export default function FarmerSettingsPage() {
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium text-gray-500"
                         />
                       </div>
-                      <button className="px-4 py-2.5 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition">
+                      <button className="px-4 py-2.5 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition cursor-pointer">
                         Change
                       </button>
                     </div>
@@ -235,48 +220,9 @@ export default function FarmerSettingsPage() {
                     </div>
                   </div>
 
-                  <button className="mt-4 flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-sm">
+                  <button className="mt-4 flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-sm cursor-pointer">
                     <Check size={16} /> Save Security Changes
                   </button>
-                </div>
-              </div>
-            )}
-
-            {/* LANGUAGE TAB */}
-            {activeTab === 'preferences' && (
-              <div className="space-y-6">
-                <div className="border-b pb-4">
-                  <h2 className="text-xl font-bold text-gray-900">App Language (भाषा)</h2>
-                  <p className="text-sm text-gray-500 mt-0.5">Select your preferred language for KrishiSetu.</p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { code: 'hi', label: 'हिन्दी (Hindi)', region: 'हिंदी में चलाएं' },
-                    { code: 'en', label: 'English', region: 'Default Language' },
-                    { code: 'mr', label: 'मराठी (Marathi)', region: 'महाराष्ट्र क्षेत्र' },
-                    { code: 'pa', label: 'ਪੰਜਾਬੀ (Punjabi)', region: 'ਪੰਜਾਬ ਖੇਤਰ' },
-                  ].map((item) => (
-                    <div
-                      key={item.code}
-                      onClick={() => setLanguage(item.code)}
-                      className={`p-4 rounded-xl border cursor-pointer transition flex items-center justify-between ${
-                        language === item.code
-                          ? 'border-emerald-700 bg-emerald-50/50 ring-2 ring-emerald-700/20'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
-                      }`}
-                    >
-                      <div>
-                        <p className="font-bold text-gray-900 text-sm">{item.label}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{item.region}</p>
-                      </div>
-                      {language === item.code && (
-                        <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center">
-                          <Check size={14} />
-                        </div>
-                      )}
-                    </div>
-                  ))}
                 </div>
               </div>
             )}
@@ -297,7 +243,7 @@ export default function FarmerSettingsPage() {
                     </p>
                   </div>
 
-                  <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm">
+                  <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm cursor-pointer">
                     <Trash2 size={16} /> Delete My Farmer Account
                   </button>
                 </div>

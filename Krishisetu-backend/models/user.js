@@ -8,11 +8,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    email: {
+    phone: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
     },
 
     password: {
@@ -24,10 +23,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["farmer", "buyer"],
       required: true,
-    },
-
-    phone: {
-      type: String,
     },
 
     village: {

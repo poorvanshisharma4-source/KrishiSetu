@@ -14,6 +14,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import Link from 'next/link';
+import api from '@/lib/api';
 
 export default function BuyerLoginPage() {
   const router = useRouter();
@@ -28,23 +29,53 @@ export default function BuyerLoginPage() {
     companyName: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // 🔥 Replace this with real API later
-    const isSuccess = true;
+  try {
+    let response;
 
-    if (isSuccess) {
-      alert(
-        isRegister
-          ? 'Buyer Registration Successful!'
-          : 'Buyer Login Successful!'
-      );
+    if (isRegister) {
+      // Register Buyer
+      response = await api.post("/auth/register", {
+        name: formData.name,
+        phone: formData.phone,
+        password: formData.password,
+        role: "buyer",
+      });
 
-      // 🚀 Redirect to dashboard
-      router.push('/buyer/dashboard');
+      if (response.success) {
+        alert("Buyer Registration Successful!");
+        setIsRegister(false); // Registration ke baad Login tab open ho jayega
+      } else {
+        alert(response.message);
+      }
+
+    } else {
+      // Login Buyer
+      response = await api.post("/auth/login", {
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      if (response.success) {
+        // JWT Save
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+
+        alert("Buyer Login Successful!");
+
+        router.push("/buyer/dashboard");
+      } else {
+        alert(response.message);
+      }
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong!");
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#F5F0E6] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
