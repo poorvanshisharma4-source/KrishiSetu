@@ -141,11 +141,11 @@ const api = {
   post: async (endpoint: string, data: any) => {
     try {
       return await request(endpoint, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(data),
       });
     } catch (error: any) {
-      console.error("API POST Error:", error);
+      console.error('API POST Error:', error);
       throw error;
     }
   },
@@ -153,10 +153,22 @@ const api = {
   get: async (endpoint: string) => {
     try {
       return await request(endpoint, {
-        method: "GET",
+        method: 'GET',
       });
     } catch (error: any) {
-      console.error("API GET Error:", error);
+      console.error('API GET Error:', error);
+      throw error;
+    }
+  },
+
+  put: async (endpoint: string, data?: any) => {
+    try {
+      return await request(endpoint, {
+        method: 'PUT',
+        body: data ? JSON.stringify(data) : undefined,
+      });
+    } catch (error: any) {
+      console.error('API PUT Error:', error);
       throw error;
     }
   },

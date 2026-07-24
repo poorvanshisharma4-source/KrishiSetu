@@ -1,55 +1,100 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ShieldCheck, User, Sprout, Building2, Truck, FileText } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
+import api from '@/lib/api';
+
+interface ContractDetail {
+  _id: string;
+  status?: string;
+  farmer?: { name?: string; phone?: string };
+  buyer?: { name?: string; phone?: string };
+  requirement?: {
+    cropName?: string;
+    unit?: string;
+    location?: string;
+    quantity?: number;
+    expectedPrice?: number;
+  };
+  agreedPrice?: number;
+  quantity?: number;
+  location?: string;
+}
 
 export default function ContractDetailsPage() {
 
   const router = useRouter();
-   const params = useParams();
+  const params = useParams();
 
   const contractId = params.id as string;
-  const contracts = {
-  "CON-BUY-7892": {
-    farmer: "Ramesh Kumar",
-    location: "Nashik, MH",
-    crop: "Organic Tomatoes",
-    quantity: "500 kg",
-    price: "₹28/kg",
-    value: "₹14,000"
-  },
+  const [contract, setContract] = useState<ContractDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [transportBy, setTransportBy] = useState('');
 
-  "CON-BUY-7891": {
-    farmer: "Priya Sharma",
-    location: "Pune, MH",
-    crop: "Fresh Spinach",
-    quantity: "750 kg",
-    price: "₹32/kg",
-    value: "₹24,000"
-  },
+  useEffect(() => {
+    const fetchContract = async () => {
+      if (!contractId) return;
+      setLoading(true);
+      try {
+        const response = await api.get(`/contracts/${contractId}`);
+        const data = response?.data ?? response;
+        setContract(data ?? null);
+        setError(null);
+      } catch (err: any) {
+        console.error('Contract fetch error:', err);
+        setError(err?.message || 'Unable to load contract details');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  "CON-BUY-7890": {
-    farmer: "Vikram Singh",
-    location: "Indore, MP",
-    crop: "Premium Carrots",
-    quantity: "1200 kg",
-    price: "₹18/kg",
-    value: "₹21,600"
+    fetchContract();
+  }, [contractId]);
+
+  if (loading) {
+    return (
+      <div className="p-10 text-center">
+        Loading contract details...
+      </div>
+    );
   }
-};
 
-const contract = contracts[contractId as keyof typeof contracts];
+  if (error) {
+    return (
+      <div className="p-10 text-center text-red-600">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
-const [transportBy, setTransportBy] = useState('');
+  if (!contract) {
+    return (
+      <div className="p-10 text-center">
+        Contract not found
+      </div>
+    );
+  }
 
-if (!contract) {
-  return (
-    <div className="p-10 text-center">
-      Contract not found
-    </div>
-  );
-}
+  const farmerName = contract.farmer?.name ?? 'Farmer';
+  const buyerName = contract.buyer?.name ?? 'Buyer';
+  const farmerLocation = contract.requirement?.location ?? contract.location ?? 'Unknown Location';
+  const cropName = contract.requirement?.cropName ?? 'Unknown Crop';
+  const quantityLabel = contract.quantity
+    ? `${contract.quantity} ${contract.requirement?.unit ?? 'kg'}`
+    : contract.requirement?.quantity
+    ? `${contract.requirement.quantity} ${contract.requirement.unit ?? 'kg'}`
+    : 'Unknown';
+  const priceLabel = contract.agreedPrice
+    ? `₹${contract.agreedPrice}/kg`
+    : contract.requirement?.expectedPrice
+    ? `₹${contract.requirement.expectedPrice}/kg`
+    : 'N/A';
+  const totalValue = contract.agreedPrice && contract.quantity
+    ? `₹${(contract.agreedPrice * contract.quantity).toLocaleString()}`
+    : 'N/A';
+  const contractStatus = contract.status ?? 'active';
 
   return (
     <div className="min-h-screen bg-[#F5F0E6] p-6">
@@ -107,15 +152,15 @@ if (!contract) {
             </div>
 
             <p className="text-gray-600">
-              Company Name
+              Buyer Name
             </p>
 
             <p className="font-semibold text-lg">
-              FreshMart Pvt Ltd
+              {buyerName}
             </p>
 
             <p className="text-gray-600 mt-2">
-              Location: Indore, MP
+              Phone: {contract.buyer?.phone ?? 'N/A'}
             </p>
 
           </div>
@@ -137,11 +182,11 @@ if (!contract) {
             </p>
 
             <p className="font-semibold text-lg">
-  {contract?.farmer}
-</p>
+              {farmerName}
+            </p>
 
             <p className="text-gray-600 mt-2">
-             Location: {contract?.location}
+              Location: {farmerLocation}
             </p>
 
           </div>

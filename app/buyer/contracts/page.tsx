@@ -1,7 +1,7 @@
 'use client'
-import { useEffect } from 'react'
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import api from '@/lib/api';
 import {
   FileText,
   ShieldCheck,
@@ -11,121 +11,78 @@ import {
   ArrowLeft,
 } from 'lucide-react'
 
-interface Contract {
-  id: string
-  farmerName: string
-  region: string
-  cropType: string
-  lockedVolume: string
-  pricePerKg: string
-  totalSettlementValue: string
-  status: 'active' | 'pending_signature' | 'completed' | 'awaiting_signature'
-  statusLabel: string
+interface ContractItem {
+  _id: string
+  farmer?: {
+    name?: string
+  }
+  requirement?: {
+    cropName?: string
+    unit?: string
+    location?: string
+  }
+  agreedPrice?: number
+  quantity?: number
+  status?: string
 }
 
-const mockContracts: Contract[] = [
-  {
-    id: 'CON-BUY-7892',
-    farmerName: 'Ramesh Kumar',
-    region: 'Nashik, MH',
-    cropType: 'Organic Tomatoes',
-    lockedVolume: '500 kg',
-    pricePerKg: '₹28',
-    totalSettlementValue: '₹14,000',
-    status: 'pending_signature',
-    statusLabel: 'Awaiting Farmer Sign',
-  },
-  {
-    id: 'CON-BUY-7891',
-    farmerName: 'Priya Sharma',
-    region: 'Pune, MH',
-    cropType: 'Fresh Spinach',
-    lockedVolume: '750 kg',
-    pricePerKg: '₹32',
-    totalSettlementValue: '₹24,000',
-    status: 'active',
-    statusLabel: 'Active & Growing',
-  },
-  {
-    id: 'CON-BUY-7890',
-    farmerName: 'Vikram Singh',
-    region: 'Indore, MP',
-    cropType: 'Premium Carrots',
-    lockedVolume: '1200 kg',
-    pricePerKg: '₹18',
-    totalSettlementValue: '₹21,600',
-    status: 'completed',
-    statusLabel: 'Delivered',
-  },
-  {
-    id: 'CON-BUY-7889',
-    farmerName: 'Anjali Desai',
-    region: 'Nashik, MH',
-    cropType: 'Green Peppers',
-    lockedVolume: '300 kg',
-    pricePerKg: '₹45',
-    totalSettlementValue: '₹13,500',
-    status: 'active',
-    statusLabel: 'Active & Growing',
-  },
-  {
-    id: 'CON-BUY-7888',
-    farmerName: 'Rajesh Patel',
-    region: 'Vapi, GJ',
-    cropType: 'Organic Onions',
-    lockedVolume: '2000 kg',
-    pricePerKg: '₹22',
-    totalSettlementValue: '₹44,000',
-    status: 'awaiting_signature',
-    statusLabel: 'Awaiting Farmer Sign',
-  },
-]
+const getStatusLabel = (status?: string) => {
+  switch (status) {
+    case 'pending_signature':
+    case 'awaiting_signature':
+      return 'Awaiting Farmer Sign'
+    case 'active':
+      return 'Active & Growing'
+    case 'completed':
+      return 'Delivered'
+    case 'cancelled':
+      return 'Cancelled'
+    default:
+      return 'Pending'
+  }
+}
 
 export default function MyContractsScreen() {
   const router = useRouter()
-  const [contracts, setContracts] = useState<Contract[]>(mockContracts)
-
-useEffect(() => {
-
-  
-
-  const savedContracts = JSON.parse(
-    localStorage.getItem("contracts") || "[]"
-  ) 
-  console.log("Saved Contracts:", savedContracts)
-  console.log("All Contracts:", [
-  ...mockContracts,
-  ...savedContracts
-])
-
-  setContracts([
-  ...mockContracts,
-  ...savedContracts.filter(
-    (saved:any) =>
-      !mockContracts.some(
-        (mock)=> mock.id === saved.id
-      )
-  )
-])
-
-}, [])
+  const [contracts, setContracts] = useState<ContractItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
+  useEffect(() => {
+    const fetchContracts = async () => {
+      try {
+        const response = await api.get('/contracts')
+        const data = response?.data ?? []
+        setContracts(Array.isArray(data) ? data : [])
+        setError(null)
+      } catch (err: any) {
+        console.error('Contracts fetch error:', err)
+        setError(err?.message || 'Unable to load contracts.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContracts()
+  }, [])
+
   const filteredContracts = useMemo(() => {
-  return contracts.filter((contract) => {
+    return contracts.filter((contract) => {
+      const farmerName = contract.farmer?.name ?? ''
+      const cropType = contract.requirement?.cropName ?? ''
       const matchesSearch =
-        contract.farmerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        contract.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        contract.cropType.toLowerCase().includes(searchTerm.toLowerCase())
+        farmerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contract._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cropType.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesStatus =
         statusFilter === 'all' ||
         (statusFilter === 'active' && contract.status === 'active') ||
-        (statusFilter === 'pending' &&
-          (contract.status === 'pending_signature' ||
-            contract.status === 'awaiting_signature')) ||
-        (statusFilter === 'completed' && contract.status === 'completed')
+        (statusFilter === 'pending' && contract.status === 'pending') ||
+        (statusFilter === 'completed' && contract.status === 'completed') ||
+        (statusFilter === 'pending' && contract.status === 'cancelled')
 
       return matchesSearch && matchesStatus
     })
@@ -210,99 +167,115 @@ useEffect(() => {
 
         {/* Contracts List */}
         <div className="space-y-4">
-          {filteredContracts.length > 0 ? (
-            filteredContracts.map((contract) => (
-              <div
-                key={contract.id}
-                className="rounded-lg bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg"
-              >
-                {/* Top Row: ID, Status Badge */}
-                <div className="mb-4 flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText size={20} className="text-gray-400" />
-                    <span className="text-sm font-semibold text-gray-600">
-                      {contract.id}
+          {loading ? (
+            <div className="rounded-lg bg-white py-12 text-center shadow-sm">
+              <p className="text-gray-600">Loading contracts...</p>
+            </div>
+          ) : filteredContracts.length > 0 ? (
+            filteredContracts.map((contract) => {
+              const contractId = contract._id
+              const farmerName = contract.farmer?.name ?? 'Farmer'
+              const region = contract.requirement?.location ?? 'Unknown Location'
+              const cropType = contract.requirement?.cropName ?? 'Crop'
+              const lockedVolume = `${contract.quantity ?? 0} ${contract.requirement?.unit ?? 'kg'}`
+              const pricePerKg = `₹${(contract.agreedPrice ?? 0).toLocaleString()}`
+              const totalSettlementValue = `₹${(
+                (contract.agreedPrice ?? 0) *
+                (contract.quantity ?? 0)
+              ).toLocaleString()}`
+              const statusLabel = getStatusLabel(contract.status)
+
+              return (
+                <div
+                  key={contractId}
+                  className="rounded-lg bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg"
+                >
+                  {/* Top Row: ID, Status Badge */}
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      <FileText size={20} className="text-gray-400" />
+                      <span className="text-sm font-semibold text-gray-600">
+                        {contractId}
+                      </span>
+                    </div>
+                    <span
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeStyles(contract.status ?? '')}`}
+                    >
+                      {getStatusLabel(contract.status)}
                     </span>
                   </div>
-                  <span
-                    className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeStyles(contract.status)}`}
-                  >
-                    {contract.statusLabel}
-                  </span>
-                </div>
 
-                {/* Middle Section: Farmer & Crop Details */}
-                <div className="mb-4 grid gap-4 md:grid-cols-2">
-                  {/* Farmer Info */}
-                  <div>
-                    <p className="text-xs font-medium uppercase text-gray-500">
-                      Farmer Partner
-                    </p>
-                    <p className="mt-1 text-base font-semibold text-gray-900">
-                      {contract.farmerName}
-                    </p>
-                    <p className="text-sm text-gray-600">{contract.region}</p>
-                  </div>
-
-                  {/* Crop Info */}
-                  <div>
-                    <p className="text-xs font-medium uppercase text-gray-500">
-                      Crop Type & Volume
-                    </p>
-                    <p className="mt-1 text-base font-semibold text-gray-900">
-                      {contract.cropType}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Locked: {contract.lockedVolume}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Section: Pricing & Action */}
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="mb-4 grid gap-4 md:grid-cols-3">
-                    {/* Price Per KG */}
+                  {/* Middle Section: Farmer & Crop Details */}
+                  <div className="mb-4 grid gap-4 md:grid-cols-2">
                     <div>
                       <p className="text-xs font-medium uppercase text-gray-500">
-                        Price per kg
+                        Farmer Partner
                       </p>
-                      <p className="mt-1 text-lg font-bold"
-                        style={{ color: '#2E7D32' }}
-                      >
-                        {contract.pricePerKg}/kg
+                      <p className="mt-1 text-base font-semibold text-gray-900">
+                        {farmerName}
                       </p>
+                      <p className="text-sm text-gray-600">{region}</p>
                     </div>
 
-                    {/* Total Settlement */}
                     <div>
                       <p className="text-xs font-medium uppercase text-gray-500">
-                        Total Settlement Value
+                        Crop Type & Volume
                       </p>
-                      <p className="mt-1 text-lg font-bold text-gray-900">
-                        {contract.totalSettlementValue}
+                      <p className="mt-1 text-base font-semibold text-gray-900">
+                        {cropType}
                       </p>
+                      <p className="text-sm text-gray-600">Locked: {lockedVolume}</p>
                     </div>
+                  </div>
 
-                    {/* Action Button */}
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="mb-4 grid gap-4 md:grid-cols-3">
+                      <div>
+                        <p className="text-xs font-medium uppercase text-gray-500">
+                          Price per kg
+                        </p>
+                        <p className="mt-1 text-lg font-bold" style={{ color: '#2E7D32' }}>
+                          {pricePerKg} / kg
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium uppercase text-gray-500">
+                          Total Settlement Value
+                        </p>
+                        <p className="mt-1 text-lg font-bold text-gray-900">
+                          {totalSettlementValue}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium uppercase text-gray-500">
+                          Status
+                        </p>
+                        <p className="mt-1 text-lg font-semibold text-gray-900">
+                          {getStatusLabel(contract.status)}
+                        </p>
+                      </div>
+                    </div>
                     <div className="flex items-end justify-start md:justify-end">
                       <button
-  onClick={() => router.push(`/buyer/contracts/${contract.id}`)}
-  className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
-  style={{
-    color: '#2E7D32',
-    border: '1.5px solid #2E7D32',
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.backgroundColor = '#F1F5F2'
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.backgroundColor = 'transparent'
-  }}
->
-  <FileText size={16} />
-  Manage Contract
-  <ChevronRight size={16} />
-</button>
+    onClick={() => router.push(`/buyer/contracts/${contractId}`)}
+    className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
+    style={{
+      color: '#2E7D32',
+      border: '1.5px solid #2E7D32',
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.backgroundColor = '#F1F5F2';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.backgroundColor = 'transparent';
+    }}
+  >
+    <FileText size={16} />
+    Manage Contract
+    <ChevronRight size={16} />
+  </button>
                     </div>
                   </div>
                 </div>

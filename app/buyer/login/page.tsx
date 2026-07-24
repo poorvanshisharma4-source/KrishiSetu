@@ -21,6 +21,7 @@ export default function BuyerLoginPage() {
 
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -30,64 +31,63 @@ export default function BuyerLoginPage() {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    let response;
+    try {
+      let response;
 
-    if (isRegister) {
-      // Register Buyer
-      response = await api.post("/auth/register", {
-        fullName: formData.name,
-        phone: formData.phone,
-        password: formData.password,
-        role: "buyer",
-        companyName: formData.companyName,
-      });
+      if (isRegister) {
+        response = await api.post('/auth/register', {
+          name: formData.name,
+          email: `${formData.phone}@buyer.krishisetu.local`,
+          phone: formData.phone,
+          password: formData.password,
+          role: 'buyer',
+          village: '',
+          district: '',
+          state: '',
+          companyName: formData.companyName,
+        });
 
-      if (response.success) {
-        const loginResponse = await api.post("/auth/login", {
+        if (response.success) {
+          alert(response.message || 'Buyer Registration Successful!');
+          setIsRegister(false);
+        } else {
+          alert(response.message || 'Registration failed.');
+        }
+      } else {
+        response = await api.post('/auth/login', {
           phone: formData.phone,
           password: formData.password,
         });
 
-        if (loginResponse.success) {
-          localStorage.setItem("token", loginResponse.token);
-          localStorage.setItem("user", JSON.stringify(loginResponse.user));
-          alert("Buyer Registration Successful!");
-          router.push("/buyer/dashboard");
+        if (response.success) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('user', JSON.stringify(response.user));
+
+          const redirectPath =
+            response.user?.role === 'farmer'
+              ? '/farmer/dashboard'
+              : response.user?.role === 'admin'
+              ? '/admin/dashboard'
+              : '/buyer/dashboard';
+
+          alert(response.message || 'Login Successful!');
+          router.push(redirectPath);
         } else {
-          alert(loginResponse.message || "Registration succeeded but login failed.");
+          alert(response.message || 'Login failed.');
         }
-      } else {
-        alert(response.message || "Registration failed.");
       }
-
-    } else {
-      // Login Buyer
-      response = await api.post("/auth/login", {
-        phone: formData.phone,
-        password: formData.password,
-      });
-
-      if (response.success) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
-
-        alert("Buyer Login Successful!");
-        router.push("/buyer/dashboard");
-      } else {
-        alert(response.message || "Login failed.");
-      }
+    } catch (error: any) {
+      console.error(error);
+      const message =
+        error?.response?.data?.message || error?.message || 'Something went wrong!';
+      alert(message);
+    } finally {
+      setIsLoading(false);
     }
-
-  } catch (error: any) {
-    console.error(error);
-    const message =
-      error?.response?.data?.message || error?.message || "Something went wrong!";
-    alert(message);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-[#F5F0E6] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">

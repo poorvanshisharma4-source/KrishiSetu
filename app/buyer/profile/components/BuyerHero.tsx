@@ -1,82 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import {
+import Image from 'next/image';
+import { MapPin, ShieldCheck, Pencil, Building2 } from 'lucide-react';
 
-  MapPin,
-  ShieldCheck,
-  Pencil,
-  Building2,
-  ShoppingBag,
-  Mail,
-  Phone,
-} from "lucide-react";
+export default function BuyerHero({ buyer }: { buyer?: any }) {
+  const buyerName = buyer?.name ?? buyer?.fullName ?? 'Rahul Sharma';
+  const profileImage = buyer?.profileImage || buyer?.avatar || 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg';
+  const company = buyer?.companyName ?? buyer?.businessName ?? 'Sharma Agro Traders';
+  const businessType = buyer?.businessType ?? 'Wholesale Buyer';
+  const gstNumber = buyer?.gstNumber ?? '22AAAAA1234A1Z5';
+  const companyAddress = buyer?.companyAddress ?? buyer?.address ?? 'Indore, Madhya Pradesh';
+  const location =
+    buyer?.companyAddress ||
+    (buyer?.district || buyer?.state
+      ? `${buyer?.district ?? ''}${buyer?.district && buyer?.state ? ', ' : ''}${buyer?.state ?? ''}`
+      : 'Indore, Madhya Pradesh');
+  const trustScore = buyer?.trustScore ?? 92;
 
+  const trustBadge =
+    trustScore >= 91
+      ? '💎 Platinum Trusted Buyer'
+      : trustScore >= 71
+      ? '🏅 Gold Trusted Buyer'
+      : trustScore >= 41
+      ? '🥈 Silver Trusted Buyer'
+      : '🥉 Bronze Trusted Buyer';
 
-export default function BuyerHero() {
-    const [showEdit, setShowEdit] = useState(false);
-  const [buyerName, setBuyerName] = useState("Rahul Sharma");
-
-const [email, setEmail] = useState(
-  "rahulsharma@gmail.com"
-);
-
-const [phone, setPhone] = useState(
-  "+91 9876543210"
-);
-
-const [company, setCompany] = useState(
-  "Sharma Agro Traders"
-);
-
-const [buyerType, setBuyerType] = useState(
-  "Wholesale Buyer"
-);
-
-const [location, setLocation] = useState(
-  "Indore, Madhya Pradesh"
-);
-
-const [profileImage, setProfileImage] = useState(
-  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
-);
-
-const [businessType, setBusinessType] = useState(
-  "Wholesale Trader"
-);
-
-const [gstNumber, setGstNumber] = useState(
-  "22AAAAA1234A1Z5"
-);
-
-const [companyAddress, setCompanyAddress] = useState(
-  "Indore, Madhya Pradesh"
-);
-
-const [trustScore, setTrustScore] = useState(92);
-
-const trustBadge =
-  trustScore >= 91
-    ? "💎 Platinum Trusted Buyer"
-    : trustScore >= 71
-    ? "🏅 Gold Trusted Buyer"
-    : trustScore >= 41
-    ? "🥈 Silver Trusted Buyer"
-    : "🥉 Bronze Trusted Buyer";
-
-const handleImageChange = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-
-  const file = e.target.files?.[0];
-
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setProfileImage(imageUrl);
-  }
-
-};
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Photo upload UI is kept purely cosmetic until backend upload support exists.
+    e.preventDefault();
+  };
 
   return (
     <div className="bg-white rounded-3xl shadow-sm overflow-hidden border">
@@ -151,7 +104,6 @@ const handleImageChange = (
 </div>
 
               <button
-                onClick={() => setShowEdit(true)}
                 className="mt-4 flex items-center gap-2 bg-white text-amber-700 px-5 py-2 rounded-xl font-medium hover:bg-amber-50 transition"
               >
                 <Pencil size={16} />
@@ -233,105 +185,6 @@ const handleImageChange = (
         </div>
 
       </div>
-
-      {/* Edit Modal */}
-
-      {showEdit && (
-
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
-
-            <h2 className="text-xl font-bold mb-5">
-              Edit Buyer Profile
-            </h2>
-
-           <div className="space-y-4">
-
-  <input
-    value={buyerName}
-    onChange={(e) => setBuyerName(e.target.value)}
-    placeholder="Buyer Name"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    placeholder="Email"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-    value={phone}
-    onChange={(e) => setPhone(e.target.value)}
-    placeholder="Phone Number"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-    value={location}
-    onChange={(e) => setLocation(e.target.value)}
-    placeholder="Location"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-    value={company}
-    onChange={(e) => setCompany(e.target.value)}
-    placeholder="Company Name (Optional)"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-    value={buyerType}
-    onChange={(e) => setBuyerType(e.target.value)}
-    placeholder="Buyer Type"
-    className="w-full border rounded-xl p-3"
-  />
-
-  <input
-  value={businessType}
-  onChange={(e) => setBusinessType(e.target.value)}
-  placeholder="Business Type"
-  className="w-full border rounded-xl p-3"
-/>
-
-<input
-  value={gstNumber}
-  onChange={(e) => setGstNumber(e.target.value)}
-  placeholder="GST Number (Optional)"
-  className="w-full border rounded-xl p-3"
-/>
-
-<input
-  value={companyAddress}
-  onChange={(e) => setCompanyAddress(e.target.value)}
-  placeholder="Company Address"
-  className="w-full border rounded-xl p-3"
-/>
-
-  <button
-    onClick={() => setShowEdit(false)}
-    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl transition"
-  >
-    Save Changes
-  </button>
-
-  <button
-    onClick={() => setShowEdit(false)}
-    className="w-full border py-3 rounded-xl"
-  >
-    Cancel
-  </button>
-
-</div>
-
-          </div>
-
-        </div>
-
-      )}
 
     </div>
   );

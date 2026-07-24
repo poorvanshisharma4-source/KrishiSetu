@@ -178,7 +178,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, Plus, FileText, Package, Users, 
@@ -186,11 +186,86 @@ import {
   Sprout, ArrowRight, Sparkles, ShieldCheck, Zap, ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import api from '@/lib/api';
 
 export default function BuyerDashboard() {
   const router = useRouter();
   const pathname = usePathname();
-  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await api.get('/dashboard/buyer');
+        const data = response?.data ?? response;
+        setDashboardData(data);
+        setError(null);
+      } catch (err: any) {
+        console.error('Buyer dashboard fetch error:', err);
+        setError(err?.message || 'Unable to load dashboard data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  const summaryCards = [
+    {
+      title: 'Posted Requirements',
+      value:
+        dashboardData?.totalRequirements != null
+          ? dashboardData.totalRequirements
+          : loading
+          ? 'Loading...'
+          : '--',
+      subtitle: 'Your current procurement posts',
+    },
+    {
+      title: 'Pending Farmer Requests',
+      value:
+        dashboardData?.pendingFarmerRequests != null
+          ? dashboardData.pendingFarmerRequests
+          : loading
+          ? 'Loading...'
+          : '--',
+      subtitle: 'Awaiting farmer responses',
+    },
+    {
+      title: 'Active Contracts',
+      value:
+        dashboardData?.activeContracts != null
+          ? dashboardData.activeContracts
+          : loading
+          ? 'Loading...'
+          : '--',
+      subtitle: 'Contracts in progress',
+    },
+    {
+      title: 'Completed Contracts',
+      value:
+        dashboardData?.completedContracts != null
+          ? dashboardData.completedContracts
+          : loading
+          ? 'Loading...'
+          : '--',
+      subtitle: 'Successfully fulfilled deals',
+    },
+    {
+      title: 'Total Spending',
+      value:
+        dashboardData?.spending != null
+          ? `₹${Number(dashboardData.spending).toLocaleString()}`
+          : loading
+          ? 'Loading...'
+          : '--',
+      subtitle: 'Settled procurement value',
+    },
+  ];
 
   // Sidebar dynamic navigation configuration
   const sidebarItems = [
@@ -253,6 +328,19 @@ export default function BuyerDashboard() {
             <p className="mt-2 text-amber-100 max-w-2xl text-sm opacity-90">
               Simplify your agricultural procurement. Use our AI tools to match and bridge contracts directly with verified farmers.
             </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 mt-6">
+            {summaryCards.map((card) => (
+              <div
+                key={card.title}
+                className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm"
+              >
+                <p className="text-sm text-gray-500">{card.title}</p>
+                <p className="mt-4 text-3xl font-semibold text-gray-900">{card.value}</p>
+                <p className="mt-2 text-sm text-gray-500">{card.subtitle}</p>
+              </div>
+            ))}
           </div>
 
           {/* Main AI Matching Hub */}

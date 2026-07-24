@@ -10,18 +10,20 @@ import {
   FileText,
 } from "lucide-react";
 
-export default function BuyerCompanyDetails() {
-  const buyer = {
-    fullName: "Rahul Sharma",
-    email: "rahul@gmail.com",
-    phone: "+91 9876543210",
-    location: "Indore, Madhya Pradesh",
-
-    // Optional Company Details
-    companyName: "",
-    businessType: "",
-    gstNumber: "",
-    companyAddress: "",
+export default function BuyerCompanyDetails({ buyer }: { buyer?: any }) {
+  const buyerInfo = {
+    fullName: buyer?.name ?? "Rahul Sharma",
+    email: buyer?.email ?? "rahul@gmail.com",
+    phone: buyer?.phone ?? "+91 9876543210",
+    location:
+      buyer?.companyAddress ??
+      (buyer?.district || buyer?.state
+        ? `${buyer?.district ?? ""}${buyer?.district && buyer?.state ? ", " : ""}${buyer?.state ?? ""}`
+        : "Indore, Madhya Pradesh"),
+    companyName: buyer?.companyName ?? "",
+    businessType: buyer?.businessType ?? "",
+    gstNumber: buyer?.gstNumber ?? "",
+    companyAddress: buyer?.companyAddress ?? buyer?.address ?? "",
   };
 
   return (
@@ -41,7 +43,7 @@ export default function BuyerCompanyDetails() {
             <User className="text-amber-600" />
             <div>
               <p className="text-sm text-gray-500">Full Name</p>
-              <h3 className="font-semibold">{buyer.fullName}</h3>
+              <h3 className="font-semibold">{buyerInfo.fullName}</h3>
             </div>
           </div>
 
@@ -49,7 +51,7 @@ export default function BuyerCompanyDetails() {
             <Mail className="text-amber-600" />
             <div>
               <p className="text-sm text-gray-500">Email</p>
-              <h3 className="font-semibold">{buyer.email}</h3>
+              <h3 className="font-semibold">{buyerInfo.email}</h3>
             </div>
           </div>
 
@@ -57,7 +59,7 @@ export default function BuyerCompanyDetails() {
             <Phone className="text-amber-600" />
             <div>
               <p className="text-sm text-gray-500">Phone Number</p>
-              <h3 className="font-semibold">{buyer.phone}</h3>
+              <h3 className="font-semibold">{buyerInfo.phone}</h3>
             </div>
           </div>
 
@@ -65,7 +67,7 @@ export default function BuyerCompanyDetails() {
             <MapPin className="text-amber-600" />
             <div>
               <p className="text-sm text-gray-500">Location</p>
-              <h3 className="font-semibold">{buyer.location}</h3>
+              <h3 className="font-semibold">{buyerInfo.location}</h3>
             </div>
           </div>
 
@@ -86,7 +88,7 @@ export default function BuyerCompanyDetails() {
 
         </h2>
 
-        {buyer.companyName ? (
+        {buyerInfo.companyName ? (
 
           <div className="space-y-5">
 
@@ -94,7 +96,7 @@ export default function BuyerCompanyDetails() {
               <Building2 className="text-amber-600" />
               <div>
                 <p className="text-sm text-gray-500">Company Name</p>
-                <h3 className="font-semibold">{buyer.companyName}</h3>
+                <h3 className="font-semibold">{buyerInfo.companyName}</h3>
               </div>
             </div>
 
@@ -102,7 +104,7 @@ export default function BuyerCompanyDetails() {
               <Briefcase className="text-amber-600" />
               <div>
                 <p className="text-sm text-gray-500">Business Type</p>
-                <h3 className="font-semibold">{buyer.businessType}</h3>
+                <h3 className="font-semibold">{buyerInfo.businessType}</h3>
               </div>
             </div>
 
@@ -110,7 +112,7 @@ export default function BuyerCompanyDetails() {
               <FileText className="text-amber-600" />
               <div>
                 <p className="text-sm text-gray-500">GST Number</p>
-                <h3 className="font-semibold">{buyer.gstNumber}</h3>
+                <h3 className="font-semibold">{buyerInfo.gstNumber}</h3>
               </div>
             </div>
 
@@ -118,7 +120,7 @@ export default function BuyerCompanyDetails() {
               <MapPin className="text-amber-600" />
               <div>
                 <p className="text-sm text-gray-500">Company Address</p>
-                <h3 className="font-semibold">{buyer.companyAddress}</h3>
+                <h3 className="font-semibold">{buyerInfo.companyAddress}</h3>
               </div>
             </div>
 

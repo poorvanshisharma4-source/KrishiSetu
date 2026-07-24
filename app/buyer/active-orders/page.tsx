@@ -288,8 +288,9 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 import {
   Truck,
   Package,
@@ -451,16 +452,85 @@ const TrackingCard: React.FC<{ order: TrackingOrder }> = ({ order }) => (
 
 export default function ActiveOrdersDashboard() {
   const router = useRouter();
+  const [trackingOrders, setTrackingOrders] = useState<TrackingOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const handleExitToDashboard = () => {
     router.push('/buyer/dashboard');
   };
 
+  const getOrderSteps = (status: string) => {
+    if (status === 'active') {
+      return [
+        { id: 1, label: 'Harvested', completed: true, active: false },
+        { id: 2, label: 'Quality Inspected', completed: true, active: false },
+        { id: 3, label: 'In Transit', completed: false, active: true },
+        { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
+      ];
+    }
+
+    if (status === 'completed') {
+      return [
+        { id: 1, label: 'Harvested', completed: true, active: false },
+        { id: 2, label: 'Quality Inspected', completed: true, active: false },
+        { id: 3, label: 'In Transit', completed: true, active: false },
+        { id: 4, label: 'Warehouse Arrived', completed: true, active: false },
+      ];
+    }
+
+    return [
+      { id: 1, label: 'Harvested', completed: true, active: false },
+      { id: 2, label: 'Quality Inspected', completed: status !== 'pending', active: status === 'pending' },
+      { id: 3, label: 'In Transit', completed: false, active: status === 'active' },
+      { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
+    ];
+  };
+
+  useEffect(() => {
+    const fetchActiveOrders = async () => {
+      try {
+        const response = await api.get('/contracts');
+        const data = response?.data ?? [];
+        const contracts = Array.isArray(data) ? data : [];
+        const activeContracts = contracts.filter((contract: any) => contract.status === 'active');
+
+        const orders = activeContracts.map((contract: any) => ({
+          id: contract._id,
+          orderId: contract._id ? `#ORD-${contract._id.toString().slice(-6).toUpperCase()}` : 'Order',
+          cropName: contract.requirement?.cropName ?? 'Produce',
+          farmer: contract.farmer?.name ?? 'Farmer',
+          location: contract.requirement?.location ?? 'Unknown Location',
+          eta: contract.deliveryDate
+            ? new Date(contract.deliveryDate).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+              })
+            : 'TBD',
+          vehicleNumber: contract.vehicleNumber ?? 'TBD',
+          status: contract.status ?? 'active',
+          steps: getOrderSteps(contract.status ?? 'active'),
+        }));
+
+        setTrackingOrders(orders);
+        setError(null);
+      } catch (err: any) {
+        console.error('Active orders fetch error:', err);
+        setError(err?.message || 'Unable to load active orders.');
+        setTrackingOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveOrders();
+  }, []);
+
   const summaryStats = [
     {
       icon: <Truck size={24} />,
       label: 'Total Orders in Transit',
-      value: 2,
+      value: trackingOrders.length,
       bgColor: 'bg-white',
     },
     {
@@ -474,54 +544,6 @@ export default function ActiveOrdersDashboard() {
       label: 'Dispatched Today',
       value: 1,
       bgColor: 'bg-white',
-    },
-  ];
-
-  const trackingOrders: TrackingOrder[] = [
-    {
-      id: '1',
-      orderId: '#ORD-9821',
-      cropName: 'Fresh Spinach',
-      farmer: 'Rajesh Kumar',
-      location: 'Delhi Mandi',
-      eta: 'Today, 3:45 PM',
-      vehicleNumber: 'DL-01-AB-4567',
-      steps: [
-        { id: 1, label: 'Harvested', completed: true, active: false },
-        { id: 2, label: 'Quality Inspected', completed: true, active: false },
-        { id: 3, label: 'In Transit', completed: false, active: true },
-        { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
-      ],
-    },
-    {
-      id: '2',
-      orderId: '#ORD-9820',
-      cropName: 'Organic Tomatoes',
-      farmer: 'Priya Singh',
-      location: 'Nashik Mandi',
-      eta: 'Tomorrow, 9:30 AM',
-      vehicleNumber: 'MH-02-CD-8901',
-      steps: [
-        { id: 1, label: 'Harvested', completed: true, active: false },
-        { id: 2, label: 'Quality Inspected', completed: true, active: false },
-        { id: 3, label: 'In Transit', completed: false, active: true },
-        { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
-      ],
-    },
-    {
-      id: '3',
-      orderId: '#ORD-9819',
-      cropName: 'Capsicum Mix',
-      farmer: 'Arjun Patel',
-      location: 'Pune Mandi',
-      eta: 'Tomorrow, 5:15 PM',
-      vehicleNumber: 'MH-03-EF-2345',
-      steps: [
-        { id: 1, label: 'Harvested', completed: true, active: false },
-        { id: 2, label: 'Quality Inspected', completed: true, active: false },
-        { id: 3, label: 'In Transit', completed: false, active: true },
-        { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
-      ],
     },
   ];
 
@@ -558,11 +580,25 @@ export default function ActiveOrdersDashboard() {
         <h2 className="text-lg font-black text-gray-900 mb-4 tracking-tight">
           Orders in Logistics
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {trackingOrders.map((order) => (
-            <TrackingCard key={order.id} order={order} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm text-gray-700">
+            Loading active orders...
+          </div>
+        ) : error ? (
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm text-red-700">
+            {error}
+          </div>
+        ) : trackingOrders.length === 0 ? (
+          <div className="rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm text-gray-700">
+            No active orders available right now.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {trackingOrders.map((order) => (
+              <TrackingCard key={order.id} order={order} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
