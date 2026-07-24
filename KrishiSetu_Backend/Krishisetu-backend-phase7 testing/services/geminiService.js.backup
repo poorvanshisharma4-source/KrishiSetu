@@ -1,0 +1,31 @@
+const { getModel } = require("../config/gemini");
+
+const generateResponse = async (prompt, language = "en") => {
+  try {
+    const model = getModel();
+    
+    const languageInstructions = {
+      en: "Respond in English.",
+      hi: "Respond in Hindi (Devanagari script).",
+      mr: "Respond in Marathi (Devanagari script).",
+      ta: "Respond in Tamil.",
+      bn: "Respond in Bengali.",
+      te: "Respond in Telugu.",
+    };
+
+    const fullPrompt = `${languageInstructions[language] || languageInstructions.en]}\n\n${prompt}\n\nIMPORTANT: Return ONLY valid JSON. No markdown, no explanations outside the JSON.`;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
+
+    const cleanedText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    throw new Error("Failed to generate AI response");
+  }
+};
+
+module.exports = { generateResponse };
