@@ -125,7 +125,9 @@ export default function BuyerHero({ buyer }: { buyer?: any }) {
 
                 <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl">
                   <p className="text-amber-100 text-sm">Buyer Type</p>
-                  <h3 className="text-white font-bold">{buyerType}</h3>
+                  <h3 className="text-white font-bold">
+  {buyer?.role || 'Buyer'}
+</h3>
                 </div>
 
                 <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl">

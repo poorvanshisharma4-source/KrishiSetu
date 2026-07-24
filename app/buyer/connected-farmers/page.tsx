@@ -190,11 +190,8 @@ export default function ConnectedFarmersPage(){
               </div>
             ))}
           </div>
-
-
+ )}
       </div>
-
-    </div>
-  )
-
+     </div>
+   )
 }
