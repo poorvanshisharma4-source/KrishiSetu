@@ -299,19 +299,18 @@ export default function FarmerLoginPage() {
         setIsRegister(false); // Registration ke baad Login tab pe bhej do
       } else {
         // 🚀 REAL LOGIN API CALL
-        const res = await api.post('/auth/login', {
-          phone: formData.phone,
-          password: formData.password
-        });
+       const res = await api.post('/auth/login', { 
+       phone: formData.phone,
+       password: formData.password
+       });
 
-        // Token aur User ko browser me save kar lo
-        if (res.token) {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('user', JSON.stringify(res.user));
-        }
+      const { token, user } = res.data;
 
-        alert("Login Successful!");
-        router.push('/farmer/dashboard'); // 🚀 Redirect to Dashboard
+localStorage.setItem('token', token);
+localStorage.setItem('user', JSON.stringify(user));
+
+alert("Login Successful!");
+router.push('/farmer/dashboard'); // 🚀 Redirect to Dashboard
       }
     } catch (error: any) {
       console.error("Auth Error:", error);

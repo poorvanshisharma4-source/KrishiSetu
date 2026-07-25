@@ -9,6 +9,18 @@ const {
   loginValidationRules,
 } = require("../middleware/validators/authValidator");
 
+console.log("=== AUTH ROUTES DEBUG ===");
+console.log("login:", typeof login);
+console.log("register:", typeof register);
+console.log("getProfile:", typeof getProfile);
+
+console.log("loginLimiter:", typeof loginLimiter);
+console.log("registerLimiter:", typeof registerLimiter);
+
+console.log("loginValidationRules:", typeof loginValidationRules, Array.isArray(loginValidationRules));
+console.log("registerValidationRules:", typeof registerValidationRules, Array.isArray(registerValidationRules));
+console.log("=========================");
+
 /**
  * @swagger
  * /auth/login:
