@@ -166,90 +166,266 @@
 //   )
 // }
 
+// 'use client'
+
+// import { useState, useEffect } from 'react'
+// import {
+//   ArrowLeft,
+//   CheckCircle,
+//   XCircle,
+//   MapPin,
+//   Sprout,
+//   Building2,
+//   Package
+// } from 'lucide-react'
+// import { useRouter } from 'next/navigation'
+
+// export default function FarmerRequestsPage(){
+//   const router = useRouter()
+//   const [requestList, setRequestList] = useState<any[]>([])
+
+//   useEffect(() => {
+//     const savedRequests = JSON.parse(
+//       localStorage.getItem("buyerRequests") || "[]"
+//     )
+//     setRequestList(savedRequests)
+//   }, [])
+
+//   const updateRequest = (id: number, status: string)=>{
+//     setRequestList((prev)=>{
+//       const updatedRequests = prev.map((req)=>
+//         req.id === id ? { ...req, status } : req
+//       )
+
+//       localStorage.setItem("buyerRequests", JSON.stringify(updatedRequests))
+
+//       if(status === "Accepted"){
+//         console.count("Accept clicked");
+//         const acceptedRequest = updatedRequests.find((req)=> req.id === id)
+
+//         if(acceptedRequest){
+//           const newContract = {
+//             id: `CON-BUY-${Date.now()}`,
+//             farmerName: "Ramesh Kumar",
+//             region: acceptedRequest.deliveryLocation || "Indore, MP",
+//             cropType: acceptedRequest.crop,
+//             lockedVolume: acceptedRequest.quantity,
+//             pricePerKg: "₹30",
+//             totalSettlementValue: "₹150000",
+//             status: "pending_signature",
+//             statusLabel: "Awaiting Farmer Sign"
+//           }
+
+//           const oldContracts = JSON.parse(
+//             localStorage.getItem("contracts") || "[]"
+//           )
+
+//           localStorage.setItem(
+//             "contracts",
+//             JSON.stringify([...oldContracts, newContract])
+//           )
+//           alert("Creating Contract...")
+//           alert("Contract Created Successfully")
+//         }
+//       }
+//       return updatedRequests
+//     })
+//   }
+
+//   return(
+//     <div className="space-y-6">
+    
+
+//       {/* Header Context Banner */}
+//       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200/60">
+//         <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+//           Incoming Buyer Requests
+//         </h1>
+//         <p className="text-sm text-gray-500 mt-1">
+//           Review and manage contract farming requests from certified buyers.
+//         </p>
+//       </div>
+
+//       {/* Requests Dynamic Matrix Grid */}
+//       {requestList.length > 0 ? (
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {requestList.map((request)=>(
+//             <div
+//               key={request.id}
+//               className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200/60 flex flex-col justify-between transition-all hover:shadow-md"
+//             >
+//               <div>
+//                 <div className="flex justify-between items-start mb-4">
+//                   <h2 className="text-lg font-black text-gray-900 tracking-tight">
+//                     {request.buyerName}
+//                   </h2>
+//                   <span
+//                     className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
+//                       request.status === "Accepted"
+//                       ? "bg-green-50 text-green-700 border-green-200"
+//                       : request.status === "Rejected"
+//                       ? "bg-red-50 text-red-700 border-red-200"
+//                       : "bg-amber-50 text-amber-700 border-amber-200"
+//                     }`}
+//                   >
+//                     {request.status}
+//                   </span>
+//                 </div>
+
+//                 <div className="space-y-3 text-sm text-gray-700 font-semibold">
+//                   <p className="flex items-center gap-2.5">
+//                     <Sprout size={16} className="text-emerald-600" /> 
+//                     <span className="text-gray-400 font-normal">Crop:</span> {request.crop}
+//                   </p>
+//                   <p className="flex items-center gap-2.5">
+//                     <Package size={16} className="text-amber-600" /> 
+//                     <span className="text-gray-400 font-normal">Quantity:</span> {request.quantity}
+//                   </p>
+//                   <p className="flex items-center gap-2.5">
+//                     <MapPin size={16} className="text-blue-600" /> 
+//                     <span className="text-gray-400 font-normal">Location:</span> {request.deliveryLocation}
+//                   </p>
+//                   <p className="flex items-center gap-2.5">
+//                     <Building2 size={16} className="text-purple-600" /> 
+//                     <span className="text-gray-400 font-normal">Type:</span> Buyer Request
+//                   </p>
+//                 </div>
+//               </div>
+
+//               {request.status === "Pending" && (
+//                 <div className="flex gap-3 mt-6">
+//                   <button
+//                     onClick={()=>updateRequest(request.id,"Accepted")}
+//                     className="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl hover:bg-emerald-700 flex items-center justify-center gap-2 text-xs font-bold shadow-sm transition-all transform hover:-translate-y-0.5"
+//                   >
+//                     <CheckCircle size={15}/> Accept
+//                   </button>
+//                   <button
+//                     onClick={()=>updateRequest(request.id,"Rejected")}
+//                     className="flex-1 bg-red-600 text-white py-2.5 rounded-xl hover:bg-red-700 flex items-center justify-center gap-2 text-xs font-bold shadow-sm transition-all transform hover:-translate-y-0.5"
+//                   >
+//                     <XCircle size={15}/> Reject
+//                   </button>
+//                 </div>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       ) : (
+//         <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
+//           <p className="text-gray-500 text-base font-medium">
+//             No incoming buyer requests available at the moment.
+//           </p>
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
+
 'use client'
 
 import { useState, useEffect } from 'react'
 import {
-  ArrowLeft,
-  CheckCircle,
-  XCircle,
   MapPin,
   Sprout,
   Building2,
-  Package
+  Package,
+  Loader2,
+  AlertCircle
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import api from '@/lib/api'
 
-export default function FarmerRequestsPage(){
-  const router = useRouter()
-  const [requestList, setRequestList] = useState<any[]>([])
+interface RequestItem {
+  id: string
+  buyerName: string
+  crop: string
+  quantity: string
+  deliveryLocation: string
+  status: string
+  message?: string
+}
+
+export default function FarmerRequestsPage() {
+  const [requestList, setRequestList] = useState<RequestItem[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const savedRequests = JSON.parse(
-      localStorage.getItem("buyerRequests") || "[]"
-    )
-    setRequestList(savedRequests)
-  }, [])
+    let isMounted = true
 
-  const updateRequest = (id: number, status: string)=>{
-    setRequestList((prev)=>{
-      const updatedRequests = prev.map((req)=>
-        req.id === id ? { ...req, status } : req
-      )
+    const fetchFarmerRequests = async () => {
+      try {
+        setLoading(true)
+        const res = await api.get('/requests')
 
-      localStorage.setItem("buyerRequests", JSON.stringify(updatedRequests))
+        if (isMounted && res.data && res.data.success) {
+          const rawData = res.data.data || []
+          
+          const mapped: RequestItem[] = rawData.map((item: any) => ({
+            id: item._id || item.id,
+            buyerName: typeof item.buyer === 'object' && item.buyer?.name 
+              ? item.buyer.name 
+              : 'Verified Buyer',
+            crop: item.requirement?.cropName || 'N/A',
+            quantity: item.requirement 
+              ? `${item.requirement.quantity || 0} ${item.requirement.unit || 'kg'}` 
+              : 'N/A',
+            deliveryLocation: item.requirement?.location || 'Not Specified',
+            status: item.status 
+              ? item.status.charAt(0).toUpperCase() + item.status.slice(1) 
+              : 'Pending',
+            message: item.message,
+          }))
 
-      if(status === "Accepted"){
-        console.count("Accept clicked");
-        const acceptedRequest = updatedRequests.find((req)=> req.id === id)
-
-        if(acceptedRequest){
-          const newContract = {
-            id: `CON-BUY-${Date.now()}`,
-            farmerName: "Ramesh Kumar",
-            region: acceptedRequest.deliveryLocation || "Indore, MP",
-            cropType: acceptedRequest.crop,
-            lockedVolume: acceptedRequest.quantity,
-            pricePerKg: "₹30",
-            totalSettlementValue: "₹150000",
-            status: "pending_signature",
-            statusLabel: "Awaiting Farmer Sign"
-          }
-
-          const oldContracts = JSON.parse(
-            localStorage.getItem("contracts") || "[]"
-          )
-
-          localStorage.setItem(
-            "contracts",
-            JSON.stringify([...oldContracts, newContract])
-          )
-          alert("Creating Contract...")
-          alert("Contract Created Successfully")
+          setRequestList(mapped)
+          setError(null)
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          setError(err.message || 'Failed to fetch requests.')
+          setRequestList([])
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
         }
       }
-      return updatedRequests
-    })
-  }
+    }
 
-  return(
+    fetchFarmerRequests()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  return (
     <div className="space-y-6">
-    
-
       {/* Header Context Banner */}
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200/60">
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">
-          Incoming Buyer Requests
+          Sent Crop Requests
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          Review and manage contract farming requests from certified buyers.
+          Track status of requests/proposals you sent to buyer requirements.
         </p>
       </div>
 
-      {/* Requests Dynamic Matrix Grid */}
-      {requestList.length > 0 ? (
+      {/* Loading & Error States */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/60">
+          <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+          <p className="mt-4 text-sm font-medium text-gray-600">Loading your requests...</p>
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-700 flex items-center justify-center gap-2">
+          <AlertCircle className="h-5 w-5" />
+          <span>{error}</span>
+        </div>
+      ) : requestList.length > 0 ? (
+        /* Requests Grid */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {requestList.map((request)=>(
+          {requestList.map((request) => (
             <div
               key={request.id}
               className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200/60 flex flex-col justify-between transition-all hover:shadow-md"
@@ -262,10 +438,10 @@ export default function FarmerRequestsPage(){
                   <span
                     className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
                       request.status === "Accepted"
-                      ? "bg-green-50 text-green-700 border-green-200"
-                      : request.status === "Rejected"
-                      ? "bg-red-50 text-red-700 border-red-200"
-                      : "bg-amber-50 text-amber-700 border-amber-200"
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : request.status === "Rejected"
+                        ? "bg-red-50 text-red-700 border-red-200"
+                        : "bg-amber-50 text-amber-700 border-amber-200"
                     }`}
                   >
                     {request.status}
@@ -274,47 +450,35 @@ export default function FarmerRequestsPage(){
 
                 <div className="space-y-3 text-sm text-gray-700 font-semibold">
                   <p className="flex items-center gap-2.5">
-                    <Sprout size={16} className="text-emerald-600" /> 
+                    <Sprout size={16} className="text-emerald-600" />
                     <span className="text-gray-400 font-normal">Crop:</span> {request.crop}
                   </p>
                   <p className="flex items-center gap-2.5">
-                    <Package size={16} className="text-amber-600" /> 
+                    <Package size={16} className="text-amber-600" />
                     <span className="text-gray-400 font-normal">Quantity:</span> {request.quantity}
                   </p>
                   <p className="flex items-center gap-2.5">
-                    <MapPin size={16} className="text-blue-600" /> 
+                    <MapPin size={16} className="text-blue-600" />
                     <span className="text-gray-400 font-normal">Location:</span> {request.deliveryLocation}
                   </p>
                   <p className="flex items-center gap-2.5">
-                    <Building2 size={16} className="text-purple-600" /> 
-                    <span className="text-gray-400 font-normal">Type:</span> Buyer Request
+                    <Building2 size={16} className="text-purple-600" />
+                    <span className="text-gray-400 font-normal">Type:</span> Direct Proposal
                   </p>
+                  {request.message && (
+                    <p className="mt-2 text-xs font-normal text-gray-500 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                      <span className="font-semibold text-gray-700">Note:</span> "{request.message}"
+                    </p>
+                  )}
                 </div>
               </div>
-
-              {request.status === "Pending" && (
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={()=>updateRequest(request.id,"Accepted")}
-                    className="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl hover:bg-emerald-700 flex items-center justify-center gap-2 text-xs font-bold shadow-sm transition-all transform hover:-translate-y-0.5"
-                  >
-                    <CheckCircle size={15}/> Accept
-                  </button>
-                  <button
-                    onClick={()=>updateRequest(request.id,"Rejected")}
-                    className="flex-1 bg-red-600 text-white py-2.5 rounded-xl hover:bg-red-700 flex items-center justify-center gap-2 text-xs font-bold shadow-sm transition-all transform hover:-translate-y-0.5"
-                  >
-                    <XCircle size={15}/> Reject
-                  </button>
-                </div>
-              )}
             </div>
           ))}
         </div>
       ) : (
         <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
           <p className="text-gray-500 text-base font-medium">
-            No incoming buyer requests available at the moment.
+            No active crop requests found.
           </p>
         </div>
       )}
