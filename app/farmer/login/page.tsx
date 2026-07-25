@@ -289,7 +289,7 @@ export default function FarmerLoginPage() {
         await api.post('/auth/register', {
           name: formData.name,
           phone: formData.phone,
-          email: `${formData.phone}@krishisetu.com`,
+          
           password: formData.password,
           role: 'farmer',
           fpoGroup: formData.fpoGroup
