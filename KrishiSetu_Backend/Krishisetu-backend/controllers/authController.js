@@ -43,8 +43,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message:
-        "User registered successfully. Your account is pending admin approval.",
+      message: "User registered successfully.",
       data: user,
     });
   } catch (error) {
@@ -101,12 +100,7 @@ const login = async (req, res) => {
     // Block accounts awaiting admin approval or that have been suspended.
     // Accounts created before the "status" field existed have no value
     // here (undefined) and are treated as approved.
-    if (user.status === "pending") {
-      return res.status(403).json({
-        success: false,
-        message: "Your account is pending admin approval.",
-      });
-    }
+    
 
     if (user.status === "suspended") {
       return res.status(403).json({
