@@ -189,7 +189,6 @@ const register = async (req, res) => {
 
     const {
       name,
-      email,
       phone,
       password,
       role,
@@ -217,7 +216,6 @@ const register = async (req, res) => {
     // Create User
     const user = await User.create({
       name,
-      email,
       phone,
       password: hashedPassword,
       role,
@@ -229,8 +227,14 @@ const register = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "User registered successfully.",
-      data: user,
+      data: {
+        id: user._id,
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+      },
     });
+
   } catch (error) {
     console.error(error);
 
@@ -255,6 +259,7 @@ const register = async (req, res) => {
     });
   }
 };
+
 
 // ================= LOGIN =================
 const login = async (req, res) => {
@@ -309,8 +314,12 @@ const login = async (req, res) => {
         name: user.name,
         phone: user.phone,
         role: user.role,
+        village: user.village,
+        district: user.district,
+        state: user.state,
       },
     });
+
   } catch (error) {
     console.error(error);
 
@@ -321,14 +330,13 @@ const login = async (req, res) => {
   }
 };
 
+
 // ================= PROFILE =================
 const getProfile = async (req, res) => {
   try {
-    console.log("Decoded JWT:", req.user);
 
-    const user = await User.findById(req.user.id).select("-password");
-
-    console.log("User from DB:", user);
+    const user = await User.findById(req.user.id)
+      .select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -341,6 +349,7 @@ const getProfile = async (req, res) => {
       success: true,
       user,
     });
+
   } catch (error) {
     console.error(error);
 
@@ -350,6 +359,7 @@ const getProfile = async (req, res) => {
     });
   }
 };
+
 
 // ================= EXPORTS =================
 module.exports = {
