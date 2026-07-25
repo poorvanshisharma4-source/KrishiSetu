@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import api from '@/lib/api';
+import api from '@/lib/api'
 import {
   FileText,
   ShieldCheck,
@@ -30,6 +30,7 @@ const getStatusLabel = (status?: string) => {
   switch (status) {
     case 'pending_signature':
     case 'awaiting_signature':
+    case 'pending':
       return 'Awaiting Farmer Sign'
     case 'active':
       return 'Active & Growing'
@@ -38,7 +39,7 @@ const getStatusLabel = (status?: string) => {
     case 'cancelled':
       return 'Cancelled'
     default:
-      return 'Pending'
+      return status || 'Pending'
   }
 }
 
@@ -80,9 +81,12 @@ export default function MyContractsScreen() {
       const matchesStatus =
         statusFilter === 'all' ||
         (statusFilter === 'active' && contract.status === 'active') ||
-        (statusFilter === 'pending' && contract.status === 'pending') ||
+        (statusFilter === 'pending' &&
+          ['pending_signature', 'awaiting_signature', 'pending'].includes(
+            contract.status || ''
+          )) ||
         (statusFilter === 'completed' && contract.status === 'completed') ||
-        (statusFilter === 'pending' && contract.status === 'cancelled')
+        (statusFilter === 'cancelled' && contract.status === 'cancelled')
 
       return matchesSearch && matchesStatus
     })
@@ -92,11 +96,14 @@ export default function MyContractsScreen() {
     switch (status) {
       case 'pending_signature':
       case 'awaiting_signature':
+      case 'pending':
         return 'bg-amber-100 text-amber-800 border border-amber-300'
       case 'active':
         return 'bg-green-100 text-green-800 border border-green-300'
       case 'completed':
         return 'bg-blue-100 text-blue-800 border border-blue-300'
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 border border-red-300'
       default:
         return 'bg-gray-100 text-gray-800 border border-gray-300'
     }
@@ -111,7 +118,6 @@ export default function MyContractsScreen() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/buyer/dashboard')}
-                // ydd rkho idhar se hi button kaam kregi 
                 className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-200"
               >
                 <ArrowLeft size={18} />
@@ -121,7 +127,6 @@ export default function MyContractsScreen() {
                 <h1 className="text-4xl font-bold text-gray-900">
                   Procurement Contracts
                 </h1>
-              
               </div>
             </div>
             <ShieldCheck
@@ -160,10 +165,18 @@ export default function MyContractsScreen() {
                 <option value="active">Active</option>
                 <option value="pending">Pending Farmer Signature</option>
                 <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
               </select>
             </div>
           </div>
         </div>
+
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-6 rounded-lg bg-red-100 p-4 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Contracts List */}
         <div className="space-y-4">
@@ -180,10 +193,8 @@ export default function MyContractsScreen() {
               const lockedVolume = `${contract.quantity ?? 0} ${contract.requirement?.unit ?? 'kg'}`
               const pricePerKg = `₹${(contract.agreedPrice ?? 0).toLocaleString()}`
               const totalSettlementValue = `₹${(
-                (contract.agreedPrice ?? 0) *
-                (contract.quantity ?? 0)
+                (contract.agreedPrice ?? 0) * (contract.quantity ?? 0)
               ).toLocaleString()}`
-              const statusLabel = getStatusLabel(contract.status)
 
               return (
                 <div
@@ -199,7 +210,9 @@ export default function MyContractsScreen() {
                       </span>
                     </div>
                     <span
-                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeStyles(contract.status ?? '')}`}
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeStyles(
+                        contract.status ?? ''
+                      )}`}
                     >
                       {getStatusLabel(contract.status)}
                     </span>
@@ -224,7 +237,9 @@ export default function MyContractsScreen() {
                       <p className="mt-1 text-base font-semibold text-gray-900">
                         {cropType}
                       </p>
-                      <p className="text-sm text-gray-600">Locked: {lockedVolume}</p>
+                      <p className="text-sm text-gray-600">
+                        Locked: {lockedVolume}
+                      </p>
                     </div>
                   </div>
 
@@ -234,7 +249,10 @@ export default function MyContractsScreen() {
                         <p className="text-xs font-medium uppercase text-gray-500">
                           Price per kg
                         </p>
-                        <p className="mt-1 text-lg font-bold" style={{ color: '#2E7D32' }}>
+                        <p
+                          className="mt-1 text-lg font-bold"
+                          style={{ color: '#2E7D32' }}
+                        >
                           {pricePerKg} / kg
                         </p>
                       </div>
@@ -257,30 +275,33 @@ export default function MyContractsScreen() {
                         </p>
                       </div>
                     </div>
+
                     <div className="flex items-end justify-start md:justify-end">
                       <button
-    onClick={() => router.push(`/buyer/contracts/${contractId}`)}
-    className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
-    style={{
-      color: '#2E7D32',
-      border: '1.5px solid #2E7D32',
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.backgroundColor = '#F1F5F2';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.backgroundColor = 'transparent';
-    }}
-  >
-    <FileText size={16} />
-    Manage Contract
-    <ChevronRight size={16} />
-  </button>
+                        onClick={() =>
+                          router.push(`/buyer/contracts/${contractId}`)
+                        }
+                        className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200"
+                        style={{
+                          color: '#2E7D32',
+                          border: '1.5px solid #2E7D32',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#F1F5F2'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }}
+                      >
+                        <FileText size={16} />
+                        Manage Contract
+                        <ChevronRight size={16} />
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              )
+            })
           ) : (
             <div className="rounded-lg bg-white py-12 text-center shadow-sm">
               <FileText
