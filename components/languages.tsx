@@ -1,6 +1,9 @@
+'use client'
+
 import { Languages as LanguagesIcon } from 'lucide-react'
 import { SectionHeading } from '@/components/section-heading'
 import { Reveal } from '@/components/reveal'
+import { useLanguage } from '@/components/LanguageContext'
 
 const langs = [
   'English',
@@ -14,19 +17,23 @@ const langs = [
 ]
 
 export function LanguagesSection() {
+  const { t } = useLanguage()
+
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Multi-Language Support"
-          title="Farming Speaks Many Languages"
-          description="Use KrishiSetu comfortably in the language you know best."
+          eyebrow={t('languages.eyebrow')}
+          title={t('languages.title')}
+          description={t('languages.description')}
         />
+
         <Reveal className="mt-10">
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <LanguagesIcon className="h-6 w-6" />
             </span>
+
             {langs.map((lang) => (
               <span
                 key={lang}

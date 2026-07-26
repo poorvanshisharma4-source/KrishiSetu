@@ -1,70 +1,63 @@
-"use client";
+'use client'
 
 import {
   CheckCircle2,
   Wallet,
   Sprout,
-} from "lucide-react";
-
-const activities = [
-  {
-    title: "Contract Completed",
-    description: "Sold Wheat to FreshMart Pvt Ltd",
-    date: "Today",
-    icon: CheckCircle2,
-    color: "text-green-600",
-  },
-  {
-    title: "Payment Received",
-    description: "₹25,000 credited successfully",
-    date: "2 days ago",
-    icon: Wallet,
-    color: "text-orange-600",
-  },
-  {
-    title: "New Crop Listed",
-    description: "Tomato added for sale",
-    date: "1 week ago",
-    icon: Sprout,
-    color: "text-blue-600",
-  },
-];
-
+} from 'lucide-react'
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function FarmerActivity() {
+  const { t } = useLanguage()
+
+  const activities = [
+    {
+      title: t('farmerActivity.contractCompleted'),
+      description: t('farmerActivity.soldWheat'),
+      date: t('farmerActivity.today'),
+      icon: CheckCircle2,
+      color: 'text-green-600',
+    },
+    {
+      title: t('farmerActivity.paymentReceived'),
+      description: t('farmerActivity.paymentCredited'),
+      date: t('farmerActivity.twoDaysAgo'),
+      icon: Wallet,
+      color: 'text-orange-600',
+    },
+    {
+      title: t('farmerActivity.newCropListed'),
+      description: t('farmerActivity.tomatoAdded'),
+      date: t('farmerActivity.oneWeekAgo'),
+      icon: Sprout,
+      color: 'text-blue-600',
+    },
+  ]
 
   return (
-    <div className="bg-white rounded-2xl border shadow-sm p-6">
-
-      <h2 className="text-xl font-bold mb-6">
-        Recent Activity
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <h2 className="mb-6 text-xl font-bold">
+        {t('farmerActivity.recentActivity')}
       </h2>
 
-
       <div className="space-y-6">
-
         {activities.map((item, index) => {
-
-          const Icon = item.icon;
+          const Icon = item.icon
 
           return (
-            <div 
+            <div
               key={index}
               className="flex gap-4"
             >
-
               <div className="mt-1">
-                <Icon 
+                <Icon
                   size={28}
                   className={item.color}
                 />
               </div>
 
-
-              <div className="border-l-2 pl-5 pb-4">
-
-                <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
-
+              <div className="border-l-2 pb-4 pl-5">
+                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                   <h3 className="font-semibold">
                     {item.title}
                   </h3>
@@ -72,24 +65,16 @@ export default function FarmerActivity() {
                   <span className="text-sm text-gray-400">
                     {item.date}
                   </span>
-
                 </div>
 
-
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="mt-1 text-sm text-gray-500">
                   {item.description}
                 </p>
-
               </div>
-
-
             </div>
-          );
-
+          )
         })}
-
       </div>
-
     </div>
-  );
+  )
 }

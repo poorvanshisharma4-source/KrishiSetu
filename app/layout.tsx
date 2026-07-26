@@ -46,9 +46,9 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Poppins, Inter } from 'next/font/google'
+import { LanguageProvider } from '../components/LanguageContext'
 import './globals.css'
 
-// 1. Global Context Provider aur Wrapper ko Import kiya
 import { AICopilotProvider } from '@/components/ai-copilot/AICopilotContext'
 import GlobalCopilotWrapper from '@/components/ai-copilot/GlobalCopilotWrapper'
 
@@ -57,6 +57,7 @@ const poppins = Poppins({
   weight: ['500', '600', '700', '800'],
   subsets: ['latin'],
 })
+
 const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
@@ -85,12 +86,12 @@ export default function RootLayout({
       className={`light ${inter.variable} ${poppins.variable} bg-background`}
     >
       <body className="font-sans antialiased">
-        {/* 2. Pure Application ko Provider se wrap kiya */}
         <AICopilotProvider>
-          {children}
-          
-          {/* 3. Global Drawer Injection */}
-          <GlobalCopilotWrapper />
+          <LanguageProvider>
+            {children}
+
+            <GlobalCopilotWrapper />
+          </LanguageProvider>
         </AICopilotProvider>
 
         {process.env.NODE_ENV === 'production' && <Analytics />}

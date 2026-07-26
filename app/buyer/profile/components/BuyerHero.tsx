@@ -2,192 +2,216 @@
 
 import Image from 'next/image';
 import { MapPin, ShieldCheck, Pencil, Building2 } from 'lucide-react';
+import { useLanguage } from '@/components/LanguageContext';
 
 export default function BuyerHero({ buyer }: { buyer?: any }) {
-  const buyerName = buyer?.name ?? buyer?.fullName ?? 'Rahul Sharma';
-  const profileImage = buyer?.profileImage || buyer?.avatar || 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg';
-  const company = buyer?.companyName ?? buyer?.businessName ?? 'Sharma Agro Traders';
-  const businessType = buyer?.businessType ?? 'Wholesale Buyer';
-  const gstNumber = buyer?.gstNumber ?? '22AAAAA1234A1Z5';
-  const companyAddress = buyer?.companyAddress ?? buyer?.address ?? 'Indore, Madhya Pradesh';
-  const location =
-    buyer?.companyAddress ||
-    (buyer?.district || buyer?.state
-      ? `${buyer?.district ?? ''}${buyer?.district && buyer?.state ? ', ' : ''}${buyer?.state ?? ''}`
-      : 'Indore, Madhya Pradesh');
-  const trustScore = buyer?.trustScore ?? 92;
+const { t } = useLanguage();
 
-  const trustBadge =
-    trustScore >= 91
-      ? '💎 Platinum Trusted Buyer'
-      : trustScore >= 71
-      ? '🏅 Gold Trusted Buyer'
-      : trustScore >= 41
-      ? '🥈 Silver Trusted Buyer'
-      : '🥉 Bronze Trusted Buyer';
+const buyerName =
+buyer?.name ?? buyer?.fullName ?? 'Rahul Sharma';
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Photo upload UI is kept purely cosmetic until backend upload support exists.
-    e.preventDefault();
-  };
+const profileImage =
+buyer?.profileImage ||
+buyer?.avatar ||
+'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg';
 
-  return (
-    <div className="bg-white rounded-3xl shadow-sm overflow-hidden border">
+const company =
+buyer?.companyName ??
+buyer?.businessName ??
+'Sharma Agro Traders';
 
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 p-8">
+const businessType =
+buyer?.businessType ?? 'Wholesale Buyer';
 
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
+const gstNumber =
+buyer?.gstNumber ?? '22AAAAA1234A1Z5';
 
-          {/* Left Section */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+const companyAddress =
+buyer?.companyAddress ??
+buyer?.address ??
+'Indore, Madhya Pradesh';
 
-            <Image
-              src={profileImage}
-              alt="Buyer"
-              width={120}
-              height={120}
-              className="rounded-full border-4 border-white object-cover"
+const location =
+buyer?.companyAddress ||
+(buyer?.district || buyer?.state
+? `${buyer?.district ?? ''}${
+          buyer?.district && buyer?.state ? ', ' : ''
+        }${buyer?.state ?? ''}`
+: 'Indore, Madhya Pradesh');
+
+const trustScore = buyer?.trustScore ?? 92;
+
+const trustBadge =
+trustScore >= 91
+? t('platinumTrustedBuyer')
+: trustScore >= 71
+? t('goldTrustedBuyer')
+: trustScore >= 41
+? t('silverTrustedBuyer')
+: t('bronzeTrustedBuyer');
+
+const handleImageChange = (
+e: React.ChangeEvent<HTMLInputElement>
+) => {
+// Photo upload UI is kept cosmetic until backend upload support exists.
+e.preventDefault();
+};
+
+return ( <div className="overflow-hidden rounded-3xl border bg-white shadow-sm">
+{/* Hero Banner */} <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 p-8"> <div className="flex flex-col items-center justify-between gap-8 lg:flex-row">
+{/* Left Section */} <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left"> <div className="flex flex-col items-center">
+<Image
+src={profileImage}
+alt={t('buyer')}
+width={120}
+height={120}
+className="rounded-full border-4 border-white object-cover"
+/>
+
+```
+          <label className="mt-3 cursor-pointer rounded-xl bg-white px-4 py-2 text-sm font-medium text-amber-700 transition hover:bg-amber-50">
+            {t('changePhoto')}
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
             />
-            <label className="mt-3 cursor-pointer bg-white text-amber-700 px-4 py-2 rounded-xl text-sm font-medium">
-
-  Change Photo
-
-  <input
-    type="file"
-    accept="image/*"
-    className="hidden"
-    onChange={handleImageChange}
-  />
-
-</label>
-
-            <div>
-
-              <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
-
-                <h1 className="text-3xl sm:text-4xl font-bold text-white">
-                  {buyerName}
-                </h1>
-
-                <span className="bg-green-500 text-white text-sm px-4 py-1 rounded-full">
-                  Verified Buyer
-                </span>
-
-              </div>
-
-              {/* Company Optional */}
-              {company && (
-                <div className="flex items-center gap-2 text-white mt-3 justify-center sm:justify-start">
-                  <Building2 size={18} />
-                  <span>{company}</span>
-                </div>
-              )}
-
-              <div className="mt-4 space-y-2 text-amber-100 text-sm">
-
-  <p>
-    <span className="font-semibold text-white">Business Type:</span>{" "}
-    {businessType}
-  </p>
-
-  <p>
-    <span className="font-semibold text-white">GST:</span>{" "}
-    {gstNumber}
-  </p>
-
-  <p>
-    <span className="font-semibold text-white">Address:</span>{" "}
-    {companyAddress}
-  </p>
-
-</div>
-
-              <button
-                className="mt-4 flex items-center gap-2 bg-white text-amber-700 px-5 py-2 rounded-xl font-medium hover:bg-amber-50 transition"
-              >
-                <Pencil size={16} />
-                Edit Profile
-              </button>
-
-              <div className="flex items-center gap-2 text-amber-100 mt-3 justify-center sm:justify-start">
-                <MapPin size={18} />
-                {location}
-              </div>
-
-              {/* Info Cards */}
-              <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-6">
-
-                <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl">
-                  <p className="text-amber-100 text-sm">Member Since</p>
-                  <h3 className="text-white font-bold">Jan 2025</h3>
-                </div>
-
-                <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl">
-                  <p className="text-amber-100 text-sm">Buyer Type</p>
-                  <h3 className="text-white font-bold">
-  {buyer?.role || 'Buyer'}
-</h3>
-                </div>
-
-                <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl">
-                  <p className="text-amber-100 text-sm">Completed Orders</p>
-                  <h3 className="text-white font-bold">126</h3>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Trust Score */}
-          <div className="bg-white rounded-2xl p-6 w-full sm:w-64 text-center shadow-lg">
-
-            <ShieldCheck
-              className="mx-auto text-amber-600"
-              size={45}
-            />
-
-            <h2 className="font-semibold mt-3">
-              Trust Score
-            </h2>
-
-            <div className="text-5xl font-bold text-amber-600 mt-2">
-              {trustScore}
-            </div>
-
-            <p className="text-gray-500">
-              out of 100
-            </p>
-
-            <div className="mt-4">
-
-              <div className="h-3 bg-gray-200 rounded-full">
-
-                <div
-                  className="h-3 bg-amber-500 rounded-full"
-                  style={{ width: `${trustScore}%` }}
-                />
-
-              </div>
-
-            </div>
-
-            <div className="mt-4 bg-amber-100 text-amber-700 rounded-full py-2 text-sm font-medium">
-              {trustBadge}
-            </div>
-
-            <p className="text-xs text-gray-500 mt-3">
-              Trusted by verified farmers on KrishiSetu
-            </p>
-
-          </div>
-
+          </label>
         </div>
 
+        <div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl">
+              {buyerName}
+            </h1>
+
+            <span className="rounded-full bg-green-500 px-4 py-1 text-sm text-white">
+              {t('verifiedBuyer')}
+            </span>
+          </div>
+
+          {/* Company */}
+          {company && (
+            <div className="mt-3 flex items-center justify-center gap-2 text-white sm:justify-start">
+              <Building2 size={18} />
+              <span>{company}</span>
+            </div>
+          )}
+
+          {/* Business Details */}
+          <div className="mt-4 space-y-2 text-sm text-amber-100">
+            <p>
+              <span className="font-semibold text-white">
+                {t('businessType')}:
+              </span>{' '}
+              {businessType}
+            </p>
+
+            <p>
+              <span className="font-semibold text-white">
+                {t('gst')}:
+              </span>{' '}
+              {gstNumber}
+            </p>
+
+            <p>
+              <span className="font-semibold text-white">
+                {t('address')}:
+              </span>{' '}
+              {companyAddress}
+            </p>
+          </div>
+
+          <button className="mt-4 flex items-center gap-2 rounded-xl bg-white px-5 py-2 font-medium text-amber-700 transition hover:bg-amber-50">
+            <Pencil size={16} />
+            {t('editProfile')}
+          </button>
+
+          <div className="mt-3 flex items-center justify-center gap-2 text-amber-100 sm:justify-start">
+            <MapPin size={18} />
+            {location}
+          </div>
+
+          {/* Info Cards */}
+          <div className="mt-6 flex flex-wrap justify-center gap-4 sm:justify-start">
+            <div className="rounded-xl bg-white/15 px-5 py-3 backdrop-blur-md">
+              <p className="text-sm text-amber-100">
+                {t('memberSince')}
+              </p>
+
+              <h3 className="font-bold text-white">
+                Jan 2025
+              </h3>
+            </div>
+
+            <div className="rounded-xl bg-white/15 px-5 py-3 backdrop-blur-md">
+              <p className="text-sm text-amber-100">
+                {t('buyerType')}
+              </p>
+
+              <h3 className="font-bold text-white">
+                {buyer?.role || t('buyer')}
+              </h3>
+            </div>
+
+            <div className="rounded-xl bg-white/15 px-5 py-3 backdrop-blur-md">
+              <p className="text-sm text-amber-100">
+                {t('completedOrders')}
+              </p>
+
+              <h3 className="font-bold text-white">
+                126
+              </h3>
+            </div>
+          </div>
+        </div>
       </div>
 
+      {/* Trust Score */}
+      <div className="w-full rounded-2xl bg-white p-6 text-center shadow-lg sm:w-64">
+        <ShieldCheck
+          className="mx-auto text-amber-600"
+          size={45}
+        />
+
+        <h2 className="mt-3 font-semibold text-gray-900">
+          {t('trustScore')}
+        </h2>
+
+        <div className="mt-2 text-5xl font-bold text-amber-600">
+          {trustScore}
+        </div>
+
+        <p className="text-gray-500">
+          {t('outOf100')}
+        </p>
+
+        <div className="mt-4">
+          <div className="h-3 rounded-full bg-gray-200">
+            <div
+              className="h-3 rounded-full bg-amber-500"
+              style={{
+                width: `${Math.min(
+                  Math.max(trustScore, 0),
+                  100
+                )}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-full bg-amber-100 py-2 text-sm font-medium text-amber-700">
+          {trustBadge}
+        </div>
+
+        <p className="mt-3 text-xs text-gray-500">
+          {t('trustedByVerifiedFarmers')}
+        </p>
+      </div>
     </div>
-  );
+  </div>
+</div>
+);
 }

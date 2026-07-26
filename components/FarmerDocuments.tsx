@@ -1,99 +1,89 @@
-"use client";
+'use client'
+
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function FarmerDocuments() {
+  const { t } = useLanguage()
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Payment Summary */}
-      <div className="bg-white rounded-2xl border shadow-sm p-6">
-
-        <h2 className="text-xl font-bold mb-5">
-          Payment Summary
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <h2 className="mb-5 text-xl font-bold">
+          {t('farmerDocuments.paymentSummary')}
         </h2>
 
         <div className="space-y-4">
-
           <div className="flex justify-between">
             <span className="text-gray-500">
-              Wallet Balance
+              {t('farmerDocuments.walletBalance')}
             </span>
+
             <span className="font-bold text-green-600">
               ₹12,450
             </span>
           </div>
 
-
           <div className="flex justify-between">
             <span className="text-gray-500">
-              Pending Payments
+              {t('farmerDocuments.pendingPayments')}
             </span>
+
             <span className="font-bold text-orange-500">
               ₹18,600
             </span>
           </div>
 
-
           <div className="flex justify-between">
             <span className="text-gray-500">
-              Total Earnings
+              {t('farmerDocuments.totalEarnings')}
             </span>
+
             <span className="font-bold text-blue-600">
               ₹1,24,500
             </span>
           </div>
-
         </div>
-
       </div>
 
-
       {/* Documents */}
-      <div className="bg-white rounded-2xl border shadow-sm p-6">
-
-        <h2 className="text-xl font-bold mb-5">
-          Documents
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <h2 className="mb-5 text-xl font-bold">
+          {t('farmerDocuments.documents')}
         </h2>
 
         <div className="space-y-3">
-
-
-          <div className="flex justify-between border rounded-xl p-3">
+          <div className="flex justify-between rounded-xl border p-3">
             <span>
-              📄 Aadhaar Card
+              📄 {t('farmerDocuments.aadhaarCard')}
             </span>
 
-            <span className="text-green-600 font-medium">
-              Verified
+            <span className="font-medium text-green-600">
+              {t('farmerDocuments.verified')}
             </span>
           </div>
 
-
-          <div className="flex justify-between border rounded-xl p-3">
+          <div className="flex justify-between rounded-xl border p-3">
             <span>
-              🏡 Land Record
+              🏡 {t('farmerDocuments.landRecord')}
             </span>
 
-            <span className="text-green-600 font-medium">
-              Verified
+            <span className="font-medium text-green-600">
+              {t('farmerDocuments.verified')}
             </span>
           </div>
 
-
-          <div className="flex justify-between border rounded-xl p-3">
+          <div className="flex justify-between rounded-xl border p-3">
             <span>
-              🏦 Bank Passbook
+              🏦 {t('farmerDocuments.bankPassbook')}
             </span>
 
-            <span className="text-green-600 font-medium">
-              Verified
+            <span className="font-medium text-green-600">
+              {t('farmerDocuments.verified')}
             </span>
           </div>
-
-
         </div>
-
       </div>
-
     </div>
-  );
+  )
 }

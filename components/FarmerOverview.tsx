@@ -1,103 +1,103 @@
-"use client";
+'use client'
+
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function FarmerOverview() {
+  const { t } = useLanguage()
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* About Farmer */}
-      <div className="bg-white rounded-2xl border shadow-sm p-4 sm:p-6">
-
-        <h2 className="text-xl font-bold mb-4">
-          About Me
+      <div className="rounded-2xl border bg-white p-4 shadow-sm sm:p-6">
+        <h2 className="mb-4 text-xl font-bold">
+          {t('farmerOverview.aboutMe')}
         </h2>
 
-        <p className="text-gray-600 leading-7">
-          I am a dedicated farmer from Sehore, Madhya Pradesh.
-          I grow high-quality crops using modern farming techniques
-          and believe in long-term partnerships with buyers.
+        <p className="leading-7 text-gray-600">
+          {t('farmerOverview.description')}
         </p>
 
         <div className="mt-6 space-y-3">
-
           <div className="flex justify-between">
-            <span className="text-gray-500">Mobile</span>
+            <span className="text-gray-500">
+              {t('farmerOverview.mobile')}
+            </span>
+
             <span className="font-medium">
               +91 9876543210
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Email</span>
+            <span className="text-gray-500">
+              {t('farmerOverview.email')}
+            </span>
+
             <span className="font-medium">
               ramesh@gmail.com
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Address</span>
+            <span className="text-gray-500">
+              {t('farmerOverview.address')}
+            </span>
+
             <span className="font-medium">
               Sehore, Madhya Pradesh
             </span>
           </div>
-
         </div>
-
       </div>
 
-
       {/* Land Details */}
-      <div className="bg-white rounded-2xl border shadow-sm p-4 sm:p-6">
-
-        <h2 className="text-xl font-bold mb-4">
-          Land Details
+      <div className="rounded-2xl border bg-white p-4 shadow-sm sm:p-6">
+        <h2 className="mb-4 text-xl font-bold">
+          {t('farmerOverview.landDetails')}
         </h2>
 
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Total Land
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border p-4">
+            <p className="text-sm text-gray-500">
+              {t('farmerOverview.totalLand')}
             </p>
-            <h3 className="font-bold text-2xl">
+
+            <h3 className="text-2xl font-bold">
               5.2 Acres
             </h3>
           </div>
 
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Soil Type
+          <div className="rounded-xl border p-4">
+            <p className="text-sm text-gray-500">
+              {t('farmerOverview.soilType')}
             </p>
+
             <h3 className="font-bold">
               Black Soil
             </h3>
           </div>
 
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Water Source
+          <div className="rounded-xl border p-4">
+            <p className="text-sm text-gray-500">
+              {t('farmerOverview.waterSource')}
             </p>
+
             <h3 className="font-bold">
               Borewell
             </h3>
           </div>
 
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Organic Farming
+          <div className="rounded-xl border p-4">
+            <p className="text-sm text-gray-500">
+              {t('farmerOverview.organicFarming')}
             </p>
+
             <h3 className="font-bold text-green-600">
-              Yes
+              {t('farmerOverview.yes')}
             </h3>
           </div>
-
         </div>
-
       </div>
-
     </div>
-  );
+  )
 }

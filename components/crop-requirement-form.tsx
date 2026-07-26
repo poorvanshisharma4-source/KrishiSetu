@@ -416,31 +416,42 @@
 //   );
 // }
 
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { ArrowLeft, MapPin, CheckCircle2, Sparkles, TrendingUp, HelpCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import api from '@/lib/api';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react'
+import {
+  ArrowLeft,
+  MapPin,
+  CheckCircle2,
+  Sparkles,
+  TrendingUp,
+  HelpCircle,
+  Loader2,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import api from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/components/LanguageContext'
 
 interface FormData {
-  crop: string;
-  grade: string;
-  quantity: string;
-  unit: string;
-  targetPrice: string;
-  deliveryDate: string;
-  deliveryLocation: string;
-  additionalTerms: string;
+  crop: string
+  grade: string
+  quantity: string
+  unit: string
+  targetPrice: string
+  deliveryDate: string
+  deliveryLocation: string
+  additionalTerms: string
 }
 
 interface FormErrors {
-  [key: string]: string;
+  [key: string]: string
 }
 
 export default function CropRequirementForm() {
-  const router = useRouter();
+  const router = useRouter()
+  const { t } = useLanguage()
+
   const [formData, setFormData] = useState<FormData>({
     crop: '',
     grade: '',
@@ -450,64 +461,117 @@ export default function CropRequirementForm() {
     deliveryDate: '',
     deliveryLocation: '',
     additionalTerms: '',
-  });
+  })
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const gradeOptions = [
-    'Grade A (Premium)',
-    'Grade B (Standard)',
-    'Organic Certified',
-  ];
+    {
+      value: 'Grade A (Premium)',
+      label: t('cropRequirement.gradeA'),
+    },
+    {
+      value: 'Grade B (Standard)',
+      label: t('cropRequirement.gradeB'),
+    },
+    {
+      value: 'Organic Certified',
+      label: t('cropRequirement.organicCertified'),
+    },
+  ]
 
-  const unitOptions = ['Tons', 'Quintals', 'Kilograms'];
+  const unitOptions = [
+    'Tons',
+    'Quintals',
+    'Kilograms',
+  ]
 
-  const isTomatoCase = formData.crop.toLowerCase().trim().includes('tomato');
+  const isTomatoCase = formData.crop
+    .toLowerCase()
+    .trim()
+    .includes('tomato')
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: FormErrors = {}
 
-    if (!formData.crop.trim()) newErrors.crop = 'Crop selection is required';
-    if (!formData.grade.trim()) newErrors.grade = 'Quality/grade selection is required';
-    if (!formData.quantity.trim() || parseFloat(formData.quantity) <= 0) {
-      newErrors.quantity = 'Valid quantity is required';
+    if (!formData.crop.trim()) {
+      newErrors.crop = t(
+        'cropRequirement.cropRequired'
+      )
     }
-    if (!formData.targetPrice.trim() || parseFloat(formData.targetPrice) <= 0) {
-      newErrors.targetPrice = 'Valid target price is required';
+
+    if (!formData.grade.trim()) {
+      newErrors.grade = t(
+        'cropRequirement.gradeRequired'
+      )
     }
-    if (!formData.deliveryDate) newErrors.deliveryDate = 'Delivery date is required';
+
+    if (
+      !formData.quantity.trim() ||
+      parseFloat(formData.quantity) <= 0
+    ) {
+      newErrors.quantity = t(
+        'cropRequirement.validQuantity'
+      )
+    }
+
+    if (
+      !formData.targetPrice.trim() ||
+      parseFloat(formData.targetPrice) <= 0
+    ) {
+      newErrors.targetPrice = t(
+        'cropRequirement.validPrice'
+      )
+    }
+
+    if (!formData.deliveryDate) {
+      newErrors.deliveryDate = t(
+        'cropRequirement.dateRequired'
+      )
+    }
+
     if (!formData.deliveryLocation.trim()) {
-      newErrors.deliveryLocation = 'Delivery location is required';
+      newErrors.deliveryLocation = t(
+        'cropRequirement.locationRequired'
+      )
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleChange = (
     e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      HTMLInputElement |
+        HTMLSelectElement |
+        HTMLTextAreaElement
     >
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
+    }))
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: '',
-      }));
+      }))
     }
-  };
+  }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault()
+
     if (validateForm()) {
-      setLoading(true);
+      setLoading(true)
 
       // Payload strictly mapped to API spec
       const payload = {
@@ -518,128 +582,216 @@ export default function CropRequirementForm() {
         requiredBy: formData.deliveryDate,
         location: formData.deliveryLocation,
         description:
-          formData.additionalTerms || 'High quality requirement',
-      };
+          formData.additionalTerms ||
+          'High quality requirement',
+      }
 
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token =
+          typeof window !== 'undefined'
+            ? localStorage.getItem('token')
+            : null
 
         if (!token) {
-          const authError = 'No authentication token found. Please login as Buyer before posting requirements.';
-          console.warn('Post requirement blocked:', authError);
-          alert(authError);
-          return;
+          const authError = t(
+            'cropRequirement.noAuthToken'
+          )
+
+          console.warn(
+            'Post requirement blocked:',
+            authError
+          )
+
+          alert(authError)
+
+          return
         }
 
-        await api.post('/requirements', payload);
+        await api.post(
+          '/requirements',
+          payload
+        )
 
-        setSubmitted(true);
-        alert('Requirement published successfully!');
-        router.push('/buyer/dashboard');
+        setSubmitted(true)
+
+        alert(
+          t('cropRequirement.publishedSuccess')
+        )
+
+        router.push('/buyer/dashboard')
       } catch (error: any) {
-        console.error('Failed to post requirement:', error);
+        console.error(
+          'Failed to post requirement:',
+          error
+        )
 
         const message =
           error?.response?.data?.message ||
           error?.message ||
-          'Failed to submit requirement.';
+          t(
+            'cropRequirement.failedToSubmit'
+          )
 
-        if (error?.response?.status === 401) {
-          alert('Session expired. Please login again as Buyer.');
-          router.push('/login');
-        } else if (error?.response?.status === 403) {
-          alert('Access Denied: Only Buyers can post requirements.');
+        if (
+          error?.response?.status === 401
+        ) {
+          alert(
+            t(
+              'cropRequirement.sessionExpired'
+            )
+          )
+
+          router.push('/login')
+        } else if (
+          error?.response?.status === 403
+        ) {
+          alert(
+            t(
+              'cropRequirement.accessDenied'
+            )
+          )
         } else {
-          alert(message);
+          alert(message)
         }
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-  };
+  }
 
   return (
-    <div className="w-full text-gray-900 pb-12">
-      <div className="max-w-5xl mx-auto">
+    <div className="w-full pb-12 text-gray-900">
+      <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8">
           <button
             type="button"
-            onClick={() => router.push('/buyer/dashboard')}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-6 font-medium"
+            onClick={() =>
+              router.push('/buyer/dashboard')
+            }
+            className="mb-6 flex items-center gap-2 font-medium text-primary transition-colors hover:text-primary/80"
           >
             <ArrowLeft size={20} />
-            Back to Dashboard
+
+            {t(
+              'cropRequirement.backToDashboard'
+            )}
           </button>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Post New Crop Requirement
+          <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">
+            {t('cropRequirement.title')}
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground">
-            Specify your crop requirements to receive competitive direct supply
-            proposals from verified farmers.
+
+          <p className="text-base text-muted-foreground md:text-lg">
+            {t(
+              'cropRequirement.subtitle'
+            )}
           </p>
         </div>
 
         {/* Responsive Grid Setup */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
           {/* Left Side: Form */}
-          <div className="lg:col-span-2 bg-card rounded-lg shadow-md border border-border p-6 md:p-8">
+          <div className="rounded-lg border border-border bg-card p-6 shadow-md md:p-8 lg:col-span-2">
             {submitted && (
-              <div className="mb-6 p-4 bg-primary/10 border border-primary rounded-lg">
-                <p className="text-primary font-medium">
-                  ✓ Your procurement requirement has been published successfully! Redirecting...
+              <div className="mb-6 rounded-lg border border-primary bg-primary/10 p-4">
+                <p className="font-medium text-primary">
+                  ✓{' '}
+                  {t(
+                    'cropRequirement.publishedSuccess'
+                  )}
                 </p>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               {/* Crop Selection */}
               <div>
-                <label htmlFor="crop" className="block text-sm font-semibold text-foreground mb-2">
-                  Crop Name <span className="text-destructive">*</span>
+                <label
+                  htmlFor="crop"
+                  className="mb-2 block text-sm font-semibold text-foreground"
+                >
+                  {t(
+                    'cropRequirement.cropName'
+                  )}{' '}
+                  <span className="text-destructive">
+                    *
+                  </span>
                 </label>
+
                 <input
                   id="crop"
                   type="text"
                   name="crop"
                   value={formData.crop}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  placeholder="Enter crop name (e.g. Wheat, Tomato)..."
+                  className="w-full rounded-lg border border-border bg-input px-4 py-3 text-foreground placeholder-muted-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder={t(
+                    'cropRequirement.cropNamePlaceholder'
+                  )}
                 />
+
                 {errors.crop && (
-                  <p className="text-destructive text-sm mt-1">{errors.crop}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.crop}
+                  </p>
                 )}
               </div>
 
               {/* Quality/Grade and Quantity */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="grade" className="block text-sm font-semibold text-foreground mb-2">
-                    Quality/Grade Required
+                  <label
+                    htmlFor="grade"
+                    className="mb-2 block text-sm font-semibold text-foreground"
+                  >
+                    {t(
+                      'cropRequirement.qualityGrade'
+                    )}
                   </label>
+
                   <select
                     id="grade"
                     name="grade"
                     value={formData.grade}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-border rounded-lg bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full rounded-lg border border-border bg-input px-4 py-3 text-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    <option value="">Select grade (optional)...</option>
-                    {gradeOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
+                    <option value="">
+                      {t(
+                        'cropRequirement.selectGrade'
+                      )}
+                    </option>
+
+                    {gradeOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
 
                 <div>
-                  <label htmlFor="quantity" className="block text-sm font-semibold text-foreground mb-2">
-                    Quantity Needed <span className="text-destructive">*</span>
+                  <label
+                    htmlFor="quantity"
+                    className="mb-2 block text-sm font-semibold text-foreground"
+                  >
+                    {t(
+                      'cropRequirement.quantityNeeded'
+                    )}{' '}
+                    <span className="text-destructive">
+                      *
+                    </span>
                   </label>
+
                   <div className="flex items-center gap-2">
                     <input
                       id="quantity"
@@ -647,10 +799,12 @@ export default function CropRequirementForm() {
                       name="quantity"
                       value={formData.quantity}
                       onChange={handleChange}
-                      placeholder="Enter quantity"
+                      placeholder={t(
+                        'cropRequirement.enterQuantity'
+                      )}
                       step="0.01"
                       min="0"
-                      className="w-[68%] px-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-[68%] rounded-lg border border-border bg-input px-4 py-3 text-foreground placeholder-muted-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                     />
 
                     <select
@@ -658,30 +812,48 @@ export default function CropRequirementForm() {
                       aria-label="Select Unit"
                       value={formData.unit}
                       onChange={handleChange}
-                      className="w-[32%] px-3 py-3 border border-border rounded-lg bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-[32%] rounded-lg border border-border bg-input px-3 py-3 text-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                     >
-                      {unitOptions.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
+                      {unitOptions.map(
+                        (option) => (
+                          <option
+                            key={option}
+                            value={option}
+                          >
+                            {option}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
+
                   {errors.quantity && (
-                    <p className="text-destructive text-sm mt-1">{errors.quantity}</p>
+                    <p className="mt-1 text-sm text-destructive">
+                      {errors.quantity}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* Target Price */}
               <div>
-                <label htmlFor="targetPrice" className="block text-sm font-semibold text-foreground mb-2">
-                  Target Price (Total / Expected) <span className="text-destructive">*</span>
+                <label
+                  htmlFor="targetPrice"
+                  className="mb-2 block text-sm font-semibold text-foreground"
+                >
+                  {t(
+                    'cropRequirement.targetPrice'
+                  )}{' '}
+                  <span className="text-destructive">
+                    *
+                  </span>
                 </label>
+
                 <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-foreground font-semibold">
+                  <span className="absolute left-4 top-3.5 font-semibold text-foreground">
                     ₹
                   </span>
+
                   <input
                     id="targetPrice"
                     type="number"
@@ -691,70 +863,117 @@ export default function CropRequirementForm() {
                     placeholder="0.00"
                     step="0.01"
                     min="0"
-                    className="w-full pl-8 pr-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full rounded-lg border border-border bg-input py-3 pl-8 pr-4 text-foreground placeholder-muted-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
+
                 {errors.targetPrice && (
-                  <p className="text-destructive text-sm mt-1">{errors.targetPrice}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.targetPrice}
+                  </p>
                 )}
               </div>
 
               {/* Delivery Deadline */}
               <div>
-                <label htmlFor="deliveryDate" className="block text-sm font-semibold text-foreground mb-2">
-                  Delivery Deadline <span className="text-destructive">*</span>
+                <label
+                  htmlFor="deliveryDate"
+                  className="mb-2 block text-sm font-semibold text-foreground"
+                >
+                  {t(
+                    'cropRequirement.deliveryDeadline'
+                  )}{' '}
+                  <span className="text-destructive">
+                    *
+                  </span>
                 </label>
+
                 <input
                   id="deliveryDate"
                   type="date"
                   name="deliveryDate"
                   value={formData.deliveryDate}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  className="w-full rounded-lg border border-border bg-input px-4 py-3 text-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 />
+
                 {errors.deliveryDate && (
-                  <p className="text-destructive text-sm mt-1">{errors.deliveryDate}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.deliveryDate}
+                  </p>
                 )}
               </div>
 
               {/* Delivery Location */}
               <div>
-                <label htmlFor="deliveryLocation" className="block text-sm font-semibold text-foreground mb-2">
-                  Delivery Location <span className="text-destructive">*</span>
+                <label
+                  htmlFor="deliveryLocation"
+                  className="mb-2 block text-sm font-semibold text-foreground"
+                >
+                  {t(
+                    'cropRequirement.deliveryLocation'
+                  )}{' '}
+                  <span className="text-destructive">
+                    *
+                  </span>
                 </label>
+
                 <div className="relative">
                   <MapPin
                     size={20}
-                    className="absolute left-4 top-3.5 text-secondary pointer-events-none"
+                    className="pointer-events-none absolute left-4 top-3.5 text-secondary"
                   />
+
                   <input
                     id="deliveryLocation"
                     type="text"
                     name="deliveryLocation"
-                    value={formData.deliveryLocation}
+                    value={
+                      formData.deliveryLocation
+                    }
                     onChange={handleChange}
-                    placeholder="e.g., Indore, Delhi Mandi"
-                    className="w-full pl-12 pr-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    placeholder={t(
+                      'cropRequirement.locationPlaceholder'
+                    )}
+                    className="w-full rounded-lg border border-border bg-input py-3 pl-12 pr-4 text-foreground placeholder-muted-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
+
                 {errors.deliveryLocation && (
-                  <p className="text-destructive text-sm mt-1">{errors.deliveryLocation}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.deliveryLocation}
+                  </p>
                 )}
               </div>
 
               {/* Additional Terms */}
               <div>
-                <label htmlFor="additionalTerms" className="block text-sm font-semibold text-foreground mb-2">
-                  Additional Contract Terms <span className="text-muted-foreground">(Optional)</span>
+                <label
+                  htmlFor="additionalTerms"
+                  className="mb-2 block text-sm font-semibold text-foreground"
+                >
+                  {t(
+                    'cropRequirement.additionalTerms'
+                  )}{' '}
+                  <span className="text-muted-foreground">
+                    ({t(
+                      'cropRequirement.optional'
+                    )})
+                  </span>
                 </label>
+
                 <textarea
                   id="additionalTerms"
                   name="additionalTerms"
-                  value={formData.additionalTerms}
+                  value={
+                    formData.additionalTerms
+                  }
                   onChange={handleChange}
-                  placeholder="e.g., Moisture levels max 12%, Premium packaging required..."
+                  placeholder={t(
+                    'cropRequirement.termsPlaceholder'
+                  )}
                   rows={4}
-                  className="w-full px-4 py-3 border border-border rounded-lg bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                  className="w-full resize-none rounded-lg border border-border bg-input px-4 py-3 text-foreground placeholder-muted-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -762,87 +981,168 @@ export default function CropRequirementForm() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-70"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-semibold text-primary-foreground transition-all hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-70"
                 >
                   {loading ? (
                     <>
-                      <Loader2 size={20} className="animate-spin" /> Publishing...
+                      <Loader2
+                        size={20}
+                        className="animate-spin"
+                      />
+
+                      {t(
+                        'cropRequirement.publishing'
+                      )}
                     </>
                   ) : (
-                    'Publish Procurement Demand →'
+                    t(
+                      'cropRequirement.publish'
+                    )
                   )}
                 </Button>
               </div>
             </form>
 
             {/* Trust Badges */}
-            <div className="mt-8 pt-8 border-t border-border space-y-4">
+            <div className="mt-8 space-y-4 border-t border-border pt-8">
               <div className="flex items-center gap-3">
-                <CheckCircle2 size={20} className="text-primary flex-shrink-0" />
-                <span className="text-sm text-foreground">100% Verified Farmer Network Match</span>
+                <CheckCircle2
+                  size={20}
+                  className="flex-shrink-0 text-primary"
+                />
+
+                <span className="text-sm text-foreground">
+                  {t(
+                    'cropRequirement.verifiedNetwork'
+                  )}
+                </span>
               </div>
+
               <div className="flex items-center gap-3">
-                <CheckCircle2 size={20} className="text-primary flex-shrink-0" />
-                <span className="text-sm text-foreground">Government Mandi Pricing Reference Compliant</span>
+                <CheckCircle2
+                  size={20}
+                  className="flex-shrink-0 text-primary"
+                />
+
+                <span className="text-sm text-foreground">
+                  {t(
+                    'cropRequirement.mandiPricing'
+                  )}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Right Side: Live AI Procurement Assistant */}
-          <div className="bg-amber-50/60 dark:bg-amber-950/20 p-5 rounded-lg border border-amber-200/60 shadow-sm flex flex-col justify-between min-h-[420px] sticky top-6">
+          <div className="sticky top-6 flex min-h-[420px] flex-col justify-between rounded-lg border border-amber-200/60 bg-amber-50/60 p-5 shadow-sm dark:border-amber-900/40 dark:bg-amber-950/20">
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 fill-amber-500 text-amber-600 animate-pulse" />
-                <span>KrishiSetu Predictor AI</span>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                <Sparkles className="h-4 w-4 animate-pulse fill-amber-500 text-amber-600" />
+
+                <span>
+                  {t(
+                    'cropRequirement.predictorAI'
+                  )}
+                </span>
               </div>
 
               {isTomatoCase ? (
-                <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                  <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-amber-100 dark:border-amber-900/40 shadow-sm space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 block">Demand Score</span>
-                    <div className="text-sm font-extrabold text-green-700 dark:text-green-400 flex items-center gap-1">
-                      High Market Demand <TrendingUp className="w-3.5 h-3.5" />
+                <div className="animate-in space-y-4 fade-in zoom-in-95 duration-200">
+                  <div className="space-y-1 rounded-xl border border-amber-100 bg-white p-3 shadow-sm dark:border-amber-900/40 dark:bg-zinc-900">
+                    <span className="block text-[10px] font-bold uppercase text-gray-400">
+                      {t(
+                        'cropRequirement.demandScore'
+                      )}
+                    </span>
+
+                    <div className="flex items-center gap-1 text-sm font-extrabold text-green-700 dark:text-green-400">
+                      {t(
+                        'cropRequirement.highMarketDemand'
+                      )}
+
+                      <TrendingUp className="h-3.5 w-3.5" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-amber-100 dark:border-amber-900/40 text-center">
-                      <span className="text-[9px] text-gray-400 font-bold block uppercase">Available Farmers</span>
-                      <span className="text-base font-extrabold text-gray-900 dark:text-gray-100">26</span>
+                    <div className="rounded-xl border border-amber-100 bg-white p-3 text-center dark:border-amber-900/40 dark:bg-zinc-900">
+                      <span className="block text-[9px] font-bold uppercase text-gray-400">
+                        {t(
+                          'cropRequirement.availableFarmers'
+                        )}
+                      </span>
+
+                      <span className="text-base font-extrabold text-gray-900 dark:text-gray-100">
+                        26
+                      </span>
                     </div>
-                    <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-amber-100 dark:border-amber-900/40 text-center">
-                      <span className="text-[9px] text-gray-400 font-bold block uppercase">Est. Responses</span>
-                      <span className="text-base font-extrabold text-gray-900 dark:text-gray-100">12</span>
+
+                    <div className="rounded-xl border border-amber-100 bg-white p-3 text-center dark:border-amber-900/40 dark:bg-zinc-900">
+                      <span className="block text-[9px] font-bold uppercase text-gray-400">
+                        {t(
+                          'cropRequirement.estimatedResponses'
+                        )}
+                      </span>
+
+                      <span className="text-base font-extrabold text-gray-900 dark:text-gray-100">
+                        12
+                      </span>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-amber-100 dark:border-amber-900/40 shadow-sm">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Suggested Price</span>
+                  <div className="rounded-xl border border-amber-100 bg-white p-3 shadow-sm dark:border-amber-900/40 dark:bg-zinc-900">
+                    <span className="mb-0.5 block text-[10px] font-bold uppercase text-gray-400">
+                      {t(
+                        'cropRequirement.suggestedPrice'
+                      )}
+                    </span>
+
                     <div className="text-base font-extrabold text-amber-700 dark:text-amber-400">
                       ₹24 / kg
                     </div>
-                    <p className="text-[10px] text-gray-500 mt-1 leading-normal">
-                      Your current input of <strong className="text-gray-700 dark:text-gray-300">₹{formData.targetPrice || '0.00'}</strong> is below the current micro-cluster average.
+
+                    <p className="mt-1 text-[10px] leading-normal text-gray-500">
+                      {t(
+                        'cropRequirement.priceBelowAverage'
+                      )}{' '}
+                      <strong className="text-gray-700 dark:text-gray-300">
+                        ₹
+                        {formData.targetPrice ||
+                          '0.00'}
+                      </strong>{' '}
+                      {t(
+                        'cropRequirement.belowClusterAverage'
+                      )}
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="text-xs text-gray-400 text-center py-20 flex flex-col items-center justify-center gap-2">
-                  <HelpCircle className="w-8 h-8 text-amber-200" />
+                <div className="flex flex-col items-center justify-center gap-2 py-20 text-center text-xs text-gray-400">
+                  <HelpCircle className="h-8 w-8 text-amber-200" />
+
                   <p className="max-w-[190px] leading-relaxed">
-                    Type <strong className="text-gray-600 dark:text-gray-300">"Tomato"</strong> in Crop Name to simulate live AI procurement response matching.
+                    {t(
+                      'cropRequirement.typeTomato'
+                    )}{' '}
+                    <strong className="text-gray-600 dark:text-gray-300">
+                      "Tomato"
+                    </strong>{' '}
+                    {t(
+                      'cropRequirement.inCropName'
+                    )}
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold text-center border-t border-amber-200/40 pt-3 mt-4">
-              💡 Procurement Decisions Support Module Active
+            <div className="mt-4 border-t border-amber-200/40 pt-3 text-center text-[10px] font-semibold text-amber-700 dark:text-amber-400">
+              {t(
+                'cropRequirement.supportModule'
+              )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
-  );
+  )
 }

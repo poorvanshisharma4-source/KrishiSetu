@@ -11,7 +11,7 @@ import {
   BarChart3,
   Lightbulb,
 } from 'lucide-react'
-
+import { useLanguage } from '@/components/LanguageContext'
 interface MetricCard {
   title: string
   value: string
@@ -36,10 +36,106 @@ interface RecommendationCard {
 
 export default function BuyerAnalyticsDashboard() {
   const router = useRouter()
+  const { language } = useLanguage()
+
+  const isHindi = language === 'hi'
 
   const [aiResponse, setAiResponse] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const t = (key: string) => {
+    const translations = {
+      en: {
+        'analytics.backToDashboard': 'Back to Dashboard',
+        'analytics.title': 'Buyer AI Analytics Dashboard',
+        'analytics.subtitle':
+          'AI-powered procurement insights and predictive marketplace recommendations.',
+        'analytics.procurementSavings': 'Procurement Savings Index',
+        'analytics.lastQuarter': '+12.5% vs last quarter',
+        'analytics.sourcingWindow': 'Optimal Sourcing Window',
+        'analytics.bestWindow': 'Best window: Rice & Onions',
+        'analytics.supplyVolatility': 'Supply Volatility Alert',
+        'analytics.high': 'High',
+        'analytics.tomatoVolatility': 'Tomatoes: +18% volatility',
+        'analytics.priceForecast': 'AI Price Forecast',
+        'analytics.currentPrice': 'Current Price',
+        'analytics.forecastedPrice': 'AI Forecasted Price',
+        'analytics.logisticsOpportunity':
+          'Logistics & Sourcing Opportunity',
+        'analytics.qualityAdvisor': 'Quality & Grade Advisor',
+        'analytics.analyticsResults': 'AI Analytics Results',
+        'analytics.endpointData':
+          'Loaded from the buyer analytics endpoint.',
+        'analytics.loading': 'Loading AI analytics...',
+        'analytics.noData':
+          'No AI analytics data is available at the moment.',
+        'analytics.tomatoes': 'Tomatoes',
+        'analytics.rice': 'Rice',
+        'analytics.onions': 'Onions',
+        'analytics.bulkRice':
+          'Bulk purchase Rice within 3-5 days for 12% savings',
+        'analytics.alternativeTomatoes':
+          'Consider alternative suppliers for Tomatoes to mitigate volatility',
+        'analytics.optimizeRoute':
+          'Optimize transportation route to North region suppliers',
+        'analytics.gradeTomatoes':
+          'Grade A Tomatoes available at premium margin - recommend for premium buyers',
+        'analytics.standardRice':
+          'Standard Grade Rice offers best value this quarter',
+        'analytics.organicOnions':
+          'Organic Onions showing premium demand - stock recommended',
+        'analytics.currentPriceLabel': 'Current Price',
+        'analytics.forecastedPriceLabel': 'AI Forecasted Price',
+        'analytics.perKg': '/kg',
+      },
+      hi: {
+        'analytics.backToDashboard': 'डैशबोर्ड पर वापस जाएं',
+        'analytics.title': 'खरीदार AI विश्लेषण डैशबोर्ड',
+        'analytics.subtitle':
+          'AI द्वारा संचालित खरीद संबंधी जानकारी और भविष्य के बाजार सुझाव।',
+        'analytics.procurementSavings': 'खरीद बचत सूचकांक',
+        'analytics.lastQuarter': 'पिछली तिमाही की तुलना में +12.5%',
+        'analytics.sourcingWindow': 'सर्वोत्तम खरीद समय',
+        'analytics.bestWindow': 'सर्वोत्तम समय: चावल और प्याज',
+        'analytics.supplyVolatility': 'आपूर्ति अस्थिरता चेतावनी',
+        'analytics.high': 'उच्च',
+        'analytics.tomatoVolatility': 'टमाटर: +18% अस्थिरता',
+        'analytics.priceForecast': 'AI मूल्य पूर्वानुमान',
+        'analytics.currentPrice': 'वर्तमान मूल्य',
+        'analytics.forecastedPrice': 'AI अनुमानित मूल्य',
+        'analytics.logisticsOpportunity':
+          'लॉजिस्टिक्स और खरीद अवसर',
+        'analytics.qualityAdvisor': 'गुणवत्ता और ग्रेड सलाहकार',
+        'analytics.analyticsResults': 'AI विश्लेषण परिणाम',
+        'analytics.endpointData':
+          'खरीदार विश्लेषण API से प्राप्त डेटा।',
+        'analytics.loading': 'AI विश्लेषण लोड हो रहा है...',
+        'analytics.noData':
+          'इस समय कोई AI विश्लेषण डेटा उपलब्ध नहीं है।',
+        'analytics.tomatoes': 'टमाटर',
+        'analytics.rice': 'चावल',
+        'analytics.onions': 'प्याज',
+        'analytics.bulkRice':
+          '12% बचत के लिए 3-5 दिनों के भीतर चावल की थोक खरीद करें',
+        'analytics.alternativeTomatoes':
+          'अस्थिरता कम करने के लिए टमाटर के वैकल्पिक आपूर्तिकर्ताओं पर विचार करें',
+        'analytics.optimizeRoute':
+          'उत्तर क्षेत्र के आपूर्तिकर्ताओं के लिए परिवहन मार्ग को बेहतर बनाएं',
+        'analytics.gradeTomatoes':
+          'प्रीमियम मार्जिन पर ग्रेड A टमाटर उपलब्ध हैं - प्रीमियम खरीदारों के लिए अनुशंसित',
+        'analytics.standardRice':
+          'इस तिमाही में Standard Grade Rice सबसे अच्छा मूल्य प्रदान करता है',
+        'analytics.organicOnions':
+          'ऑर्गेनिक प्याज की मांग बढ़ रही है - स्टॉक रखने की सलाह दी जाती है',
+        'analytics.currentPriceLabel': 'वर्तमान मूल्य',
+        'analytics.forecastedPriceLabel': 'AI अनुमानित मूल्य',
+        'analytics.perKg': '/किग्रा',
+      },
+    }
+
+    return translations[isHindi ? 'hi' : 'en'][key as keyof typeof translations.en]
+  }
 
   useEffect(() => {
     const loadAnalytics = async () => {
@@ -78,7 +174,7 @@ export default function BuyerAnalyticsDashboard() {
 
         setError(
           err?.message ||
-            'Unable to load buyer analytics data'
+            t('analytics.noData')
         )
       } finally {
         setLoading(false)
@@ -86,27 +182,27 @@ export default function BuyerAnalyticsDashboard() {
     }
 
     loadAnalytics()
-  }, [])
+  }, [isHindi])
 
   const metrics: MetricCard[] = [
     {
-      title: 'Procurement Savings Index',
+      title: t('analytics.procurementSavings'),
       value: '₹2.4M',
-      change: '+12.5% vs last quarter',
+      change: t('analytics.lastQuarter'),
       changeType: 'positive',
       icon: <TrendingUp className="size-5" />,
     },
     {
-      title: 'Optimal Sourcing Window',
-      value: '3-5 Days',
-      change: 'Best window: Rice & Onions',
+      title: t('analytics.sourcingWindow'),
+      value: isHindi ? '3-5 दिन' : '3-5 Days',
+      change: t('analytics.bestWindow'),
       changeType: 'neutral',
       icon: <Calendar className="size-5" />,
     },
     {
-      title: 'Supply Volatility Alert',
-      value: 'High',
-      change: 'Tomatoes: +18% volatility',
+      title: t('analytics.supplyVolatility'),
+      value: t('analytics.high'),
+      change: t('analytics.tomatoVolatility'),
       changeType: 'negative',
       icon: <AlertTriangle className="size-5" />,
     },
@@ -114,21 +210,21 @@ export default function BuyerAnalyticsDashboard() {
 
   const priceForecasts: PriceData[] = [
     {
-      commodity: 'Tomatoes',
+      commodity: t('analytics.tomatoes'),
       current: 45,
       forecasted: 52,
       change: 7,
       changePercent: 15.6,
     },
     {
-      commodity: 'Rice',
+      commodity: t('analytics.rice'),
       current: 120,
       forecasted: 118,
       change: -2,
       changePercent: -1.7,
     },
     {
-      commodity: 'Onions',
+      commodity: t('analytics.onions'),
       current: 30,
       forecasted: 28,
       change: -2,
@@ -138,21 +234,21 @@ export default function BuyerAnalyticsDashboard() {
 
   const recommendations: RecommendationCard[] = [
     {
-      title: 'Logistics & Sourcing Opportunity',
+      title: t('analytics.logisticsOpportunity'),
       icon: <BarChart3 className="size-5" />,
       items: [
-        'Bulk purchase Rice within 3-5 days for 12% savings',
-        'Consider alternative suppliers for Tomatoes to mitigate volatility',
-        'Optimize transportation route to North region suppliers',
+        t('analytics.bulkRice'),
+        t('analytics.alternativeTomatoes'),
+        t('analytics.optimizeRoute'),
       ],
     },
     {
-      title: 'Quality & Grade Advisor',
+      title: t('analytics.qualityAdvisor'),
       icon: <Lightbulb className="size-5" />,
       items: [
-        'Grade A Tomatoes available at premium margin - recommend for premium buyers',
-        'Standard Grade Rice offers best value this quarter',
-        'Organic Onions showing premium demand - stock recommended',
+        t('analytics.gradeTomatoes'),
+        t('analytics.standardRice'),
+        t('analytics.organicOnions'),
       ],
     },
   ]
@@ -170,15 +266,15 @@ export default function BuyerAnalyticsDashboard() {
             className="inline-flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft size={16} />
-            Back to Dashboard
+            {t('analytics.backToDashboard')}
           </button>
 
           <h1 className="text-3xl font-black text-gray-900 tracking-tight sm:text-4xl">
-            Buyer AI Analytics Dashboard
+            {t('analytics.title')}
           </h1>
 
           <p className="text-sm text-gray-500">
-            AI-powered procurement insights and predictive marketplace recommendations.
+            {t('analytics.subtitle')}
           </p>
         </div>
 
@@ -223,7 +319,7 @@ export default function BuyerAnalyticsDashboard() {
         {/* AI Price Forecast Card */}
         <div className="mb-8 rounded-2xl bg-white p-6 border border-gray-200/60 shadow-sm">
           <h2 className="mb-6 text-lg font-black text-gray-900 tracking-tight">
-            AI Price Forecast
+            {t('analytics.priceForecast')}
           </h2>
 
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-3">
@@ -239,21 +335,21 @@ export default function BuyerAnalyticsDashboard() {
                 <div className="space-y-3">
                   <div>
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      Current Price
+                      {t('analytics.currentPrice')}
                     </p>
 
                     <p className="text-lg font-black text-gray-900">
-                      ₹{forecast.current}/kg
+                      ₹{forecast.current}{t('analytics.perKg')}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      AI Forecasted Price
+                      {t('analytics.forecastedPrice')}
                     </p>
 
                     <p className="text-lg font-black text-emerald-600">
-                      ₹{forecast.forecasted}/kg
+                      ₹{forecast.forecasted}{t('analytics.perKg')}
                     </p>
                   </div>
 
@@ -315,21 +411,19 @@ export default function BuyerAnalyticsDashboard() {
 
         {/* AI Analytics Results */}
         <div className="mt-8 rounded-2xl bg-white p-6 border border-gray-200/60 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">
-                AI Analytics Results
-              </h2>
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-gray-900">
+              {t('analytics.analyticsResults')}
+            </h2>
 
-              <p className="text-sm text-gray-500">
-                Loaded from the buyer analytics endpoint.
-              </p>
-            </div>
+            <p className="text-sm text-gray-500">
+              {t('analytics.endpointData')}
+            </p>
           </div>
 
           {loading ? (
             <div className="rounded-2xl bg-gray-50 p-6 text-center text-gray-600">
-              Loading AI analytics...
+              {t('analytics.loading')}
             </div>
           ) : error ? (
             <div className="rounded-2xl bg-red-50 border border-red-200 p-6 text-sm text-red-700">
@@ -345,7 +439,7 @@ export default function BuyerAnalyticsDashboard() {
             </pre>
           ) : (
             <div className="rounded-2xl bg-gray-50 p-6 text-sm text-gray-600">
-              No AI analytics data is available at the moment.
+              {t('analytics.noData')}
             </div>
           )}
         </div>

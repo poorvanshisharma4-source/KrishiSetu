@@ -391,9 +391,10 @@ import {
   Sliders,
   X,
   Loader2,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react'
 import api from '@/lib/api'
+import { useLanguage } from '@/components/LanguageContext'
 
 interface RequirementCard {
   id: string
@@ -411,7 +412,10 @@ interface RequirementCard {
 
 const mapRequirement = (item: any): RequirementCard => ({
   id: item._id || item.id || String(Math.random()),
-  company: typeof item.buyer === 'object' && item.buyer?.name ? item.buyer.name : 'Verified Buyer',
+  company:
+    typeof item.buyer === 'object' && item.buyer?.name
+      ? item.buyer.name
+      : 'Verified Buyer',
   verified: true,
   cropNeeded: item.cropName || 'Unknown Crop',
   quantity: `${item.quantity ?? 0} ${item.unit || 'kg'}`,
@@ -435,6 +439,8 @@ interface FilterState {
 }
 
 export default function BuyerMarketplace() {
+  const { t } = useLanguage()
+
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [filters, setFilters] = useState<FilterState>({
@@ -446,7 +452,13 @@ export default function BuyerMarketplace() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const categories = ['all', 'Vegetables', 'Grains', 'Fruits', 'Pulses']
+  const categories = [
+    { value: 'all', label: t('marketplace.all') },
+    { value: 'Vegetables', label: t('marketplace.vegetables') },
+    { value: 'Grains', label: t('marketplace.grains') },
+    { value: 'Fruits', label: t('marketplace.fruits') },
+    { value: 'Pulses', label: t('marketplace.pulses') },
+  ]
 
   useEffect(() => {
     let isMounted = true
@@ -454,7 +466,9 @@ export default function BuyerMarketplace() {
     const fetchRequirements = async () => {
       try {
         setLoading(true)
+
         const response = await api.get('/requirements')
+
         // Backend returns { success: true, count: X, data: [...] }
         const list = response?.data?.data || response?.data || []
 
@@ -464,11 +478,14 @@ export default function BuyerMarketplace() {
               ? list.map(mapRequirement)
               : []
           )
+
           setError(null)
         }
       } catch (err: any) {
         if (isMounted) {
-          setError(err.message || 'Failed to load requirements.')
+          setError(
+            err.message || t('marketplace.failedToLoad')
+          )
           setRequirements([])
         }
       } finally {
@@ -483,28 +500,53 @@ export default function BuyerMarketplace() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [t])
 
   const filteredRequirements = useMemo(() => {
     return requirements.filter((req) => {
       const matchesSearch =
-        req.cropNeeded.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        req.company.toLowerCase().includes(searchQuery.toLowerCase())
+        req.cropNeeded
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        req.company
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
 
       const matchesCategory =
         selectedCategory === 'all' ||
-        req.cropNeeded.toLowerCase().includes(selectedCategory.toLowerCase())
+        req.cropNeeded
+          .toLowerCase()
+          .includes(selectedCategory.toLowerCase())
 
       // Filter by minimum price if specified
-      const numericPrice = parseFloat(req.basePrice.replace(/[^0-9.]/g, '')) || 0
-      const matchesPrice = !filters.minPrice || numericPrice >= parseFloat(filters.minPrice)
+      const numericPrice =
+        parseFloat(
+          req.basePrice.replace(/[^0-9.]/g, '')
+        ) || 0
 
-      return matchesSearch && matchesCategory && matchesPrice
+      const matchesPrice =
+        !filters.minPrice ||
+        numericPrice >= parseFloat(filters.minPrice)
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesPrice
+      )
     })
-  }, [requirements, searchQuery, selectedCategory, filters.minPrice])
+  }, [
+    requirements,
+    searchQuery,
+    selectedCategory,
+    filters.minPrice,
+  ])
 
   const handleSendProposal = (companyName: string) => {
-    alert(`Proposal sent to ${companyName}! You will be contacted shortly.`)
+    alert(
+      `${t('marketplace.proposalSent')} ${companyName}! ${t(
+        'marketplace.contactedShortly'
+      )}`
+    )
   }
 
   return (
@@ -514,12 +556,14 @@ export default function BuyerMarketplace() {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <ShoppingBag className="h-8 w-8 text-green-700" />
+
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Buyer Requirements Marketplace
+                {t('marketplace.title')}
               </h1>
+
               <p className="mt-1 text-sm text-gray-600">
-                Browse and respond to bulk crop purchase requests from verified buyers
+                {t('marketplace.subtitle')}
               </p>
             </div>
           </div>
@@ -533,11 +577,16 @@ export default function BuyerMarketplace() {
           {/* Search Bar */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+
             <input
               type="text"
-              placeholder="Search by crop name or company..."
+              placeholder={t(
+                'marketplace.searchPlaceholder'
+              )}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                setSearchQuery(e.target.value)
+              }
               className="w-full rounded-lg border border-green-200 bg-white py-3 pl-12 pr-4 text-gray-900 placeholder-gray-500 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200"
             />
           </div>
@@ -548,26 +597,31 @@ export default function BuyerMarketplace() {
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
                 <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
+                  key={cat.value}
+                  onClick={() =>
+                    setSelectedCategory(cat.value)
+                  }
                   className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                    selectedCategory === cat
+                    selectedCategory === cat.value
                       ? 'bg-green-700 text-white shadow-md'
                       : 'border border-green-200 bg-white text-gray-700 hover:border-green-400'
                   }`}
                 >
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat.label}
                 </button>
               ))}
             </div>
 
             {/* Advanced Filters Toggle */}
             <button
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() =>
+                setShowFilters(!showFilters)
+              }
               className="inline-flex items-center gap-2 rounded-lg border border-green-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-green-50"
             >
               <Sliders className="h-4 w-4" />
-              Filters
+
+              {t('marketplace.filters')}
             </button>
           </div>
 
@@ -575,9 +629,14 @@ export default function BuyerMarketplace() {
           {showFilters && (
             <div className="rounded-lg border border-green-200 bg-green-50 p-4">
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-900">Advanced Filters</h3>
+                <h3 className="font-semibold text-gray-900">
+                  {t('marketplace.advancedFilters')}
+                </h3>
+
                 <button
-                  onClick={() => setShowFilters(false)}
+                  onClick={() =>
+                    setShowFilters(false)
+                  }
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="h-5 w-5" />
@@ -588,14 +647,20 @@ export default function BuyerMarketplace() {
                 {/* Minimum Price Filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Minimum Price (₹)
+                    {t('marketplace.minimumPrice')}
                   </label>
+
                   <input
                     type="number"
-                    placeholder="e.g., 1500"
+                    placeholder={t(
+                      'marketplace.pricePlaceholder'
+                    )}
                     value={filters.minPrice}
                     onChange={(e) =>
-                      setFilters({ ...filters, minPrice: e.target.value })
+                      setFilters({
+                        ...filters,
+                        minPrice: e.target.value,
+                      })
                     }
                     className="mt-2 w-full rounded-lg border border-green-200 bg-white px-4 py-2 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200"
                   />
@@ -604,14 +669,20 @@ export default function BuyerMarketplace() {
                 {/* Location Radius Filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Location Radius (km)
+                    {t('marketplace.locationRadius')}
                   </label>
+
                   <input
                     type="number"
-                    placeholder="e.g., 50"
+                    placeholder={t(
+                      'marketplace.radiusPlaceholder'
+                    )}
                     value={filters.locationRadius}
                     onChange={(e) =>
-                      setFilters({ ...filters, locationRadius: e.target.value })
+                      setFilters({
+                        ...filters,
+                        locationRadius: e.target.value,
+                      })
                     }
                     className="mt-2 w-full rounded-lg border border-green-200 bg-white px-4 py-2 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200"
                   />
@@ -621,11 +692,14 @@ export default function BuyerMarketplace() {
               <div className="mt-4 flex gap-2">
                 <button
                   onClick={() =>
-                    setFilters({ minPrice: '', locationRadius: '' })
+                    setFilters({
+                      minPrice: '',
+                      locationRadius: '',
+                    })
                   }
                   className="flex-1 rounded-lg border border-green-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
-                  Reset Filters
+                  {t('marketplace.resetFilters')}
                 </button>
               </div>
             </div>
@@ -636,19 +710,30 @@ export default function BuyerMarketplace() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="h-10 w-10 animate-spin text-green-700" />
-            <p className="mt-4 text-sm text-gray-600">Fetching live requirements...</p>
+
+            <p className="mt-4 text-sm text-gray-600">
+              {t('marketplace.fetchingRequirements')}
+            </p>
           </div>
         ) : error ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700 flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700">
             <AlertCircle className="h-5 w-5" />
+
             <span>{error}</span>
           </div>
         ) : (
           <>
             {/* Results Summary */}
             <div className="mb-6 text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredRequirements.length}</span> requirement
-              {filteredRequirements.length !== 1 ? 's' : ''}
+              {t('marketplace.showing')}{' '}
+
+              <span className="font-semibold text-gray-900">
+                {filteredRequirements.length}
+              </span>{' '}
+
+              {filteredRequirements.length !== 1
+                ? t('marketplace.requirements')
+                : t('marketplace.requirement')}
             </div>
 
             {/* Requirements Grid */}
@@ -664,15 +749,20 @@ export default function BuyerMarketplace() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
                           <Building2 className="h-5 w-5 flex-shrink-0 text-green-700" />
+
                           <div>
                             <p className="font-semibold text-gray-900">
                               {req.company}
                             </p>
+
                             <p className="text-xs text-gray-600">
-                              Verified buyer
+                              {t(
+                                'marketplace.verifiedBuyer'
+                              )}
                             </p>
                           </div>
                         </div>
+
                         {req.verified && (
                           <CheckCircle className="h-5 w-5 flex-shrink-0 text-green-600" />
                         )}
@@ -683,7 +773,12 @@ export default function BuyerMarketplace() {
                     <div className="flex-1 space-y-4 p-4">
                       {/* Crop Needed */}
                       <div>
-                        <p className="text-sm text-gray-600">Required Crop</p>
+                        <p className="text-sm text-gray-600">
+                          {t(
+                            'marketplace.requiredCrop'
+                          )}
+                        </p>
+
                         <p className="mt-1 text-lg font-bold text-gray-900">
                           {req.quantity} of {req.cropNeeded}
                         </p>
@@ -691,7 +786,9 @@ export default function BuyerMarketplace() {
 
                       {/* Description */}
                       {req.description && (
-                        <p className="text-sm text-gray-600">{req.description}</p>
+                        <p className="text-sm text-gray-600">
+                          {req.description}
+                        </p>
                       )}
 
                       {/* Specifications Grid */}
@@ -699,10 +796,14 @@ export default function BuyerMarketplace() {
                         {/* Quality Grade */}
                         <div className="flex items-start gap-3">
                           <Scale className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+
                           <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">
-                              Quality Grade
+                            <p className="text-xs font-medium uppercase text-gray-600">
+                              {t(
+                                'marketplace.qualityGrade'
+                              )}
                             </p>
+
                             <p className="text-sm font-semibold text-gray-900">
                               {req.qualityGrade}
                             </p>
@@ -712,10 +813,14 @@ export default function BuyerMarketplace() {
                         {/* Price */}
                         <div className="flex items-start gap-3">
                           <ShoppingBag className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+
                           <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">
-                              Expected Price
+                            <p className="text-xs font-medium uppercase text-gray-600">
+                              {t(
+                                'marketplace.expectedPrice'
+                              )}
                             </p>
+
                             <p className="text-sm font-semibold text-gray-900">
                               {req.basePrice}
                             </p>
@@ -725,10 +830,14 @@ export default function BuyerMarketplace() {
                         {/* Location */}
                         <div className="flex items-start gap-3">
                           <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+
                           <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">
-                              Delivery Location
+                            <p className="text-xs font-medium uppercase text-gray-600">
+                              {t(
+                                'marketplace.deliveryLocation'
+                              )}
                             </p>
+
                             <p className="text-sm font-semibold text-gray-900">
                               {req.location}
                             </p>
@@ -738,10 +847,14 @@ export default function BuyerMarketplace() {
                         {/* Deadline */}
                         <div className="flex items-start gap-3">
                           <div className="mt-0.5 h-4 w-4 flex-shrink-0 rounded bg-green-600" />
+
                           <div>
-                            <p className="text-xs font-medium text-gray-600 uppercase">
-                              Required By
+                            <p className="text-xs font-medium uppercase text-gray-600">
+                              {t(
+                                'marketplace.requiredBy'
+                              )}
                             </p>
+
                             <p className="text-sm font-semibold text-gray-900">
                               {req.deliveryDate}
                             </p>
@@ -753,10 +866,14 @@ export default function BuyerMarketplace() {
                     {/* Action Button */}
                     <div className="border-t border-green-50 p-4">
                       <button
-                        onClick={() => handleSendProposal(req.company)}
+                        onClick={() =>
+                          handleSendProposal(req.company)
+                        }
                         className="w-full rounded-lg bg-green-700 px-4 py-3 font-semibold text-white transition-all hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
                       >
-                        Send Supply Proposal
+                        {t(
+                          'marketplace.sendSupplyProposal'
+                        )}
                       </button>
                     </div>
                   </div>
@@ -765,11 +882,17 @@ export default function BuyerMarketplace() {
             ) : (
               <div className="rounded-lg border border-green-100 bg-green-50 p-12 text-center">
                 <ShoppingBag className="mx-auto h-12 w-12 text-green-300" />
+
                 <p className="mt-4 text-lg font-medium text-gray-900">
-                  No requirements found
+                  {t(
+                    'marketplace.noRequirements'
+                  )}
                 </p>
+
                 <p className="mt-2 text-sm text-gray-600">
-                  Try adjusting your search or filters to find more opportunities
+                  {t(
+                    'marketplace.adjustSearch'
+                  )}
                 </p>
               </div>
             )}

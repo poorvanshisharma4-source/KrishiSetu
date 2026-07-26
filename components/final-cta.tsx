@@ -1,9 +1,14 @@
+'use client'
+
 import Link from 'next/link'
 import { Sprout, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal } from '@/components/reveal'
+import { useLanguage } from '@/components/LanguageContext'
 
 export function FinalCta() {
+  const { t } = useLanguage()
+
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -18,34 +23,41 @@ export function FinalCta() {
                 backgroundSize: '28px 28px',
               }}
             />
+
             <div className="relative mx-auto max-w-2xl">
               <h2 className="font-heading text-3xl font-extrabold text-balance sm:text-4xl">
-                Join the Future of Agriculture
+                {t('cta.title')}
               </h2>
+
               <p className="mt-4 text-lg leading-relaxed text-primary-foreground/85 text-pretty">
-                Whether you&apos;re a farmer or a buyer, KrishiSetu helps you
-                build reliable and profitable partnerships.
+                {t('cta.description')}
               </p>
+
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <Button
-                
                   size="lg"
                   className="h-12 bg-background px-6 text-base text-foreground hover:bg-background/90"
                 >
-                  <Link href="/farmer/register">
+                  <Link
+                    href="/farmer/register"
+                    className="flex items-center gap-2"
+                  >
                     <Sprout className="h-5 w-5" />
-                    Join as Farmer
+                    {t('cta.farmer')}
                   </Link>
                 </Button>
+
                 <Button
-                
                   size="lg"
                   variant="outline"
                   className="h-12 border-primary-foreground/40 bg-transparent px-6 text-base text-primary-foreground hover:bg-primary-foreground hover:text-primary"
                 >
-                  <Link href="/buyer/register">
+                  <Link
+                    href="/buyer/register"
+                    className="flex items-center gap-2"
+                  >
                     <ShoppingCart className="h-5 w-5" />
-                    Join as Buyer
+                    {t('cta.buyer')}
                   </Link>
                 </Button>
               </div>

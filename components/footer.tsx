@@ -1,54 +1,97 @@
+ 'use client'
+
 import Link from 'next/link'
-import { Sprout, Share2, AtSign, MessageCircle, Send } from 'lucide-react'
-
-const links = [
-  { label: 'About', href: '/about' },
-  { label: 'Features', href: '/features' },
-  { label: 'Contact', href: '/contact' },
-  { label: 'FAQ', href: '/faq' },
-]
-
-const portals = [
-  { label: 'Farmer Login', href: '/farmer/login' },
-  { label: 'Farmer Register', href: '/farmer/register' },
-  { label: 'Buyer Login', href: '/buyer/login' },
-  { label: 'Buyer Register', href: '/buyer/register' },
-]
-
-const socials = [
-  { icon: Share2, label: 'Facebook' },
-  { icon: AtSign, label: 'Twitter' },
-  { icon: MessageCircle, label: 'WhatsApp' },
-  { icon: Send, label: 'Telegram' },
-]
+import {
+  Sprout,
+  Share2,
+  AtSign,
+  MessageCircle,
+  Send,
+} from 'lucide-react'
+import { useLanguage } from '@/components/LanguageContext'
 
 export function Footer() {
+  const { t } = useLanguage()
+
+  const links = [
+    { label: t('footer.about'), href: '/about' },
+    { label: t('footer.features'), href: '/features' },
+    { label: t('footer.contact'), href: '/contact' },
+    { label: t('footer.faq'), href: '/faq' },
+  ]
+
+  const portals = [
+    {
+      label: t('footer.farmerLogin'),
+      href: '/farmer/login',
+    },
+    {
+      label: t('footer.farmerRegister'),
+      href: '/farmer/register',
+    },
+    {
+      label: t('footer.buyerLogin'),
+      href: '/buyer/login',
+    },
+    {
+      label: t('footer.buyerRegister'),
+      href: '/buyer/register',
+    },
+  ]
+
+  const socials = [
+    {
+      icon: Share2,
+      label: t('footer.facebook'),
+    },
+    {
+      icon: AtSign,
+      label: t('footer.twitter'),
+    },
+    {
+      icon: MessageCircle,
+      label: t('footer.whatsapp'),
+    },
+    {
+      icon: Send,
+      label: t('footer.telegram'),
+    },
+  ]
+
   return (
-    <footer id="contact" className="border-t border-border bg-cream">
+    <footer
+      id="contact"
+      className="border-t border-border bg-cream"
+    >
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row">
           <div className="max-w-sm">
-            <Link href="/" className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="flex items-center gap-2"
+            >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                 <Sprout className="h-5 w-5" />
               </span>
+
               <span className="font-heading text-xl font-bold text-foreground">
                 Krishi<span className="text-primary">Setu</span>
               </span>
             </Link>
+
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              An AI-powered demand-driven farming platform connecting farmers
-              directly with buyers through transparent, trust-based agreements.
+              {t('footer.description')}
             </p>
           </div>
 
           <nav aria-label="Footer">
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-foreground">
-              Company
+              {t('footer.company')}
             </h3>
+
             <ul className="mt-4 space-y-2">
               {links.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -62,11 +105,12 @@ export function Footer() {
 
           <nav aria-label="Portals">
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-foreground">
-              Portals
+              {t('footer.portals')}
             </h3>
+
             <ul className="mt-4 space-y-2">
               {portals.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -80,8 +124,9 @@ export function Footer() {
 
           <div>
             <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-foreground">
-              Follow Us
+              {t('footer.followUs')}
             </h3>
+
             <div className="mt-4 flex gap-3">
               {socials.map((social) => (
                 <a
@@ -98,7 +143,8 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} KrishiSetu. All rights reserved.
+          &copy; {new Date().getFullYear()} KrishiSetu.{' '}
+          {t('footer.rights')}
         </div>
       </div>
     </footer>

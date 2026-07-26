@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
   Lock,
@@ -11,31 +11,33 @@ import {
   Building2,
   CheckCircle,
   Eye,
-  EyeOff
-} from 'lucide-react';
-import Link from 'next/link';
-import api from '@/lib/api';
+  EyeOff,
+} from 'lucide-react'
+import Link from 'next/link'
+import api from '@/lib/api'
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function BuyerLoginPage() {
-  const router = useRouter();
+  const router = useRouter()
+  const { t } = useLanguage()
 
-  const [isRegister, setIsRegister] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isRegister, setIsRegister] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     password: '',
-    companyName: ''
-  });
+    companyName: '',
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
     try {
-      let response;
+      let response
 
       if (isRegister) {
         response = await api.post('/auth/register', {
@@ -48,119 +50,159 @@ export default function BuyerLoginPage() {
           district: '',
           state: '',
           companyName: formData.companyName,
-        });
+        })
 
         if (response.success) {
-          alert(response.message || 'Buyer Registration Successful!');
-          setIsRegister(false);
+          alert(
+            response.message ||
+              t('buyerLogin.registrationSuccess')
+          )
+
+          setIsRegister(false)
         } else {
-          alert(response.message || 'Registration failed.');
+          alert(
+            response.message ||
+              t('buyerLogin.registrationFailed')
+          )
         }
       } else {
         response = await api.post('/auth/login', {
           phone: formData.phone,
           password: formData.password,
-        });
+        })
 
         if (response.success) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem('token', response.token)
+          localStorage.setItem(
+            'user',
+            JSON.stringify(response.user)
+          )
 
           const redirectPath =
             response.user?.role === 'farmer'
               ? '/farmer/dashboard'
               : response.user?.role === 'admin'
-              ? '/admin/dashboard'
-              : '/buyer/dashboard';
+                ? '/admin/dashboard'
+                : '/buyer/dashboard'
 
-          alert(response.message || 'Login Successful!');
-          router.push(redirectPath);
+          alert(
+            response.message ||
+              t('buyerLogin.loginSuccess')
+          )
+
+          router.push(redirectPath)
         } else {
-          alert(response.message || 'Login failed.');
+          alert(
+            response.message ||
+              t('buyerLogin.loginFailed')
+          )
         }
       }
     } catch (error: any) {
-      console.error(error);
+      console.error(error)
+
       const message =
-        error?.response?.data?.message || error?.message || 'Something went wrong!';
-      alert(message);
+        error?.response?.data?.message ||
+        error?.message ||
+        t('buyerLogin.somethingWentWrong')
+
+      alert(message)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-[#F5F0E6] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      
+    <div className="flex min-h-screen flex-col justify-center bg-[#F5F0E6] py-12 font-sans sm:px-6 lg:px-8">
+
       {/* Back Button */}
-      <div className="absolute top-6 left-6">
+      <div className="absolute left-6 top-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-[#2E7D32] hover:text-[#1b4d1e] font-medium transition-all"
+          className="flex items-center gap-2 font-medium text-[#2E7D32] transition-all hover:text-[#1b4d1e]"
         >
-          <ArrowLeft size={20} /> Back to Home
+          <ArrowLeft size={20} />
+
+          {t('buyerLogin.backToHome')}
         </Link>
       </div>
 
       {/* Header */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="flex justify-center items-center gap-2 text-[#2E7D32] font-bold text-3xl mb-4">
-          <Sprout className="w-9 h-9 p-1.5 bg-[#A5D6A7] rounded-xl text-[#2E7D32]" />
-          <span>KrishiSetu</span>
+      <div className="text-center sm:mx-auto sm:w-full sm:max-w-md">
+
+        <div className="mb-4 flex items-center justify-center gap-2 text-3xl font-bold text-[#2E7D32]">
+
+          <Sprout className="h-9 w-9 rounded-xl bg-[#A5D6A7] p-1.5 text-[#2E7D32]" />
+
+          <span>
+            KrishiSetu
+          </span>
+
         </div>
 
         <h2 className="text-3xl font-extrabold text-[#2E7D32]">
-          {isRegister ? 'Join KrishiSetu as Buyer' : 'Welcome Back, Buyer'}
+          {isRegister
+            ? t('buyerLogin.joinAsBuyer')
+            : t('buyerLogin.welcomeBack')}
         </h2>
 
         <p className="mt-2 text-sm text-[#8D6E63]">
           {isRegister
-            ? 'Create your account to start sourcing directly from farmers'
-            : 'Sign in to access your marketplace and orders'}
+            ? t('buyerLogin.registerDescription')
+            : t('buyerLogin.loginDescription')}
         </p>
+
       </div>
 
       {/* Form */}
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 border border-[#A5D6A7]/30">
+
+        <div className="rounded-2xl border border-[#A5D6A7]/30 bg-white px-4 py-8 shadow-xl sm:px-10">
 
           {/* Toggle */}
-          <div className="flex bg-[#F5F0E6] p-1 rounded-xl mb-6">
+          <div className="mb-6 flex rounded-xl bg-[#F5F0E6] p-1">
+
             <button
               type="button"
               onClick={() => setIsRegister(false)}
-              className={`w-1/2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              className={`w-1/2 rounded-lg py-2.5 text-sm font-semibold transition-all ${
                 !isRegister
                   ? 'bg-[#2E7D32] text-white shadow'
                   : 'text-[#8D6E63] hover:text-[#2E7D32]'
               }`}
             >
-              Login
+              {t('buyerLogin.login')}
             </button>
 
             <button
               type="button"
               onClick={() => setIsRegister(true)}
-              className={`w-1/2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+              className={`w-1/2 rounded-lg py-2.5 text-sm font-semibold transition-all ${
                 isRegister
                   ? 'bg-[#2E7D32] text-white shadow'
                   : 'text-[#8D6E63] hover:text-[#2E7D32]'
               }`}
             >
-              Register
+              {t('buyerLogin.register')}
             </button>
+
           </div>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            
+          <form
+            className="space-y-5"
+            onSubmit={handleSubmit}
+          >
+
             {/* Name */}
             {isRegister && (
               <div>
-                <label className="block text-sm font-medium text-[#8D6E63] mb-1">
-                  Full Name
+
+                <label className="mb-1 block text-sm font-medium text-[#8D6E63]">
+                  {t('buyerLogin.fullName')}
                 </label>
 
                 <div className="relative">
+
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <User size={18} />
                   </span>
@@ -168,24 +210,33 @@ export default function BuyerLoginPage() {
                   <input
                     type="text"
                     required
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] bg-[#F5F0E6]/30 text-black outline-none"
-                    placeholder="Enter your full name"
+                    className="w-full rounded-xl border border-gray-300 bg-[#F5F0E6]/30 py-2.5 pl-10 pr-4 text-black outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                    placeholder={t(
+                      'buyerLogin.enterFullName'
+                    )}
                     value={formData.name}
                     onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
+                      setFormData({
+                        ...formData,
+                        name: e.target.value,
+                      })
                     }
                   />
+
                 </div>
+
               </div>
             )}
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-[#8D6E63] mb-1">
-                Phone Number
+
+              <label className="mb-1 block text-sm font-medium text-[#8D6E63]">
+                {t('buyerLogin.phoneNumber')}
               </label>
 
               <div className="relative">
+
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <Phone size={18} />
                 </span>
@@ -194,99 +245,148 @@ export default function BuyerLoginPage() {
                   type="tel"
                   required
                   maxLength={10}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] bg-[#F5F0E6]/30 text-black outline-none"
-                  placeholder="Enter 10 digit number"
+                  className="w-full rounded-xl border border-gray-300 bg-[#F5F0E6]/30 py-2.5 pl-10 pr-4 text-black outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                  placeholder={t(
+                    'buyerLogin.enterPhone'
+                  )}
                   value={formData.phone}
                   onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
+                    setFormData({
+                      ...formData,
+                      phone: e.target.value,
+                    })
                   }
                 />
+
               </div>
+
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-[#8D6E63] mb-1">
-                Password
+
+              <label className="mb-1 block text-sm font-medium text-[#8D6E63]">
+                {t('buyerLogin.password')}
               </label>
 
               <div className="relative">
+
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <Lock size={18} />
                 </span>
 
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={
+                    showPassword
+                      ? 'text'
+                      : 'password'
+                  }
                   required
-                  className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] bg-[#F5F0E6]/30 text-black outline-none"
+                  className="w-full rounded-xl border border-gray-300 bg-[#F5F0E6]/30 py-2.5 pl-10 pr-10 text-black outline-none focus:ring-2 focus:ring-[#2E7D32]"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    setFormData({
+                      ...formData,
+                      password: e.target.value,
+                    })
                   }
                 />
 
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
+
               </div>
+
             </div>
 
             {/* Company */}
             {isRegister && (
               <div>
-                <label className="block text-sm font-medium text-[#8D6E63] mb-1">
-                  Company Name (Optional)
+
+                <label className="mb-1 block text-sm font-medium text-[#8D6E63]">
+                  {t('buyerLogin.companyName')}
                 </label>
 
                 <div className="relative">
+
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <Building2 size={18} />
                   </span>
 
                   <input
                     type="text"
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] bg-[#F5F0E6]/30 text-black outline-none"
-                    placeholder="Business name"
+                    className="w-full rounded-xl border border-gray-300 bg-[#F5F0E6]/30 py-2.5 pl-10 pr-4 text-black outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                    placeholder={t(
+                      'buyerLogin.businessName'
+                    )}
                     value={formData.companyName}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        companyName: e.target.value
+                        companyName: e.target.value,
                       })
                     }
                   />
+
                 </div>
+
               </div>
             )}
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl text-white font-medium bg-[#2E7D32] hover:bg-[#1b4d1e] transition-all"
+              disabled={isLoading}
+              className="w-full rounded-xl bg-[#2E7D32] px-4 py-3 font-medium text-white transition-all hover:bg-[#1b4d1e] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isRegister ? 'Complete Registration' : 'Sign In'}
+              {isLoading
+                ? t('buyerLogin.loading')
+                : isRegister
+                  ? t('buyerLogin.completeRegistration')
+                  : t('buyerLogin.signIn')}
             </button>
+
           </form>
 
           {/* Footer */}
-          <div className="mt-6 pt-6 border-t flex justify-center gap-4 text-xs text-gray-500">
+          <div className="mt-6 flex justify-center gap-4 border-t pt-6 text-xs text-gray-500">
+
             <span className="flex items-center gap-1">
-              <CheckCircle size={14} className="text-[#2E7D32]" />
-              Secure Trade
+              <CheckCircle
+                size={14}
+                className="text-[#2E7D32]"
+              />
+
+              {t('buyerLogin.secureTrade')}
             </span>
 
             <span className="flex items-center gap-1">
-              <CheckCircle size={14} className="text-[#2E7D32]" />
-              Verified Users
+              <CheckCircle
+                size={14}
+                className="text-[#2E7D32]"
+              />
+
+              {t('buyerLogin.verifiedUsers')}
             </span>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
-  );
+  )
 }

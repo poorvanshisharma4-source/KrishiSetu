@@ -57,61 +57,66 @@
 // }
 
 
-'use client';
+'use client'
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { ShoppingBasket, LogIn } from 'lucide-react'; // ArrowRight ki jagah LogIn import kiya
-import { Button } from '@/components/ui/button';
+import Link from 'next/link'
+import Image from 'next/image'
+import { ShoppingBasket, LogIn } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/components/LanguageContext'
 
 export function BuyerCta() {
+  const { t } = useLanguage()
+
   return (
-    <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-100">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <section className="border-t border-gray-100 bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 md:grid-cols-2">
         
-        {/* Left side : text and modified button */}
+        {/* Left side */}
         <div className="text-left">
           <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
             <ShoppingBasket className="h-4 w-4" />
-            For Buyers
+            {t('buyerCta.forBuyers')}
           </span>
 
           <h2 className="mt-5 font-heading text-3xl font-bold text-gray-900">
-            Looking For Specific crops?
+            {t('buyerCta.title')}
           </h2>
 
           <p className="mt-4 text-lg text-gray-600">
-            Need flowers, fruits, vegetables, grains, or bulk agricultural produce? Log in to post your requirement and get direct supplies.
+            {t('buyerCta.description')}
           </p>
 
           <div className="mt-8 flex justify-start">
-            <Link href="/buyer/login" passHref>
-              <Button size="lg" className="h-12 bg-[#00872e] hover:bg-[#006e25] text-white px-6 rounded-xl flex items-center gap-2">
-                {/* Changed text and icon here */}
-                Login to Post Requirement 
+            <Link href="/buyer/login">
+              <Button
+                size="lg"
+                className="flex h-12 items-center gap-2 rounded-xl bg-[#00872e] px-6 text-white hover:bg-[#006e25]"
+              >
+                {t('buyerCta.login')}
                 <LogIn className="h-5 w-5" />
               </Button>
             </Link>
           </div>
 
           <p className="mt-4 text-sm text-gray-400">
-            Be the first buyer to create demand on KrishiSetu.
+            {t('buyerCta.footer')}
           </p>
         </div>
 
-        {/* Right Side : Banner Image */}
-        <div className="w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100">
+        {/* Right side */}
+        <div className="w-full overflow-hidden rounded-2xl border border-gray-100 shadow-lg">
           <Image
             src="/requirement-banner.png"
-            alt="Looking for specific crops banner"
+            alt={t('buyerCta.title')}
             width={600}
             height={400}
-            className="w-full h-auto object-cover"
+            className="h-auto w-full object-cover"
             priority
           />
         </div>
 
       </div>
     </section>
-  );
+  )
 }

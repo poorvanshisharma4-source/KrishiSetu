@@ -8,10 +8,9 @@ import {
   CheckCircle2,
   User,
   MessageSquare,
-  Phone,
-  SlidersHorizontal,
   Dot,
 } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageContext'
 
 // TypeScript Interfaces
 interface Message {
@@ -90,7 +89,8 @@ const MOCK_MESSAGES: Message[] = [
   {
     id: '3',
     sender: 'buyer',
-    content: 'Great! What about pricing and delivery terms? We need delivery by next week.',
+    content:
+      'Great! What about pricing and delivery terms? We need delivery by next week.',
     timestamp: '11:00 AM',
   },
   {
@@ -103,27 +103,46 @@ const MOCK_MESSAGES: Message[] = [
   {
     id: '5',
     sender: 'buyer',
-    content: 'Perfect! Can you share your land records and produce certifications?',
+    content:
+      'Perfect! Can you share your land records and produce certifications?',
     timestamp: '11:30 AM',
   },
   {
     id: '6',
     sender: 'farmer',
-    content: 'Of course! I am attaching our certificates now. Looking forward to working with you!',
+    content:
+      'Of course! I am attaching our certificates now. Looking forward to working with you!',
     timestamp: '11:45 AM',
   },
 ]
 
-export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
-  const [activeConversation, setActiveConversation] = useState<string>('1')
-  const [messageInput, setMessageInput] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES)
+export default function ChatScreen({
+  onSendMessage,
+}: ChatScreenProps) {
+  const { t } = useLanguage()
 
-  const activeBuyer = MOCK_CONVERSATIONS.find((c) => c.id === activeConversation)
-  const filteredConversations = MOCK_CONVERSATIONS.filter((conv) =>
-    conv.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
+  const [activeConversation, setActiveConversation] =
+    useState<string>('1')
+
+  const [messageInput, setMessageInput] =
+    useState<string>('')
+
+  const [searchQuery, setSearchQuery] =
+    useState<string>('')
+
+  const [messages, setMessages] =
+    useState<Message[]>(MOCK_MESSAGES)
+
+  const activeBuyer = MOCK_CONVERSATIONS.find(
+    (c) => c.id === activeConversation
   )
+
+  const filteredConversations =
+    MOCK_CONVERSATIONS.filter((conv) =>
+      conv.companyName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+    )
 
   const handleSendMessage = () => {
     if (messageInput.trim()) {
@@ -131,13 +150,22 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
         id: String(messages.length + 1),
         sender: 'farmer',
         content: messageInput,
-        timestamp: new Date().toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+        timestamp: new Date().toLocaleTimeString(
+          'en-US',
+          {
+            hour: '2-digit',
+            minute: '2-digit',
+          }
+        ),
       }
-      setMessages([...messages, newMessage])
+
+      setMessages([
+        ...messages,
+        newMessage,
+      ])
+
       setMessageInput('')
+
       onSendMessage?.(messageInput)
     }
   }
@@ -148,16 +176,23 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
       <div className="w-full max-w-sm border-r border-border bg-card">
         {/* Header */}
         <div className="border-b border-border p-6">
-          <h1 className="mb-4 text-2xl font-bold text-foreground">My Chats</h1>
+          <h1 className="mb-4 text-2xl font-bold text-foreground">
+            {t('chat.myChats')}
+          </h1>
 
           {/* Search Bar */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+
             <input
               type="text"
-              placeholder="Search contacts..."
+              placeholder={t(
+                'chat.searchContacts'
+              )}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                setSearchQuery(e.target.value)
+              }
               className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -165,36 +200,51 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
 
         {/* Conversations List */}
         <div className="overflow-y-auto">
-          {filteredConversations.map((conversation) => (
-            <div
-              key={conversation.id}
-              onClick={() => setActiveConversation(conversation.id)}
-              className={`flex cursor-pointer items-start gap-3 border-b border-border p-4 transition-all hover:bg-secondary ${
-                activeConversation === conversation.id ? 'bg-muted' : 'bg-card'
-              }`}
-            >
-              {/* Avatar */}
-              <div className="mt-1 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white">
-                <User className="h-6 w-6" />
-              </div>
-
-              {/* Content */}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-foreground text-sm md:text-base">
-                    {conversation.companyName}
-                  </h3>
-                  <span className="text-xs text-muted-foreground">{conversation.timeAgo}</span>
+          {filteredConversations.map(
+            (conversation) => (
+              <div
+                key={conversation.id}
+                onClick={() =>
+                  setActiveConversation(
+                    conversation.id
+                  )
+                }
+                className={`flex cursor-pointer items-start gap-3 border-b border-border p-4 transition-all hover:bg-secondary ${
+                  activeConversation ===
+                  conversation.id
+                    ? 'bg-muted'
+                    : 'bg-card'
+                }`}
+              >
+                {/* Avatar */}
+                <div className="mt-1 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                  <User className="h-6 w-6" />
                 </div>
-                <p className="truncate text-xs text-muted-foreground md:text-sm">
-                  {conversation.lastMessage}
-                </p>
-              </div>
 
-              {/* Unread Dot */}
-              {conversation.isUnread && <Dot className="h-3 w-3 flex-shrink-0 fill-primary text-primary" />}
-            </div>
-          ))}
+                {/* Content */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-foreground md:text-base">
+                      {conversation.companyName}
+                    </h3>
+
+                    <span className="text-xs text-muted-foreground">
+                      {conversation.timeAgo}
+                    </span>
+                  </div>
+
+                  <p className="truncate text-xs text-muted-foreground md:text-sm">
+                    {conversation.lastMessage}
+                  </p>
+                </div>
+
+                {/* Unread Dot */}
+                {conversation.isUnread && (
+                  <Dot className="h-3 w-3 flex-shrink-0 fill-primary text-primary" />
+                )}
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -209,20 +259,34 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white">
                     <User className="h-6 w-6" />
                   </div>
+
                   <div>
-                    <h2 className="text-lg font-bold text-foreground">{activeBuyer.companyName}</h2>
+                    <h2 className="text-lg font-bold text-foreground">
+                      {activeBuyer.companyName}
+                    </h2>
+
                     <div className="flex items-center gap-2">
                       <Dot className="h-2 w-2 fill-primary text-primary" />
-                      <span className="text-xs text-muted-foreground">Active now</span>
+
+                      <span className="text-xs text-muted-foreground">
+                        {t('chat.activeNow')}
+                      </span>
+
                       {activeBuyer.location && (
                         <>
-                          <span className="text-muted-foreground">•</span>
-                          <span className="text-xs text-muted-foreground">{activeBuyer.location}</span>
+                          <span className="text-muted-foreground">
+                            •
+                          </span>
+
+                          <span className="text-xs text-muted-foreground">
+                            {activeBuyer.location}
+                          </span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
+
                 <CheckCircle2 className="h-5 w-5 text-primary" />
               </div>
             </div>
@@ -233,7 +297,11 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex ${message.sender === 'farmer' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${
+                      message.sender === 'farmer'
+                        ? 'justify-end'
+                        : 'justify-start'
+                    }`}
                   >
                     <div
                       className={`max-w-xs rounded-2xl px-4 py-3 ${
@@ -242,10 +310,15 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
                           : 'rounded-bl-none bg-muted text-foreground'
                       }`}
                     >
-                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <p className="text-sm leading-relaxed">
+                        {message.content}
+                      </p>
+
                       <p
                         className={`mt-1 text-xs ${
-                          message.sender === 'farmer' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                          message.sender === 'farmer'
+                            ? 'text-primary-foreground/70'
+                            : 'text-muted-foreground'
                         }`}
                       >
                         {message.timestamp}
@@ -261,27 +334,37 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
               <div className="flex gap-3">
                 <input
                   type="text"
-                  placeholder="Type your message here..."
+                  placeholder={t(
+                    'chat.typeMessage'
+                  )}
                   value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
+                  onChange={(e) =>
+                    setMessageInput(e.target.value)
+                  }
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       handleSendMessage()
                     }
                   }}
-                  className="flex-1 rounded-lg border border-border bg-background py-3 px-4 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
+
                 <button
-                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-background text-foreground hover:bg-muted transition-colors"
-                  title="Attach file"
+                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-background text-foreground transition-colors hover:bg-muted"
+                  title={t(
+                    'chat.attachFile'
+                  )}
                 >
                   <Paperclip className="h-5 w-5" />
                 </button>
+
                 <button
                   onClick={handleSendMessage}
-                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-primary/90 disabled:opacity-50"
                   disabled={!messageInput.trim()}
-                  title="Send message"
+                  title={t(
+                    'chat.sendMessage'
+                  )}
                 >
                   <Send className="h-5 w-5" />
                 </button>
@@ -293,8 +376,13 @@ export default function ChatScreen({ onSendMessage }: ChatScreenProps) {
 
       {/* Mobile Empty State */}
       <div className="flex flex-1 flex-col items-center justify-center bg-background sm:hidden">
-        <MessageSquare className="h-12 w-12 text-muted-foreground mb-4" />
-        <p className="text-center text-muted-foreground">Select a conversation to start chatting</p>
+        <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
+
+        <p className="text-center text-muted-foreground">
+          {t(
+            'chat.selectConversation'
+          )}
+        </p>
       </div>
     </div>
   )

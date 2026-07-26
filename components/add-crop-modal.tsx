@@ -1,141 +1,8 @@
-// 'use client'
-
-// import React, { useState } from 'react'
-// import { X, Calendar, Scale, Layers } from 'lucide-react'
-
-// interface AddCropModalProps {
-//   isOpen: boolean
-//   onClose: () => void
-//   onAddCrop: (crop: { name: string; areaSize: number; harvestDate: string; growthPercentage: number; healthStatus: 'Healthy' | 'Excellent' | 'Needs Attention' }) => void
-// }
-
-// const CROP_OPTIONS = ['Organic Tomatoes', 'Basmati Rice', 'Red Onions', 'Green Chillies', 'Wheat', 'Potatoes']
-
-// export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) {
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     areaSize: '',
-//     harvestDate: '',
-//   })
-
-//   if (!isOpen) return null
-
-//   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-//     const { name, value } = e.target
-//     setFormData((prev) => ({ ...prev, [name]: value }))
-//   }
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault()
-//     if (!formData.name || !formData.areaSize || !formData.harvestDate) return
-
-//     onAddCrop({
-//       name: formData.name,
-//       areaSize: parseFloat(formData.areaSize),
-//       harvestDate: formData.harvestDate,
-//       growthPercentage: 0,
-//       healthStatus: 'Healthy',
-//     })
-    
-//     setFormData({ name: '', areaSize: '', harvestDate: '' })
-//     onClose()
-//   }
-
-//   return (
-//     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-//       <div className="bg-white rounded-2xl w-full max-w-md p-6 border border-gray-100 shadow-xl animate-in fade-in zoom-in-95 duration-200">
-//         <div className="flex justify-between items-center mb-6">
-//           <h2 className="text-xl font-bold text-gray-900">Add New Crop</h2>
-//           <button type="button" onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors">
-//             <X size={20} />
-//           </button>
-//         </div>
-
-//         <form onSubmit={handleSubmit} className="space-y-4">
-//           {/* Crop Name */}
-//           <div>
-//             <label className="block text-sm font-semibold text-[#8D6E63] mb-1">Crop Name</label>
-//             <div className="relative">
-//               <select
-//                 name="name"
-//                 value={formData.name}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full pl-3 pr-10 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none bg-white text-black text-sm transition-all"
-//               >
-//                 <option value="">Select a crop...</option>
-//                 {CROP_OPTIONS.map((crop) => (
-//                   <option key={crop} value={crop}>{crop}</option>
-//                 ))}
-//               </select>
-//             </div>
-//           </div>
-
-//           {/* Land Area */}
-//           <div>
-//             <label className="block text-sm font-semibold text-[#8D6E63] mb-1">Land Area (Acres)</label>
-//             <div className="relative">
-//               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-//                 <Layers size={18} />
-//               </span>
-//               <input
-//                 type="number"
-//                 name="areaSize"
-//                 step="0.1"
-//                 min="0.1"
-//                 placeholder="e.g. 2.5"
-//                 value={formData.areaSize}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none text-black text-sm transition-all"
-//               />
-//             </div>
-//           </div>
-
-//           {/* Harvest Date */}
-//           <div>
-//             <label className="block text-sm font-semibold text-[#8D6E63] mb-1">Estimated Harvest Date</label>
-//             <div className="relative">
-//               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-//                 <Calendar size={18} />
-//               </span>
-//               <input
-//                 type="date"
-//                 name="harvestDate"
-//                 value={formData.harvestDate}
-//                 onChange={handleChange}
-//                 required
-//                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none text-black text-sm transition-all"
-//               />
-//             </div>
-//           </div>
-
-//           {/* Submit Buttons */}
-//           <div className="flex gap-3 mt-6 pt-2">
-//             <button
-//               type="button"
-//               onClick={onClose}
-//               className="w-1/2 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition-colors"
-//             >
-//               Cancel
-//             </button>
-//             <button
-//               type="submit"
-//               className="w-1/2 py-2.5 bg-[#2E7D32] hover:bg-[#1b4d1e] text-white font-semibold rounded-xl text-sm shadow-md transition-all transform hover:-translate-y-0.5"
-//             >
-//               Add Crop
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   )
-// }
-
 'use client'
 
 import React, { useState } from 'react'
 import { X, Calendar, Layers, Loader2 } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageContext'
 
 interface AddCropModalProps {
   isOpen: boolean
@@ -150,22 +17,50 @@ interface AddCropModalProps {
 }
 
 const CROP_OPTIONS = [
-  'Organic Tomatoes',
-  'Basmati Rice',
-  'Red Onions',
-  'Green Chillies',
-  'Wheat',
-  'Potatoes',
-  'Other',
+  {
+    value: 'Organic Tomatoes',
+    labelKey: 'addCropModal.organicTomatoes',
+  },
+  {
+    value: 'Basmati Rice',
+    labelKey: 'addCropModal.basmatiRice',
+  },
+  {
+    value: 'Red Onions',
+    labelKey: 'addCropModal.redOnions',
+  },
+  {
+    value: 'Green Chillies',
+    labelKey: 'addCropModal.greenChillies',
+  },
+  {
+    value: 'Wheat',
+    labelKey: 'addCropModal.wheat',
+  },
+  {
+    value: 'Potatoes',
+    labelKey: 'addCropModal.potatoes',
+  },
+  {
+    value: 'Other',
+    labelKey: 'addCropModal.other',
+  },
 ]
 
-export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) {
+export function AddCropModal({
+  isOpen,
+  onClose,
+  onAddCrop,
+}: AddCropModalProps) {
+  const { t } = useLanguage()
+
   const [formData, setFormData] = useState({
     name: '',
     customName: '',
     areaSize: '',
     harvestDate: '',
   })
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!isOpen) return null
@@ -174,18 +69,32 @@ export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) 
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
   ) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const cropName =
-      formData.name === 'Other' ? formData.customName : formData.name
 
-    if (!cropName || !formData.areaSize || !formData.harvestDate) return
+    const cropName =
+      formData.name === 'Other'
+        ? formData.customName
+        : formData.name
+
+    if (
+      !cropName ||
+      !formData.areaSize ||
+      !formData.harvestDate
+    ) {
+      return
+    }
 
     try {
       setIsSubmitting(true)
+
       await onAddCrop({
         name: cropName,
         areaSize: parseFloat(formData.areaSize),
@@ -194,36 +103,52 @@ export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) 
         healthStatus: 'Healthy',
       })
 
-      setFormData({ name: '', customName: '', areaSize: '', harvestDate: '' })
+      setFormData({
+        name: '',
+        customName: '',
+        areaSize: '',
+        harvestDate: '',
+      })
+
       onClose()
     } catch (error) {
-      console.error('Error submitting crop modal:', error)
+      console.error(
+        'Error submitting crop modal:',
+        error
+      )
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md p-6 border border-gray-100 shadow-xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Add New Crop</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+      <div className="animate-in fade-in zoom-in-95 w-full max-w-md rounded-2xl border border-gray-100 bg-white p-6 shadow-xl duration-200">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-900">
+            {t('addCropModal.title')}
+          </h2>
+
           <button
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+            className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
           >
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
           {/* Crop Name */}
           <div>
-            <label className="block text-sm font-semibold text-[#8D6E63] mb-1">
-              Crop Name
+            <label className="mb-1 block text-sm font-semibold text-[#8D6E63]">
+              {t('addCropModal.cropName')}
             </label>
+
             <div className="relative">
               <select
                 name="name"
@@ -231,12 +156,18 @@ export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) 
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="w-full pl-3 pr-10 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none bg-white text-black text-sm transition-all"
+                className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-sm text-black outline-none transition-all focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]"
               >
-                <option value="">Select a crop...</option>
+                <option value="">
+                  {t('addCropModal.selectCrop')}
+                </option>
+
                 {CROP_OPTIONS.map((crop) => (
-                  <option key={crop} value={crop}>
-                    {crop}
+                  <option
+                    key={crop.value}
+                    value={crop.value}
+                  >
+                    {t(crop.labelKey)}
                   </option>
                 ))}
               </select>
@@ -246,55 +177,64 @@ export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) 
           {/* Custom Crop Input if "Other" is selected */}
           {formData.name === 'Other' && (
             <div>
-              <label className="block text-sm font-semibold text-[#8D6E63] mb-1">
-                Enter Custom Crop Name
+              <label className="mb-1 block text-sm font-semibold text-[#8D6E63]">
+                {t('addCropModal.customCropName')}
               </label>
+
               <input
                 type="text"
                 name="customName"
-                placeholder="e.g. Mustard / Sugarcane"
+                placeholder={t(
+                  'addCropModal.customCropPlaceholder'
+                )}
                 value={formData.customName}
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none text-black text-sm transition-all"
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-black outline-none transition-all focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]"
               />
             </div>
           )}
 
           {/* Land Area */}
           <div>
-            <label className="block text-sm font-semibold text-[#8D6E63] mb-1">
-              Land Area (Acres)
+            <label className="mb-1 block text-sm font-semibold text-[#8D6E63]">
+              {t('addCropModal.landArea')}
             </label>
+
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Layers size={18} />
               </span>
+
               <input
                 type="number"
                 name="areaSize"
                 step="0.1"
                 min="0.1"
-                placeholder="e.g. 2.5"
+                placeholder={t(
+                  'addCropModal.landAreaPlaceholder'
+                )}
                 value={formData.areaSize}
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none text-black text-sm transition-all"
+                className="w-full rounded-xl border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-black outline-none transition-all focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]"
               />
             </div>
           </div>
 
           {/* Harvest Date */}
           <div>
-            <label className="block text-sm font-semibold text-[#8D6E63] mb-1">
-              Estimated Harvest Date
+            <label className="mb-1 block text-sm font-semibold text-[#8D6E63]">
+              {t('addCropModal.harvestDate')}
             </label>
+
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                 <Calendar size={18} />
               </span>
+
               <input
                 type="date"
                 name="harvestDate"
@@ -302,33 +242,38 @@ export function AddCropModal({ isOpen, onClose, onAddCrop }: AddCropModalProps) 
                 onChange={handleChange}
                 required
                 disabled={isSubmitting}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none text-black text-sm transition-all"
+                className="w-full rounded-xl border border-gray-300 py-2.5 pl-10 pr-4 text-sm text-black outline-none transition-all focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]"
               />
             </div>
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex gap-3 mt-6 pt-2">
+          <div className="mt-6 flex gap-3 border-t border-transparent pt-2">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="w-1/2 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition-colors"
+              className="w-1/2 rounded-xl border border-gray-300 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             >
-              Cancel
+              {t('addCropModal.cancel')}
             </button>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-1/2 py-2.5 bg-[#2E7D32] hover:bg-[#1b4d1e] text-white font-semibold rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              className="flex w-1/2 items-center justify-center gap-2 rounded-xl bg-[#2E7D32] py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#1b4d1e]"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
-                  Saving...
+                  <Loader2
+                    size={16}
+                    className="animate-spin"
+                  />
+
+                  {t('addCropModal.saving')}
                 </>
               ) : (
-                'Add Crop'
+                t('addCropModal.addCrop')
               )}
             </button>
           </div>

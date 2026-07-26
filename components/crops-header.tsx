@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus, Search } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageContext'
 
 interface CropsHeaderProps {
   searchQuery: string
@@ -13,25 +14,33 @@ export function CropsHeader({
   onSearchChange,
   onAddClick,
 }: CropsHeaderProps) {
+  const { t } = useLanguage()
+
   return (
     <div className="mb-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">My Crops Inventory</h1>
-        <p className="text-gray-600 mt-1">Manage and monitor your organic crops</p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {t('cropsHeader.title')}
+        </h1>
+
+        <p className="mt-1 text-gray-600">
+          {t('cropsHeader.subtitle')}
+        </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:flex-row">
         {/* Search Input */}
         <div className="relative w-full sm:max-w-xs">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
             <Search size={18} />
           </span>
+
           <input
             type="text"
-            placeholder="Search crops..."
+            placeholder={t('cropsHeader.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none transition-all text-black text-sm"
+            className="w-full rounded-xl border border-gray-300 py-2 pl-10 pr-4 text-sm text-black outline-none transition-all focus:border-[#2E7D32] focus:ring-2 focus:ring-[#2E7D32]"
           />
         </div>
 
@@ -39,10 +48,11 @@ export function CropsHeader({
         <button
           type="button"
           onClick={onAddClick}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all transform hover:-translate-y-0.5 shadow-md bg-[#2E7D32] hover:bg-[#1b4d1e]"
+          className="flex w-full transform items-center justify-center gap-2 rounded-xl bg-[#2E7D32] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-[#1b4d1e] sm:w-auto"
         >
-          <Plus className="w-5 h-5" />
-          Add New Crop
+          <Plus className="h-5 w-5" />
+
+          {t('cropsHeader.addNewCrop')}
         </button>
       </div>
     </div>

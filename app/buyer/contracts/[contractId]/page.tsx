@@ -1,15 +1,33 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ShieldCheck, User, Sprout, Building2, Truck, FileText } from 'lucide-react';
+import {
+  ArrowLeft,
+  ShieldCheck,
+  User,
+  Sprout,
+  Building2,
+  Truck,
+  FileText,
+} from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/api';
+import { useLanguage } from '@/components/LanguageContext';
 
 interface ContractDetail {
   _id: string;
   status?: string;
-  farmer?: { name?: string; phone?: string };
-  buyer?: { name?: string; phone?: string };
+
+  farmer?: {
+    name?: string;
+    phone?: string;
+  };
+
+  buyer?: {
+    name?: string;
+    phone?: string;
+  };
+
   requirement?: {
     cropName?: string;
     unit?: string;
@@ -17,17 +35,19 @@ interface ContractDetail {
     quantity?: number;
     expectedPrice?: number;
   };
+
   agreedPrice?: number;
   quantity?: number;
   location?: string;
 }
 
 export default function ContractDetailsPage() {
-
   const router = useRouter();
   const params = useParams();
+  const { t } = useLanguage();
 
-  const contractId = params.id as string;
+  const contractId = params?.contractId as string;
+
   const [contract, setContract] = useState<ContractDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,28 +55,39 @@ export default function ContractDetailsPage() {
 
   useEffect(() => {
     const fetchContract = async () => {
-      if (!contractId) return;
-      setLoading(true);
+      if (!contractId) {
+        setLoading(false);
+        return;
+      }
+
       try {
+        setLoading(true);
+
         const response = await api.get(`/contracts/${contractId}`);
-        const data = response?.data ?? response;
-        setContract(data ?? null);
+        const data = response?.data?.data ?? response?.data ?? response;
+
+        setContract(data);
         setError(null);
       } catch (err: any) {
         console.error('Contract fetch error:', err);
-        setError(err?.message || 'Unable to load contract details');
+
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            t('contractDetails.loadError')
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchContract();
-  }, [contractId]);
+  }, [contractId, t]);
 
   if (loading) {
     return (
       <div className="p-10 text-center">
-        Loading contract details...
+        {t('contractDetails.loading')}
       </div>
     );
   }
@@ -72,422 +103,432 @@ export default function ContractDetailsPage() {
   if (!contract) {
     return (
       <div className="p-10 text-center">
-        Contract not found
+        {t('contractDetails.notFound')}
       </div>
     );
   }
 
-  const farmerName = contract.farmer?.name ?? 'Farmer';
-  const buyerName = contract.buyer?.name ?? 'Buyer';
-  const farmerLocation = contract.requirement?.location ?? contract.location ?? 'Unknown Location';
-  const cropName = contract.requirement?.cropName ?? 'Unknown Crop';
-  const quantityLabel = contract.quantity
-    ? `${contract.quantity} ${contract.requirement?.unit ?? 'kg'}`
-    : contract.requirement?.quantity
-    ? `${contract.requirement.quantity} ${contract.requirement.unit ?? 'kg'}`
-    : 'Unknown';
-  const priceLabel = contract.agreedPrice
-    ? `₹${contract.agreedPrice}/kg`
-    : contract.requirement?.expectedPrice
-    ? `₹${contract.requirement.expectedPrice}/kg`
-    : 'N/A';
-  const totalValue = contract.agreedPrice && contract.quantity
-    ? `₹${(contract.agreedPrice * contract.quantity).toLocaleString()}`
-    : 'N/A';
-  const contractStatus = contract.status ?? 'active';
+  const farmerName =
+    contract.farmer?.name || t('contractDetails.farmer');
+
+  const buyerName =
+    contract.buyer?.name || t('contractDetails.buyer');
+
+  const farmerLocation =
+    contract.requirement?.location ||
+    contract.location ||
+    t('contractDetails.unknownLocation');
+
+  const cropName =
+    contract.requirement?.cropName ||
+    t('contractDetails.unknownCrop');
+
+  const quantity =
+    contract.quantity ??
+    contract.requirement?.quantity ??
+    0;
+
+  const quantityLabel =
+    quantity > 0
+      ? `${quantity} ${contract.requirement?.unit || 'kg'}`
+      : t('contractDetails.unknown');
+
+  const price =
+    contract.agreedPrice ??
+    contract.requirement?.expectedPrice ??
+    0;
+
+  const priceLabel =
+    price > 0
+      ? `₹${price}/kg`
+      : 'N/A';
+
+  const totalValue =
+    price > 0 && quantity > 0
+      ? `₹${(price * quantity).toLocaleString('en-IN')}`
+      : 'N/A';
+
+  const contractStatus =
+    contract.status || 'active';
+
+  const displayStatus =
+    contractStatus.toLowerCase() === 'active'
+      ? t('contractDetails.active')
+      : contractStatus;
 
   return (
     <div className="min-h-screen bg-[#F5F0E6] p-6">
-
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
 
         {/* Back Button */}
         <button
           onClick={() => router.push('/buyer/contracts')}
-          className="flex items-center gap-2 text-gray-700 hover:text-green-700 mb-6"
+          className="mb-6 flex items-center gap-2 text-gray-700 hover:text-green-700"
         >
           <ArrowLeft size={18} />
-          Back to Contracts
+          {t('contractDetails.backToContracts')}
         </button>
 
-
         {/* Header Card */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-
-          <div className="flex justify-between items-center">
+        <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
 
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Contract Details
+                {t('contractDetails.title')}
               </h1>
 
-              <p className="text-gray-500 mt-2">
-                Contract ID: {contractId}
+              <p className="mt-2 text-gray-500">
+                {t('contractDetails.contractId')}: {contractId}
               </p>
             </div>
 
-
-            <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full">
-              <ShieldCheck size={18}/>
-              Active
+            <div className="flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-green-700">
+              <ShieldCheck size={18} />
+              {displayStatus}
             </div>
 
           </div>
-
         </div>
 
-
-        {/* Buyer & Farmer Details */}
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-
+        {/* Buyer and Farmer Details */}
+        <div className="mb-6 grid gap-6 md:grid-cols-2">
 
           {/* Buyer Card */}
-          <div className="bg-white rounded-2xl shadow-sm p-6">
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
 
-            <div className="flex items-center gap-2 mb-4">
-              <Building2 className="text-green-700"/>
+            <div className="mb-4 flex items-center gap-2">
+              <Building2 className="text-green-700" />
+
               <h2 className="text-xl font-bold">
-                Buyer Details
+                {t('contractDetails.buyerDetails')}
               </h2>
             </div>
 
             <p className="text-gray-600">
-              Buyer Name
+              {t('contractDetails.buyerName')}
             </p>
 
-            <p className="font-semibold text-lg">
+            <p className="text-lg font-semibold">
               {buyerName}
             </p>
 
-            <p className="text-gray-600 mt-2">
-              Phone: {contract.buyer?.phone ?? 'N/A'}
+            <p className="mt-2 text-gray-600">
+              {t('contractDetails.phone')}:{' '}
+              {contract.buyer?.phone || 'N/A'}
             </p>
 
           </div>
 
-
-
           {/* Farmer Card */}
-          <div className="bg-white rounded-2xl shadow-sm p-6">
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
 
-            <div className="flex items-center gap-2 mb-4">
-              <User className="text-green-700"/>
+            <div className="mb-4 flex items-center gap-2">
+              <User className="text-green-700" />
+
               <h2 className="text-xl font-bold">
-                Farmer Details
+                {t('contractDetails.farmerDetails')}
               </h2>
             </div>
 
             <p className="text-gray-600">
-              Farmer Name
+              {t('contractDetails.farmerName')}
             </p>
 
-            <p className="font-semibold text-lg">
+            <p className="text-lg font-semibold">
               {farmerName}
             </p>
 
-            <p className="text-gray-600 mt-2">
-              Location: {farmerLocation}
+            <p className="mt-2 text-gray-600">
+              {t('contractDetails.location')}:{' '}
+              {farmerLocation}
             </p>
 
           </div>
 
-
         </div>
 
-
-
         {/* Crop Details */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div className="rounded-2xl bg-white p-6 shadow-sm">
 
-          <div className="flex items-center gap-2 mb-4">
-            <Sprout className="text-green-700"/>
+          <div className="mb-4 flex items-center gap-2">
+            <Sprout className="text-green-700" />
+
             <h2 className="text-xl font-bold">
-              Crop Details
+              {t('contractDetails.cropDetails')}
             </h2>
           </div>
 
-
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
 
             <div>
-              <p className="text-gray-500 text-sm">
-                Crop Type
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.cropType')}
               </p>
+
               <p className="font-semibold">
-                {contract?.crop}
+                {cropName}
               </p>
             </div>
 
-
             <div>
-              <p className="text-gray-500 text-sm">
-                Quantity
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.quantity')}
               </p>
+
               <p className="font-semibold">
-                {contract?.quantity}
+                {quantityLabel}
               </p>
             </div>
 
-
             <div>
-              <p className="text-gray-500 text-sm">
-                Price
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.price')}
               </p>
+
               <p className="font-semibold text-green-700">
-                {contract?.price}
+                {priceLabel}
               </p>
             </div>
-
 
           </div>
 
         </div>
-{/* Transportation Details */}
-<div className="bg-white rounded-2xl shadow-sm p-6 mt-6">
-
-  <div className="flex items-center gap-2 mb-5">
-    <Truck className="text-green-700" />
-    <h2 className="text-xl font-bold">
-      Transportation Details
-    </h2>
-  </div>
-
-  <p className="text-gray-600 mb-4">
-    Who will arrange transportation?
-  </p>
-
-  <div className="flex gap-4">
 
-    <button
-      onClick={() => setTransportBy('Farmer')}
-      className={`px-5 py-3 rounded-xl border font-semibold ${
-        transportBy === 'Farmer'
-        ? 'bg-green-100 border-green-600 text-green-700'
-        : 'border-gray-300 text-gray-700'
-      }`}
-    >
-      🚜 Farmer
-    </button>
+        {/* Transportation Details */}
+        <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
 
+          <div className="mb-5 flex items-center gap-2">
+            <Truck className="text-green-700" />
 
-    <button
-      onClick={() => setTransportBy('Buyer')}
-      className={`px-5 py-3 rounded-xl border font-semibold ${
-        transportBy === 'Buyer'
-        ? 'bg-green-100 border-green-600 text-green-700'
-        : 'border-gray-300 text-gray-700'
-      }`}
-    >
-      🏢 Buyer
-    </button>
+            <h2 className="text-xl font-bold">
+              {t('contractDetails.transportationDetails')}
+            </h2>
+          </div>
 
-  </div>
+          <p className="mb-4 text-gray-600">
+            {t('contractDetails.transportQuestion')}
+          </p>
 
+          <div className="flex gap-4">
 
-  {transportBy && (
-    <div className="mt-5 bg-gray-50 rounded-xl p-4">
+            <button
+              onClick={() => setTransportBy('Farmer')}
+              className={`rounded-xl border px-5 py-3 font-semibold ${
+                transportBy === 'Farmer'
+                  ? 'border-green-600 bg-green-100 text-green-700'
+                  : 'border-gray-300 text-gray-700'
+              }`}
+            >
+              🚜 {t('contractDetails.farmer')}
+            </button>
 
-      <p className="text-sm text-gray-500">
-        Transportation Responsibility
-      </p>
+            <button
+              onClick={() => setTransportBy('Buyer')}
+              className={`rounded-xl border px-5 py-3 font-semibold ${
+                transportBy === 'Buyer'
+                  ? 'border-green-600 bg-green-100 text-green-700'
+                  : 'border-gray-300 text-gray-700'
+              }`}
+            >
+              🏢 {t('contractDetails.buyer')}
+            </button>
 
-      <p className="font-bold text-green-700">
-        {transportBy} will arrange delivery
-      </p>
+          </div>
 
-    </div>
-  )}
-  {/* Transport Information */}
+          {transportBy && (
+            <>
+              {/* Transport Responsibility */}
+              <div className="mt-5 rounded-xl bg-gray-50 p-4">
 
-{transportBy && (
-  <div className="mt-4 grid md:grid-cols-3 gap-4">
+                <p className="text-sm text-gray-500">
+                  {t('contractDetails.transportResponsibility')}
+                </p>
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Pickup Location
-      </p>
-      <p className="font-semibold text-gray-900">
-        Nashik, Maharashtra
-      </p>
-    </div>
+                <p className="font-bold text-green-700">
+                  {transportBy === 'Farmer'
+                    ? t('contractDetails.farmerWillArrange')
+                    : t('contractDetails.buyerWillArrange')}
+                </p>
 
+              </div>
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Delivery Location
-      </p>
-      <p className="font-semibold text-gray-900">
-        Indore, Madhya Pradesh
-      </p>
-    </div>
+              {/* Transport Information */}
+              <div className="mt-4 grid gap-4 md:grid-cols-3">
 
+                <div className="rounded-xl bg-gray-50 p-4">
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Delivery Status
-      </p>
-      <p className="font-semibold text-amber-600">
-        Pending
-      </p>
-    </div>
+                  <p className="text-sm text-gray-500">
+                    {t('contractDetails.pickupLocation')}
+                  </p>
 
+                  <p className="font-semibold text-gray-900">
+                    {farmerLocation}
+                  </p>
 
-  </div>
-)}
+                </div>
 
-</div>
-{/* Payment Details */}
+                <div className="rounded-xl bg-gray-50 p-4">
 
-<div className="bg-white rounded-2xl shadow-sm p-6 mt-6">
+                  <p className="text-sm text-gray-500">
+                    {t('contractDetails.deliveryLocation')}
+                  </p>
 
-  <div className="flex items-center gap-2 mb-5">
-    <ShieldCheck className="text-green-700" />
+                  <p className="font-semibold text-gray-900">
+                    {t('contractDetails.buyerLocation')}
+                  </p>
 
-    <h2 className="text-xl font-bold">
-      Payment Details
-    </h2>
-  </div>
+                </div>
 
+                <div className="rounded-xl bg-gray-50 p-4">
 
-  <div className="grid md:grid-cols-3 gap-4">
+                  <p className="text-sm text-gray-500">
+                    {t('contractDetails.deliveryStatus')}
+                  </p>
 
+                  <p className="font-semibold text-amber-600">
+                    {t('contractDetails.pending')}
+                  </p>
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Contract Value
-      </p>
+                </div>
 
-      <p className="font-bold text-lg text-green-700">
-        {contract?.value}
-      </p>
-    </div>
+              </div>
+            </>
+          )}
 
+        </div>
 
+        {/* Payment Details */}
+        <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Payment Status
-      </p>
+          <div className="mb-5 flex items-center gap-2">
+            <ShieldCheck className="text-green-700" />
 
-      <p className="font-semibold text-amber-600">
-        Secured
-      </p>
-    </div>
+            <h2 className="text-xl font-bold">
+              {t('contractDetails.paymentDetails')}
+            </h2>
+          </div>
 
+          <div className="grid gap-4 md:grid-cols-3">
 
+            <div className="rounded-xl bg-gray-50 p-4">
 
-    <div className="bg-gray-50 rounded-xl p-4">
-      <p className="text-sm text-gray-500">
-        Settlement
-      </p>
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.contractValue')}
+              </p>
 
-      <p className="font-semibold text-gray-900">
-        After Delivery
-      </p>
-    </div>
+              <p className="text-lg font-bold text-green-700">
+                {totalValue}
+              </p>
 
+            </div>
 
-  </div>
+            <div className="rounded-xl bg-gray-50 p-4">
 
-</div>
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.paymentStatus')}
+              </p>
 
+              <p className="font-semibold text-amber-600">
+                {t('contractDetails.secured')}
+              </p>
 
+            </div>
 
+            <div className="rounded-xl bg-gray-50 p-4">
 
-{/* Contract Timeline */}
+              <p className="text-sm text-gray-500">
+                {t('contractDetails.settlement')}
+              </p>
 
-<div className="bg-white rounded-2xl shadow-sm p-6 mt-6">
+              <p className="font-semibold text-gray-900">
+                {t('contractDetails.afterDelivery')}
+              </p>
 
-  <div className="flex items-center gap-2 mb-5">
+            </div>
 
-    <FileText className="text-green-700" />
+          </div>
 
-    <h2 className="text-xl font-bold">
-      Contract Timeline
-    </h2>
+        </div>
 
-  </div>
+        {/* Contract Timeline */}
+        <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
 
+          <div className="mb-5 flex items-center gap-2">
+            <FileText className="text-green-700" />
 
+            <h2 className="text-xl font-bold">
+              {t('contractDetails.contractTimeline')}
+            </h2>
+          </div>
 
-  <div className="space-y-4">
+          <div className="space-y-4">
 
+            <div className="flex items-center gap-3">
 
-    <div className="flex items-center gap-3">
-      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+              <div className="h-3 w-3 rounded-full bg-green-600" />
 
-      <p className="font-semibold">
-        Contract Created
-      </p>
-    </div>
+              <p className="font-semibold">
+                {t('contractDetails.contractCreated')}
+              </p>
 
+            </div>
 
+            <div className="flex items-center gap-3">
 
-    <div className="flex items-center gap-3">
-      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+              <div className="h-3 w-3 rounded-full bg-green-600" />
 
-      <p className="font-semibold">
-        Farmer Accepted Contract
-      </p>
-    </div>
+              <p className="font-semibold">
+                {t('contractDetails.farmerAccepted')}
+              </p>
 
+            </div>
 
+            <div className="flex items-center gap-3">
 
-    <div className="flex items-center gap-3">
-      <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+              <div className="h-3 w-3 rounded-full bg-green-600" />
 
-      <p className="font-semibold">
-        Crop Growing Phase
-      </p>
-    </div>
+              <p className="font-semibold">
+                {t('contractDetails.cropGrowing')}
+              </p>
 
+            </div>
 
+            <div className="flex items-center gap-3">
 
-    <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-amber-500" />
 
-      <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+              <p className="font-semibold">
+                {t('contractDetails.transportationArranged')}
+              </p>
 
-      <p className="font-semibold">
-        Transportation Arranged
-      </p>
+            </div>
 
-    </div>
+            <div className="flex items-center gap-3">
 
+              <div className="h-3 w-3 rounded-full bg-gray-300" />
 
+              <p className="font-semibold text-gray-500">
+                {t('contractDetails.cropDelivered')}
+              </p>
 
+            </div>
 
-    <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
 
-      <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+              <div className="h-3 w-3 rounded-full bg-gray-300" />
 
-      <p className="font-semibold text-gray-500">
-        Crop Delivered
-      </p>
+              <p className="font-semibold text-gray-500">
+                {t('contractDetails.finalPayment')}
+              </p>
 
-    </div>
+            </div>
 
+          </div>
 
-
-    <div className="flex items-center gap-3">
-
-      <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-
-      <p className="font-semibold text-gray-500">
-        Final Payment Completed
-      </p>
-
-    </div>
-
-
-  </div>
-
-
-</div>
-
-
+        </div>
 
       </div>
-
     </div>
   );
 }

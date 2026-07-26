@@ -1,45 +1,54 @@
-"use client";
+'use client'
+
+import { useLanguage } from '@/components/LanguageContext'
 
 interface FarmerTabsProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  activeTab: string
+  setActiveTab: (tab: string) => void
 }
 
 export default function FarmerTabs({
   activeTab,
   setActiveTab,
 }: FarmerTabsProps) {
+  const { t } = useLanguage()
 
   const tabs = [
-    "Overview",
-    "Crops",
-    "Activity",
-    "Documents",
-  ];
+    {
+      value: 'Overview',
+      label: t('farmerTabs.overview'),
+    },
+    {
+      value: 'Crops',
+      label: t('farmerTabs.crops'),
+    },
+    {
+      value: 'Activity',
+      label: t('farmerTabs.activity'),
+    },
+    {
+      value: 'Documents',
+      label: t('farmerTabs.documents'),
+    },
+  ]
 
   return (
-    <div className="bg-white rounded-2xl border shadow-sm p-3">
-
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-
+    <div className="rounded-2xl border bg-white p-3 shadow-sm">
+      <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
         {tabs.map((tab) => (
-
           <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-5 py-2 rounded-xl font-medium whitespace-nowrap transition ${
-              activeTab === tab
-                ? "bg-green-700 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-green-50"
+            key={tab.value}
+            onClick={() => setActiveTab(tab.value)}
+            className={`whitespace-nowrap rounded-xl px-5 py-2 font-medium transition ${
+              activeTab === tab.value
+                ? 'bg-green-700 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-green-50'
             }`}
           >
-            {tab}
+            {tab.label}
           </button>
-
         ))}
-
       </div>
-
     </div>
-  );
+  )
 }

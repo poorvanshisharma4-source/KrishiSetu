@@ -291,6 +291,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import { useLanguage } from '@/components/LanguageContext';
 import {
   Truck,
   Package,
@@ -347,7 +348,6 @@ const StepperProgressTimeline: React.FC<{ steps: OrderStep[] }> = ({
     {steps.map((step, index) => (
       <React.Fragment key={step.id}>
         <div className="flex flex-col items-center flex-1">
-          {/* Step Circle */}
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
               step.completed
@@ -363,7 +363,7 @@ const StepperProgressTimeline: React.FC<{ steps: OrderStep[] }> = ({
               <span>{index + 1}</span>
             )}
           </div>
-          {/* Step Label */}
+
           <p
             className={`text-[11px] text-center mt-2 font-bold ${
               step.completed
@@ -377,7 +377,6 @@ const StepperProgressTimeline: React.FC<{ steps: OrderStep[] }> = ({
           </p>
         </div>
 
-        {/* Connector Line */}
         {index < steps.length - 1 && (
           <div
             className={`h-1 flex-1 -mx-2 transition-all duration-300 ${
@@ -390,60 +389,76 @@ const StepperProgressTimeline: React.FC<{ steps: OrderStep[] }> = ({
   </div>
 );
 
-const TrackingCard: React.FC<{ order: TrackingOrder }> = ({ order }) => (
+const TrackingCard: React.FC<{
+  order: TrackingOrder;
+  t: (key: string) => string;
+}> = ({ order, t }) => (
   <div className="bg-white rounded-2xl border border-gray-200/60 p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-    {/* Header */}
     <div className="flex justify-between items-start mb-4">
       <div>
         <h3 className="text-base font-black text-gray-900">{order.orderId}</h3>
-        <p className="text-sm text-emerald-800 font-extrabold mt-0.5">{order.cropName}</p>
+        <p className="text-sm text-emerald-800 font-extrabold mt-0.5">
+          {order.cropName}
+        </p>
       </div>
+
       <div className="bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
-        <span className="text-xs font-bold text-blue-700">In Transit</span>
+        <span className="text-xs font-bold text-blue-700">
+          {t('buyerOrders.inTransit')}
+        </span>
       </div>
     </div>
 
-    {/* Divider */}
     <div className="h-px bg-gray-100 mb-4" />
 
-    {/* Farmer & Location Info */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
       <div className="flex items-start gap-2.5">
         <Package size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Supplier</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            {t('buyerOrders.supplier')}
+          </p>
           <p className="text-sm font-bold text-gray-900">{order.farmer}</p>
         </div>
       </div>
+
       <div className="flex items-start gap-2.5">
         <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Pickup Location</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            {t('buyerOrders.pickupLocation')}
+          </p>
           <p className="text-sm font-bold text-gray-900">{order.location}</p>
         </div>
       </div>
     </div>
 
-    {/* Stepper Timeline */}
     <StepperProgressTimeline steps={order.steps} />
 
-    {/* Divider */}
     <div className="h-px bg-gray-100 my-4" />
 
-    {/* Logistics Info */}
     <div className="grid grid-cols-2 gap-4 bg-gray-50/50 p-3 rounded-xl border border-gray-100">
       <div className="flex items-start gap-2.5">
         <Clock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Est. Arrival</p>
-          <p className="text-xs font-extrabold text-gray-900">{order.eta}</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            {t('buyerOrders.estArrival')}
+          </p>
+          <p className="text-xs font-extrabold text-gray-900">
+            {order.eta}
+          </p>
         </div>
       </div>
+
       <div className="flex items-start gap-2.5">
         <Truck size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Vehicle #</p>
-          <p className="text-xs font-extrabold text-gray-900">{order.vehicleNumber}</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            {t('buyerOrders.vehicle')}
+          </p>
+          <p className="text-xs font-extrabold text-gray-900">
+            {order.vehicleNumber}
+          </p>
         </div>
       </div>
     </div>
@@ -452,6 +467,8 @@ const TrackingCard: React.FC<{ order: TrackingOrder }> = ({ order }) => (
 
 export default function ActiveOrdersDashboard() {
   const router = useRouter();
+  const { t } = useLanguage();
+
   const [trackingOrders, setTrackingOrders] = useState<TrackingOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -463,27 +480,87 @@ export default function ActiveOrdersDashboard() {
   const getOrderSteps = (status: string) => {
     if (status === 'active') {
       return [
-        { id: 1, label: 'Harvested', completed: true, active: false },
-        { id: 2, label: 'Quality Inspected', completed: true, active: false },
-        { id: 3, label: 'In Transit', completed: false, active: true },
-        { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
+        {
+          id: 1,
+          label: t('buyerOrders.harvested'),
+          completed: true,
+          active: false,
+        },
+        {
+          id: 2,
+          label: t('buyerOrders.qualityInspected'),
+          completed: true,
+          active: false,
+        },
+        {
+          id: 3,
+          label: t('buyerOrders.inTransit'),
+          completed: false,
+          active: true,
+        },
+        {
+          id: 4,
+          label: t('buyerOrders.warehouseArrived'),
+          completed: false,
+          active: false,
+        },
       ];
     }
 
     if (status === 'completed') {
       return [
-        { id: 1, label: 'Harvested', completed: true, active: false },
-        { id: 2, label: 'Quality Inspected', completed: true, active: false },
-        { id: 3, label: 'In Transit', completed: true, active: false },
-        { id: 4, label: 'Warehouse Arrived', completed: true, active: false },
+        {
+          id: 1,
+          label: t('buyerOrders.harvested'),
+          completed: true,
+          active: false,
+        },
+        {
+          id: 2,
+          label: t('buyerOrders.qualityInspected'),
+          completed: true,
+          active: false,
+        },
+        {
+          id: 3,
+          label: t('buyerOrders.inTransit'),
+          completed: true,
+          active: false,
+        },
+        {
+          id: 4,
+          label: t('buyerOrders.warehouseArrived'),
+          completed: true,
+          active: false,
+        },
       ];
     }
 
     return [
-      { id: 1, label: 'Harvested', completed: true, active: false },
-      { id: 2, label: 'Quality Inspected', completed: status !== 'pending', active: status === 'pending' },
-      { id: 3, label: 'In Transit', completed: false, active: status === 'active' },
-      { id: 4, label: 'Warehouse Arrived', completed: false, active: false },
+      {
+        id: 1,
+        label: t('buyerOrders.harvested'),
+        completed: true,
+        active: false,
+      },
+      {
+        id: 2,
+        label: t('buyerOrders.qualityInspected'),
+        completed: status !== 'pending',
+        active: status === 'pending',
+      },
+      {
+        id: 3,
+        label: t('buyerOrders.inTransit'),
+        completed: false,
+        active: status === 'active',
+      },
+      {
+        id: 4,
+        label: t('buyerOrders.warehouseArrived'),
+        completed: false,
+        active: false,
+      },
     ];
   };
 
@@ -493,11 +570,16 @@ export default function ActiveOrdersDashboard() {
         const response = await api.get('/contracts');
         const data = response?.data ?? [];
         const contracts = Array.isArray(data) ? data : [];
-        const activeContracts = contracts.filter((contract: any) => contract.status === 'active');
+
+        const activeContracts = contracts.filter(
+          (contract: any) => contract.status === 'active'
+        );
 
         const orders = activeContracts.map((contract: any) => ({
           id: contract._id,
-          orderId: contract._id ? `#ORD-${contract._id.toString().slice(-6).toUpperCase()}` : 'Order',
+          orderId: contract._id
+            ? `#ORD-${contract._id.toString().slice(-6).toUpperCase()}`
+            : 'Order',
           cropName: contract.requirement?.cropName ?? 'Produce',
           farmer: contract.farmer?.name ?? 'Farmer',
           location: contract.requirement?.location ?? 'Unknown Location',
@@ -516,7 +598,7 @@ export default function ActiveOrdersDashboard() {
         setError(null);
       } catch (err: any) {
         console.error('Active orders fetch error:', err);
-        setError(err?.message || 'Unable to load active orders.');
+        setError(err?.message || t('buyerOrders.unableToLoad'));
         setTrackingOrders([]);
       } finally {
         setLoading(false);
@@ -529,19 +611,19 @@ export default function ActiveOrdersDashboard() {
   const summaryStats = [
     {
       icon: <Truck size={24} />,
-      label: 'Total Orders in Transit',
+      label: t('buyerOrders.totalOrdersInTransit'),
       value: trackingOrders.length,
       bgColor: 'bg-white',
     },
     {
       icon: <CheckCircle2 size={24} />,
-      label: 'Quality Checks Passed',
+      label: t('buyerOrders.qualityChecksPassed'),
       value: 4,
       bgColor: 'bg-white',
     },
     {
       icon: <Package size={24} />,
-      label: 'Dispatched Today',
+      label: t('buyerOrders.dispatchedToday'),
       value: 1,
       bgColor: 'bg-white',
     },
@@ -549,20 +631,24 @@ export default function ActiveOrdersDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] p-8 text-black">
-      {/* Header Section */}
       <div className="mb-8 space-y-2">
         <button
           onClick={handleExitToDashboard}
           className="inline-flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft size={16} />
-          Back to Dashboard
+          {t('buyerOrders.backToDashboard')}
         </button>
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Active Orders</h1>
-        <p className="text-sm text-gray-500">Real-time tracking of orders in logistics transit.</p>
+
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+          {t('buyerOrders.title')}
+        </h1>
+
+        <p className="text-sm text-gray-500">
+          {t('buyerOrders.subtitle')}
+        </p>
       </div>
 
-      {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {summaryStats.map((stat, index) => (
           <SummaryStat
@@ -575,14 +661,14 @@ export default function ActiveOrdersDashboard() {
         ))}
       </div>
 
-      {/* Tracking Cards Container */}
       <div>
         <h2 className="text-lg font-black text-gray-900 mb-4 tracking-tight">
-          Orders in Logistics
+          {t('buyerOrders.ordersInLogistics')}
         </h2>
+
         {loading ? (
           <div className="rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm text-gray-700">
-            Loading active orders...
+            {t('buyerOrders.loading')}
           </div>
         ) : error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm text-red-700">
@@ -590,12 +676,16 @@ export default function ActiveOrdersDashboard() {
           </div>
         ) : trackingOrders.length === 0 ? (
           <div className="rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm text-gray-700">
-            No active orders available right now.
+            {t('buyerOrders.noActiveOrders')}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {trackingOrders.map((order) => (
-              <TrackingCard key={order.id} order={order} />
+              <TrackingCard
+                key={order.id}
+                order={order}
+                t={t}
+              />
             ))}
           </div>
         )}
