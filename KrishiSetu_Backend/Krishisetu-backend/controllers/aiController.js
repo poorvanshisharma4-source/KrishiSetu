@@ -3,6 +3,7 @@ const {
   buildCropRecommendationPrompt,
   buildProfitEstimationPrompt,
   buildMarketTrendsPrompt,
+  buildDemandForecastPrompt,
   buildBuyerAnalyticsPrompt,
   buildChatPrompt,
 } = require("../utils/promptBuilder");
@@ -88,6 +89,33 @@ const marketTrends = async (req, res) => {
   }
 };
 
+const demandForecast = async (req, res) => {
+  try {
+    const { crop, location } = req.body;
+
+    if (!crop || !location) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields: crop, location",
+      });
+    }
+
+    const prompt = buildDemandForecastPrompt({ crop, location });
+    const result = await generateResponse(prompt, req.language);
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Demand forecast error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate demand forecast",
+    });
+  }
+};
+
 const buyerAnalytics = async (req, res) => {
   try {
     const { buyerId, targetCrops } = req.body;
@@ -146,6 +174,7 @@ module.exports = {
   cropRecommendation,
   profitEstimation,
   marketTrends,
+  demandForecast,
   buyerAnalytics,
   chat,
 };

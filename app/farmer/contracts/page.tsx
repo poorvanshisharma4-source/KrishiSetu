@@ -482,6 +482,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { FileText, ChevronRight, Search, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/components/LanguageContext'
 
 interface Contract {
   _id: string;
@@ -504,6 +505,7 @@ interface Contract {
 }
 
 export default function FarmerContractsPage() {
+  const { t } = useLanguage()
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -551,8 +553,12 @@ export default function FarmerContractsPage() {
     <div className="p-6 max-w-7xl mx-auto min-h-screen bg-gray-50">
       <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Contracts</h1>
-          <p className="text-gray-600 text-sm">View and manage your active and past farming contracts</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+  {t('farmerContracts.title')}
+</h1>
+         <p className="text-gray-600 text-sm">
+  {t('farmerContracts.description')}
+</p>
         </div>
       </div>
 
@@ -562,7 +568,7 @@ export default function FarmerContractsPage() {
           <Search className="absolute left-3 top-2.5 text-gray-400 h-4 w-4" />
           <input
             type="text"
-            placeholder="Search crop, buyer, or contract ID..."
+            placeholder={t('farmerContracts.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -590,7 +596,9 @@ export default function FarmerContractsPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-green-600 mb-2" />
-          <p className="text-gray-500 text-sm">Loading contracts from backend...</p>
+          <p className="text-gray-500 text-sm">
+  {t('farmerContracts.loading')}
+</p>
         </div>
       ) : error ? (
         <div className="bg-red-50 text-red-600 p-4 rounded-lg text-center my-6 text-sm">
@@ -599,8 +607,12 @@ export default function FarmerContractsPage() {
       ) : filteredContracts.length === 0 ? (
         <div className="bg-white rounded-xl py-16 text-center shadow-sm">
           <FileText className="mx-auto mb-4 text-gray-300 w-12 h-12" />
-          <p className="text-gray-600 font-medium">No contracts found</p>
-          <p className="text-sm text-gray-400 mt-1">Try adjusting your filter or search keyword.</p>
+          <p className="text-gray-600 font-medium">
+  {t('farmerContracts.noContracts')}
+</p>
+          <p className="text-sm text-gray-400 mt-1">
+  {t('farmerContracts.adjustFilter')}
+</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -636,16 +648,22 @@ export default function FarmerContractsPage() {
 
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{cropName}</h3>
                   <p className="text-sm text-gray-500 mb-4">
-                    Buyer: <span className="font-medium text-gray-700">{contract.buyer?.name || 'N/A'}</span>
+                    {t('farmerContracts.buyer')}: <span className="font-medium text-gray-700">
+  {contract.buyer?.name || 'N/A'}
+</span>
                   </p>
 
                   <div className="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded-lg mb-4 text-sm">
                     <div>
-                      <span className="text-xs text-gray-400 block">Agreed Price</span>
+                      <span className="text-xs text-gray-400 block">
+  {t('farmerContracts.agreedPrice')}
+</span>
                       <span className="font-semibold text-gray-800">₹{price}/kg</span>
                     </div>
                     <div>
-                      <span className="text-xs text-gray-400 block">Quantity</span>
+                      <span className="text-xs text-gray-400 block">
+  {t('farmerContracts.quantity')}
+</span>
                       <span className="font-semibold text-gray-800">{quantity} kg</span>
                     </div>
                   </div>
@@ -655,7 +673,7 @@ export default function FarmerContractsPage() {
                   href={`/farmer/contracts/detail?id=${contract._id}`}
                   className="w-full mt-2 py-2 px-4 bg-gray-900 hover:bg-green-600 text-white text-sm font-medium rounded-lg flex items-center justify-center gap-1 transition-all text-center justify-center"
                 >
-                  View Details
+                  {t('farmerContracts.viewDetails')}
                   <ChevronRight size={16} />
                 </Link>
               </div>

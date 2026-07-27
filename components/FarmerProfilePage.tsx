@@ -57,6 +57,7 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/components/LanguageContext";
 
 import FarmerHero from "./FarmerHero";
 import FarmerStats from "./FarmerStats";
@@ -83,6 +84,7 @@ export interface UserProfileData {
 }
 
 export default function FarmerProfilePage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("Overview");
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -125,7 +127,7 @@ export default function FarmerProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-[#F8F6F0] min-h-[60vh]">
         <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
-        <p className="mt-4 text-sm font-semibold text-gray-600">Loading profile data...</p>
+        <p className="mt-4 text-sm font-semibold text-gray-600">{t("farmer.loadingProfile")}</p>
       </div>
     );
   }

@@ -167,11 +167,13 @@ const translations = {
 "ai.demandForecasting": "Demand Forecasting",
 "ai.demandForecastingDesc": "Predict upcoming market demand so you plant exactly what sells.",
 
-"ai.marketTrend": "Market Trend Analysis",
-"ai.marketTrendDesc": "Track price movements and trends across regions in real time.",
+"ai.marketTrendAnalysis": "Market Trend Analysis",
+"ai.marketTrendAnalysisDesc": "Track price movements and trends across regions in real time.",
 
 "ai.profitEstimation": "Profit Estimation",
 "ai.profitEstimationDesc": "Estimate returns before you sow with data-backed projections.",
+"ai.selectModule": "Select an AI Module",
+"ai.selectModuleDesc": "Choose any module above to view localized market analysis, price forecasts, and AI-powered recommendations.",
 
 "buyerCta.forBuyers": "For Buyers",
 "buyerCta.title": "Looking For Specific Crops?",
@@ -492,6 +494,7 @@ const translations = {
 
 "aiRecommendation.viewProfile": "View Farmer Profile",
 "aiRecommendation.selectFarmer": "Select Farmer",
+
 
 "analytics.backToDashboard": "Back to Dashboard",
 "analytics.title": "Buyer AI Analytics Dashboard",
@@ -850,6 +853,294 @@ updateProfile: "Unable to update profile",
 "buyerLayout.myProfile": "My Profile",
 "buyerLayout.accountSettings": "Account Settings",
 
+"buyerOnboarding.badge": "Buyer Onboarding",
+"buyerOnboarding.title": "Getting Started as a Buyer",
+"buyerOnboarding.subtitle": "Follow these steps to set up your buyer account and start sourcing directly from farmers.",
+"buyerOnboarding.backToHome": "Back to Home",
+
+"buyerOnboarding.step": "STEP",
+
+"buyerOnboarding.step1.title": "Create a Buyer Account",
+"buyerOnboarding.step1.description": "Sign up with your company details, select \"Buyer\" as your account type, and verify your business email.",
+
+"buyerOnboarding.step2.title": "Complete Business Verification",
+"buyerOnboarding.step2.description": "Submit your business registration (GSTIN/Trade License) so farmers can trust and connect with a verified buyer.",
+
+"buyerOnboarding.step3.title": "Post a Requirement",
+"buyerOnboarding.step3.description": "Specify the crop, quantity, budget, quality grade, and delivery location you need — matched farmers will be shown automatically.",
+
+"buyerOnboarding.step4.title": "Connect & Finalize Contracts",
+"buyerOnboarding.step4.description": "Chat with matched farmers, agree on terms, and finalize a contract directly through the platform.",
+
+"buyerOnboarding.note": "Once onboarded, the buyer's dashboard shows connected farmers, active orders, and spending analytics — all in one place.",
+
+"farmerRegistrationGuide.badge": "Farmer Onboarding",
+"farmerRegistrationGuide.title": "How Farmers Register on KrishiSetu",
+"farmerRegistrationGuide.subtitle": "A quick guide for understanding the farmer onboarding process.",
+"farmerRegistrationGuide.backToHome": "Back to Home",
+
+"farmerRegistrationGuide.step": "STEP",
+
+"farmerRegistrationGuide.step1.title": "Create an Account",
+"farmerRegistrationGuide.step1.description": "Farmer signs up on KrishiSetu using their mobile number or email, and selects \"Farmer\" as their account type.",
+
+"farmerRegistrationGuide.step2.title": "Complete KYC & Farm Details",
+"farmerRegistrationGuide.step2.description": "Farmer submits basic identity proof, farm location, land size, and the crops they typically grow for verification.",
+
+"farmerRegistrationGuide.step3.title": "List Crops",
+"farmerRegistrationGuide.step3.description": "Once approved, the farmer can start listing available crops with quantity, price, and expected harvest date.",
+
+"farmerRegistrationGuide.step4.title": "Get Verified & Start Connecting",
+"farmerRegistrationGuide.step4.description": "A verified badge is added to the profile, after which buyers can view listings and send requirements directly to the farmer.",
+
+"farmerRegistrationGuide.note": "Once a farmer completes all four steps, their profile becomes visible in the buyer's \"Connected Farmers\" list whenever their crops match a requirement.",
+
+"cropRequirement.selectUnit": "Select Unit",
+"cropRequirement.tons": "Tons",
+"cropRequirement.quintals": "Quintals",
+"cropRequirement.kilograms": "Kilograms",
+"cropRequirement.defaultDescription": "High quality requirement",
+"cropRequirement.tomato": "Tomato",
+"cropRequirement.currencyPerKg": "₹24 / kg",
+
+"features.title": "Powerful Features for Modern Farming",
+"features.subtitle": "KrishiSetu empowers farmers with AI, transparency and direct market access.",
+
+"features.demandDrivenFarming.title": "Demand-Driven Farming",
+"features.demandDrivenFarming.description": "Farmers grow crops based on real market demand to reduce loss and uncertainty.",
+
+"features.directConnection.title": "Direct Farmer-Buyer Connection",
+"features.directConnection.description": "Eliminate middlemen and connect farmers directly with verified buyers.",
+
+"features.digitalContracts.title": "Smart Digital Contracts",
+"features.digitalContracts.description": "Transparent agreements between farmers and buyers with clear terms.",
+
+"features.trustSystem.title": "Trust & Reputation System",
+"features.trustSystem.description": "Badges and ratings based on successful transactions and reliability.",
+
+"features.smartFarming.title": "Smart Farming Guidance",
+"features.smartFarming.description": "AI-based suggestions for crops, irrigation, and pest control.",
+
+"features.marketIntelligence.title": "Market Intelligence",
+"features.marketIntelligence.description": "Live demand and price trends to maximize farmer profit.",
+
+"features.transport.title": "Integrated Transport Facility",
+"features.transport.description": "Hassle-free logistics support and vehicle tracking to safely deliver crops directly from farm to buyer.",
+
+"features.aiMatch.title": "AI Match Score",
+"features.aiMatch.description": "Smart matching algorithms that rank potential buyers and farmers based on price, quality, and location.",
+
+
+"platformFeatures.badge": "Platform Overview",
+"platformFeatures.title": "Platform Features",
+"platformFeatures.subtitle": "Everything you can do on KrishiSetu, in one place.",
+"platformFeatures.backToHome": "Back to Home",
+
+"platformFeatures.aiMatching.title": "AI-Powered Matching",
+"platformFeatures.aiMatching.description": "Requirements are automatically matched with farmers based on crop category, quantity, and location.",
+
+"platformFeatures.verifiedFarmers.title": "Verified Farmer Network",
+"platformFeatures.verifiedFarmers.description": "Every farmer profile is KYC-verified, giving buyers confidence in who they are sourcing from.",
+
+"platformFeatures.messaging.title": "Direct Messaging",
+"platformFeatures.messaging.description": "Chat directly with connected farmers to discuss quantity, pricing, and delivery — no middlemen.",
+
+"platformFeatures.contracts.title": "Digital Contracts",
+"platformFeatures.contracts.description": "Finalize agreements with clear terms — quantity, value, and delivery dates — tracked on your dashboard.",
+
+"platformFeatures.analytics.title": "Spending Analytics",
+"platformFeatures.analytics.description": "Track your order history and spending trends over time to plan future sourcing.",
+
+"platformFeatures.fpo.title": "FPO Network Access",
+"platformFeatures.fpo.description": "Connect with Farmer Producer Organizations for bulk sourcing at scale.",
+
+// Hero
+"faq.badge": "Help Center",
+"faq.title": "Frequently Asked Questions",
+"faq.subtitle": "Find answers to common questions about KrishiSetu",
+"faq.searchPlaceholder": "Search your question...",
+"faq.searchResults": "Found {count} result(s) for",
+"faq.stillQuestions": "Still have questions?",
+"faq.supportText": "Can't find what you're looking for? Our support team is here to help you 24/7.",
+"faq.contactSupport": "Contact Support",
+"faq.getStarted": "Get Started",
+
+// Categories
+"faq.category.farmers": "For Farmers",
+"faq.category.buyers": "For Buyers",
+"faq.category.trust": "Trust & Security",
+"faq.category.technical": "Technical & App",
+"faq.category.financial": "Financial Support",
+
+// Farmers
+"faq.farmer.q1": "How do I register as a farmer on KrishiSetu?",
+"faq.farmer.a1": "Registration is simple and free. Click on \"Farmer Register\" on the homepage, fill in your basic details (name, location, phone number), verify your phone via OTP, and you're ready to start. The whole process takes less than 5 minutes.",
+
+"faq.farmer.q2": "What documents do I need to register?",
+"faq.farmer.a2": "For basic registration, you only need a valid phone number. To unlock advanced features and participate in larger contracts, we recommend adding Aadhaar card, land records or farm ownership proof, and bank account details.",
+
+"faq.farmer.q3": "How does the contract farming process work?",
+"faq.farmer.a3": "Browse buyer requirements, review terms, accept the contract, grow crops with AI guidance, deliver produce, and receive payment after verification.",
+
+"faq.farmer.q4": "How do I receive payments?",
+"faq.farmer.a4": "Payments are credited to your linked bank account within 24–48 hours after successful delivery and quality verification.",
+
+"faq.farmer.q5": "What if the buyer cancels the contract?",
+"faq.farmer.a5": "If a buyer cancels without a valid reason, a cancellation fee is paid to the farmer through our smart contract safeguards.",
+
+"faq.farmer.q6": "How does the AI crop recommendation work?",
+"faq.farmer.a6": "Our AI analyzes soil, climate, market demand, historical prices, and seasonal forecasts to recommend the most profitable crops.",
+
+// Buyers
+"faq.buyer.q1": "How do I post a requirement?",
+"faq.buyer.a1": "Go to Post Requirement, fill in crop details, quantity, quality, price, delivery date, and location. Verified farmers can then apply.",
+
+"faq.buyer.q2": "What are the platform fees for buyers?",
+"faq.buyer.a2": "KrishiSetu charges only a 2% transaction fee on successful contracts. There are no subscription or hidden charges.",
+
+"faq.buyer.q3": "How do I ensure quality of the produce?",
+"faq.buyer.a3": "Specify quality standards in your contract. Produce can also be verified through our quality partners.",
+
+"faq.buyer.q4": "Can I inspect the farm before finalizing?",
+"faq.buyer.a4": "Yes. You can schedule a virtual or physical farm visit before confirming the contract.",
+
+"faq.buyer.q5": "What payment methods are supported?",
+"faq.buyer.a5": "UPI, NEFT/RTGS, credit/debit cards, and trade credit are supported.",
+
+"faq.buyer.q6": "Can I source from multiple farmers?",
+"faq.buyer.a6": "Yes. Bulk requirements can be fulfilled by multiple farmers, and AI helps distribute orders efficiently.",
+
+// Trust
+"faq.trust.q1": "How are farmers and buyers verified?",
+"faq.trust.a1": "Users are verified through OTP, Aadhaar, bank verification, and supporting documents.",
+
+"faq.trust.q2": "How does the trust badge system work?",
+"faq.trust.a2": "Users earn Bronze, Silver, Gold, and Platinum badges based on successful transactions.",
+
+"faq.trust.q3": "What if there's a dispute?",
+"faq.trust.a3": "Disputes are resolved through chat, mediation, and third-party arbitration.",
+
+"faq.trust.q4": "Is my data secure?",
+"faq.trust.a4": "Yes. KrishiSetu uses bank-grade encryption and follows data protection standards.",
+
+"faq.trust.q5": "How do smart contracts work?",
+"faq.trust.a5": "Smart contracts automatically enforce payment, delivery, and quality terms after both parties agree.",
+
+// Technical
+"faq.tech.q1": "Which languages does KrishiSetu support?",
+"faq.tech.a1": "KrishiSetu supports multiple Indian languages including English and Hindi.",
+
+"faq.tech.q2": "Is there a mobile app?",
+"faq.tech.a2": "Yes. KrishiSetu is available for Android, iOS, and the web.",
+
+"faq.tech.q3": "Do I need internet?",
+"faq.tech.a3": "Internet is required for live updates, messaging, and AI features, while some information is available offline.",
+
+"faq.tech.q4": "What devices are supported?",
+"faq.tech.a4": "KrishiSetu works on smartphones, tablets, laptops, and desktop computers.",
+
+"faq.tech.q5": "How do I reset my password?",
+"faq.tech.a5": "Use the Forgot Password option to verify your phone number with OTP and create a new password.",
+
+// Financial
+"faq.finance.q1": "Does KrishiSetu offer crop insurance?",
+"faq.finance.a1": "Yes. Crop insurance is available through partner insurance providers.",
+
+"faq.finance.q2": "Can I get a loan through KrishiSetu?",
+"faq.finance.a2": "Yes. Eligible users can apply for agricultural loans through our banking partners.",
+
+"faq.finance.q3": "How do government schemes work?",
+"faq.finance.a3": "Link your Aadhaar and KrishiSetu will help identify government schemes you qualify for.",
+
+"faq.finance.q4": "Are there any hidden charges?",
+"faq.finance.a4": "No. Farmers use the platform free of cost, while buyers only pay a 2% fee on successful contracts.",
+
+"farmer.welcome": "Welcome Back",
+"farmer.description": "Monitor your crops, check contracts, and track AI market trends.",
+"farmer.totalContracts": "Total Contracts",
+"farmer.activeAgreements": "Active Agreements",
+"farmer.activeCrops": "Active Crops",
+"farmer.listedInMarket": "Listed in market",
+"farmer.expectedRevenue": "Expected Revenue",
+"farmer.fromContracts": "From contracts",
+"farmer.trustScore": "Trust Score",
+"farmer.verifiedFarmer": "Verified Farmer",
+"farmer.pendingRequests": "Pending Requests",
+"farmer.awaitingApproval": "Awaiting approval",
+"farmer.quickActions": "Quick Actions",
+"farmer.addCrop": "Add Crop",
+"farmer.viewContracts": "View Contracts",
+"farmer.aiRecommendations": "AI Recommendations",
+"farmer.messages": "Messages",
+"farmer.myActiveCrops": "My Active Crops",
+"farmer.expectedHarvest": "Expected Harvest",
+"farmer.noCrops": "No crops added yet. Click on \"Add Crop\" to get started.",
+"farmer.back": "Back",
+"farmer.loadingProfile": "Loading profile data...",
+
+"farmerContracts.title": "My Contracts",
+"farmerContracts.description": "View and manage your active and past farming contracts",
+"farmerContracts.searchPlaceholder": "Search crop, buyer, or contract ID...",
+"farmerContracts.loading": "Loading contracts from backend...",
+"farmerContracts.noContracts": "No contracts found",
+"farmerContracts.adjustFilter": "Try adjusting your filter or search keyword.",
+"farmerContracts.buyer": "Buyer",
+"farmerContracts.agreedPrice": "Agreed Price",
+"farmerContracts.quantity": "Quantity",
+"farmerContracts.viewDetails": "View Details",
+
+"farmerContractDetail.fetchingDetails": "Fetching Contract Details...",
+"farmerContractDetail.errorLoading": "Error Loading Contract",
+"farmerContractDetail.contractUnavailable": "Contract data unavailable",
+"farmerContractDetail.goBack": "Go Back",
+"farmerContractDetail.backToContracts": "Back to Contracts",
+"farmerContractDetail.createdOn": "Created on",
+"farmerContractDetail.updating": "Updating...",
+"farmerContractDetail.acceptStart": "Accept & Start",
+"farmerContractDetail.markCompleted": "Mark Completed",
+"farmerContractDetail.contractInformation": "Contract Information",
+"farmerContractDetail.agreedRate": "Agreed Rate",
+"farmerContractDetail.totalQuantity": "Total Quantity",
+"farmerContractDetail.escrowActive": "Escrow Protection Active",
+"farmerContractDetail.payoutProtected": "Total payout amount is protected in escrow.",
+"farmerContractDetail.buyerDetails": "Buyer Details",
+"farmerContractDetail.verifiedBuyer": "Verified Buyer",
+"farmerContractDetail.noPhone": "No phone available",
+
+'myCrops.loading': 'Loading your crops...',
+'myCrops.noSearchResult': 'No crops found matching your search term.',
+'myCrops.noCrops': 'No crops registered yet. Get started by cataloging your first harvest!',
+'myCrops.addFirstCrop': 'Add Your First Crop',
+
+"ai.soilType": "Soil Type",
+"ai.season": "Season",
+"ai.location": "Location",
+"ai.locationPlaceholder": "e.g., Maharashtra",
+"ai.crop": "Crop",
+"ai.area": "Area (Acres)",
+"ai.budget": "Budget (₹)",
+
+"ai.getRecommendation": "Get Recommendation",
+"ai.getForecast": "Get Forecast",
+"ai.analyzeMarket": "Analyze Market Trends",
+"ai.estimateProfit": "Estimate Profit",
+
+"ai.analyzing": "Analyzing...",
+"ai.forecasting": "Forecasting...",
+"ai.calculating": "Calculating...",
+
+"ai.recommendedCrops": "Recommended Crops",
+"ai.sixMonthForecast": "6-Month Demand Forecast",
+"ai.keyInsights": "Key Insights",
+"ai.currentMarketTrends": "Current Market Trends",
+"ai.analysis": "Analysis",
+"ai.recommendations": "Recommendations",
+"ai.factors": "Factors to Consider",
+"ai.proTips": "Pro Tips",
+
+"ai.configureParameters": "Configure Parameters",
+"ai.analysisStreams": "Analysis Streams",
+"ai.engineLoading": "AI Engine is compiling operational matrices...",
 },
 
 
@@ -1010,11 +1301,13 @@ updateProfile: "Unable to update profile",
 "ai.demandForecasting": "मांग का पूर्वानुमान",
 "ai.demandForecastingDesc": "आने वाली बाजार मांग का अनुमान लगाएं और वही उगाएं जिसकी बिक्री हो।",
 
-"ai.marketTrend": "बाजार रुझान विश्लेषण",
-"ai.marketTrendDesc": "विभिन्न क्षेत्रों में कीमतों और बाजार के रुझानों को रियल टाइम में ट्रैक करें।",
+"ai.marketTrendAnalysis": "बाजार रुझान विश्लेषण",
+"ai.marketTrendAnalysisDesc": "विभिन्न क्षेत्रों में कीमतों और बाजार के रुझानों को रियल टाइम में ट्रैक करें।",
 
 "ai.profitEstimation": "लाभ का अनुमान",
 "ai.profitEstimationDesc": "डेटा-आधारित अनुमान के साथ बुवाई से पहले अपने संभावित लाभ का अनुमान लगाएं।",
+"ai.selectModule": "एक AI मॉड्यूल चुनें",
+"ai.selectModuleDesc": "स्थानीय बाजार विश्लेषण, मूल्य पूर्वानुमान और AI सुझाव देखने के लिए ऊपर दिया गया कोई भी मॉड्यूल चुनें।",
 "buyerCta.forBuyers": "खरीदारों के लिए",
 "buyerCta.title": "क्या आप किसी विशेष फसल की तलाश में हैं?",
 "buyerCta.description": "क्या आपको फूल, फल, सब्जियां, अनाज या बड़ी मात्रा में कृषि उत्पाद चाहिए? अपनी आवश्यकता पोस्ट करने और सीधे आपूर्ति प्राप्त करने के लिए लॉगिन करें।",
@@ -1691,6 +1984,285 @@ updateProfile: "प्रोफ़ाइल अपडेट नहीं हो 
 "buyerLayout.verifiedBuyer": "सत्यापित खरीदार",
 "buyerLayout.myProfile": "मेरी प्रोफ़ाइल",
 "buyerLayout.accountSettings": "अकाउंट सेटिंग्स",
+
+
+"buyerOnboarding.badge": "खरीदार ऑनबोर्डिंग",
+"buyerOnboarding.title": "खरीदार के रूप में शुरुआत करें",
+"buyerOnboarding.subtitle": "अपना खरीदार खाता सेट करें और किसानों से सीधे खरीद शुरू करने के लिए इन चरणों का पालन करें।",
+"buyerOnboarding.backToHome": "होम पर वापस जाएँ",
+
+"buyerOnboarding.step": "चरण",
+
+"buyerOnboarding.step1.title": "खरीदार खाता बनाएँ",
+"buyerOnboarding.step1.description": "अपनी कंपनी की जानकारी के साथ साइन अप करें, खाता प्रकार के रूप में \"Buyer\" चुनें और अपना व्यावसायिक ईमेल सत्यापित करें।",
+
+"buyerOnboarding.step2.title": "व्यवसाय सत्यापन पूरा करें",
+"buyerOnboarding.step2.description": "अपना व्यवसाय पंजीकरण (GSTIN/Trade License) जमा करें ताकि किसान एक सत्यापित खरीदार पर भरोसा कर सकें और उससे जुड़ सकें।",
+
+"buyerOnboarding.step3.title": "आवश्यकता पोस्ट करें",
+"buyerOnboarding.step3.description": "फसल, मात्रा, बजट, गुणवत्ता ग्रेड और डिलीवरी स्थान बताइए — उपयुक्त किसान स्वतः दिखाए जाएँगे।",
+
+"buyerOnboarding.step4.title": "जुड़ें और अनुबंध अंतिम करें",
+"buyerOnboarding.step4.description": "उपयुक्त किसानों से चैट करें, शर्तों पर सहमति बनाएँ और प्लेटफ़ॉर्म के माध्यम से सीधे अनुबंध पूरा करें।",
+
+"buyerOnboarding.note": "ऑनबोर्डिंग पूरी होने के बाद खरीदार डैशबोर्ड में जुड़े हुए किसान, सक्रिय ऑर्डर और खर्च का विश्लेषण एक ही स्थान पर दिखाई देता है।",
+
+
+"farmerRegistrationGuide.badge": "किसान ऑनबोर्डिंग",
+"farmerRegistrationGuide.title": "किसान KrishiSetu पर कैसे पंजीकरण करते हैं",
+"farmerRegistrationGuide.subtitle": "किसान ऑनबोर्डिंग प्रक्रिया को समझने के लिए एक संक्षिप्त मार्गदर्शिका।",
+"farmerRegistrationGuide.backToHome": "होम पर वापस जाएँ",
+
+"farmerRegistrationGuide.step": "चरण",
+
+"farmerRegistrationGuide.step1.title": "खाता बनाएँ",
+"farmerRegistrationGuide.step1.description": "किसान अपने मोबाइल नंबर या ईमेल का उपयोग करके KrishiSetu पर पंजीकरण करता है और खाता प्रकार के रूप में \"Farmer\" चुनता है।",
+
+"farmerRegistrationGuide.step2.title": "KYC और खेत का विवरण पूरा करें",
+"farmerRegistrationGuide.step2.description": "किसान सत्यापन के लिए पहचान प्रमाण, खेत का स्थान, भूमि का आकार और उगाई जाने वाली फसलों की जानकारी देता है।",
+
+"farmerRegistrationGuide.step3.title": "फसल सूचीबद्ध करें",
+"farmerRegistrationGuide.step3.description": "स्वीकृति मिलने के बाद किसान उपलब्ध फसलें, मात्रा, मूल्य और अनुमानित कटाई तिथि के साथ सूचीबद्ध कर सकता है।",
+
+"farmerRegistrationGuide.step4.title": "सत्यापित हों और जुड़ना शुरू करें",
+"farmerRegistrationGuide.step4.description": "प्रोफ़ाइल पर सत्यापित बैज जोड़ दिया जाता है, जिसके बाद खरीदार फसल सूची देख सकते हैं और सीधे किसान को आवश्यकताएँ भेज सकते हैं।",
+
+"farmerRegistrationGuide.note": "चारों चरण पूरे होने के बाद किसान की प्रोफ़ाइल खरीदार की \"Connected Farmers\" सूची में दिखाई देने लगती है, जब भी उसकी फसलें किसी आवश्यकता से मेल खाती हैं।",
+
+
+"cropRequirement.selectUnit": "इकाई चुनें",
+"cropRequirement.tons": "टन",
+"cropRequirement.quintals": "क्विंटल",
+"cropRequirement.kilograms": "किलोग्राम",
+"cropRequirement.defaultDescription": "उच्च गुणवत्ता की आवश्यकता",
+"cropRequirement.tomato": "टमाटर",
+"cropRequirement.currencyPerKg": "₹24 / किग्रा",
+
+"features.title": "आधुनिक कृषि के लिए शक्तिशाली सुविधाएँ",
+"features.subtitle": "KrishiSetu किसानों को AI, पारदर्शिता और सीधे बाज़ार तक पहुँच के साथ सशक्त बनाता है।",
+
+"features.demandDrivenFarming.title": "मांग-आधारित खेती",
+"features.demandDrivenFarming.description": "किसान वास्तविक बाज़ार की मांग के अनुसार फसल उगाते हैं ताकि नुकसान और अनिश्चितता कम हो।",
+
+"features.directConnection.title": "किसान-खरीदार सीधा संपर्क",
+"features.directConnection.description": "बिचौलियों को हटाकर किसानों को सत्यापित खरीदारों से सीधे जोड़ें।",
+
+"features.digitalContracts.title": "स्मार्ट डिजिटल अनुबंध",
+"features.digitalContracts.description": "किसानों और खरीदारों के बीच स्पष्ट शर्तों के साथ पारदर्शी समझौते।",
+
+"features.trustSystem.title": "विश्वास एवं प्रतिष्ठा प्रणाली",
+"features.trustSystem.description": "सफल लेन-देन और विश्वसनीयता के आधार पर बैज और रेटिंग।",
+
+"features.smartFarming.title": "स्मार्ट कृषि मार्गदर्शन",
+"features.smartFarming.description": "फसल, सिंचाई और कीट नियंत्रण के लिए AI आधारित सुझाव।",
+
+"features.marketIntelligence.title": "बाज़ार विश्लेषण",
+"features.marketIntelligence.description": "किसानों का लाभ बढ़ाने के लिए लाइव मांग और मूल्य रुझान।",
+
+"features.transport.title": "एकीकृत परिवहन सुविधा",
+"features.transport.description": "फार्म से खरीदार तक सुरक्षित फसल डिलीवरी के लिए आसान लॉजिस्टिक्स और वाहन ट्रैकिंग।",
+
+"features.aiMatch.title": "AI मैच स्कोर",
+"features.aiMatch.description": "मूल्य, गुणवत्ता और स्थान के आधार पर किसानों और खरीदारों का स्मार्ट मिलान।",
+
+
+"platformFeatures.badge": "प्लेटफ़ॉर्म परिचय",
+"platformFeatures.title": "प्लेटफ़ॉर्म की विशेषताएँ",
+"platformFeatures.subtitle": "KrishiSetu पर उपलब्ध सभी सुविधाएँ एक ही स्थान पर।",
+"platformFeatures.backToHome": "होम पर वापस जाएँ",
+
+"platformFeatures.aiMatching.title": "AI आधारित मिलान",
+"platformFeatures.aiMatching.description": "फसल श्रेणी, मात्रा और स्थान के आधार पर आवश्यकताओं का किसानों से स्वतः मिलान किया जाता है।",
+
+"platformFeatures.verifiedFarmers.title": "सत्यापित किसान नेटवर्क",
+"platformFeatures.verifiedFarmers.description": "हर किसान प्रोफ़ाइल KYC सत्यापित होती है, जिससे खरीदारों का विश्वास बढ़ता है।",
+
+"platformFeatures.messaging.title": "सीधा संदेश",
+"platformFeatures.messaging.description": "जुड़े हुए किसानों से मात्रा, मूल्य और डिलीवरी पर सीधे बातचीत करें — बिना किसी बिचौलिए के।",
+
+"platformFeatures.contracts.title": "डिजिटल अनुबंध",
+"platformFeatures.contracts.description": "स्पष्ट शर्तों, मात्रा, मूल्य और डिलीवरी तिथि के साथ समझौते करें, जिन्हें आपके डैशबोर्ड पर ट्रैक किया जा सकता है।",
+
+"platformFeatures.analytics.title": "खर्च विश्लेषण",
+"platformFeatures.analytics.description": "भविष्य की खरीद योजना बनाने के लिए अपने ऑर्डर इतिहास और खर्च के रुझानों को ट्रैक करें।",
+
+"platformFeatures.fpo.title": "FPO नेटवर्क एक्सेस",
+"platformFeatures.fpo.description": "बड़े स्तर पर खरीद के लिए किसान उत्पादक संगठनों (FPO) से जुड़ें।",
+
+"faq.badge": "Help Center",
+"faq.stillQuestions": "अभी भी सवाल हैं?",
+"faq.supportText": "क्या आपको वह नहीं मिला जिसकी आप तलाश कर रहे हैं? हमारी सपोर्ट टीम आपकी मदद के लिए 24/7 उपलब्ध है।",
+"faq.contactSupport": "सपोर्ट से संपर्क करें",
+"faq.getStarted": "शुरू करें",
+"faq.searchResults": "मिले",
+
+"faq.category.farmers": "किसानों के लिए",
+"faq.category.buyers": "खरीदारों के लिए",
+"faq.category.trust": "विश्वास और सुरक्षा",
+"faq.category.technical": "तकनीकी और ऐप",
+"faq.category.financial": "वित्तीय सहायता",
+
+"faq.farmer.q1": "मैं KrishiSetu पर किसान के रूप में पंजीकरण कैसे करूं?",
+"faq.farmer.a1": "पंजीकरण सरल और निःशुल्क है। होमपेज पर \"Farmer Register\" पर क्लिक करें, अपनी मूल जानकारी (नाम, स्थान, मोबाइल नंबर) भरें, OTP से मोबाइल सत्यापित करें और शुरुआत करें। पूरी प्रक्रिया 5 मिनट से कम समय में पूरी हो जाती है।",
+
+"faq.farmer.q2": "पंजीकरण के लिए मुझे किन दस्तावेज़ों की आवश्यकता होगी?",
+"faq.farmer.a2": "सामान्य पंजीकरण के लिए केवल एक वैध मोबाइल नंबर आवश्यक है। अतिरिक्त सुविधाओं और बड़े अनुबंधों के लिए आधार कार्ड, भूमि रिकॉर्ड या खेती के स्वामित्व का प्रमाण और बैंक खाते की जानकारी जोड़ने की सलाह दी जाती है।",
+
+"faq.farmer.q3": "कॉन्ट्रैक्ट फार्मिंग प्रक्रिया कैसे काम करती है?",
+"faq.farmer.a3": "खरीदारों की आवश्यकताएँ देखें, शर्तों की समीक्षा करें, अनुबंध स्वीकार करें, AI मार्गदर्शन के साथ फसल उगाएँ, उपज की डिलीवरी करें और सत्यापन के बाद भुगतान प्राप्त करें।",
+
+"faq.farmer.q4": "मुझे भुगतान कैसे प्राप्त होगा?",
+"faq.farmer.a4": "सफल डिलीवरी और गुणवत्ता सत्यापन के बाद भुगतान आपके लिंक किए गए बैंक खाते में 24–48 घंटे के भीतर जमा कर दिया जाता है।",
+
+"faq.farmer.q5": "अगर खरीदार अनुबंध रद्द कर देता है तो क्या होगा?",
+"faq.farmer.a5": "यदि खरीदार बिना किसी उचित कारण के अनुबंध रद्द करता है, तो स्मार्ट कॉन्ट्रैक्ट सुरक्षा के माध्यम से किसान को रद्दीकरण शुल्क दिया जाता है।",
+
+"faq.farmer.q6": "AI फसल अनुशंसा कैसे काम करती है?",
+"faq.farmer.a6": "हमारा AI मिट्टी, जलवायु, बाजार की मांग, पुराने मूल्य डेटा और मौसमी पूर्वानुमानों का विश्लेषण करके सबसे लाभदायक फसलों की सलाह देता है।",
+
+"faq.buyer.q1": "मैं आवश्यकता कैसे पोस्ट करूं?",
+"faq.buyer.a1": "Post Requirement पर जाएं, फसल की जानकारी, मात्रा, गुणवत्ता, मूल्य, डिलीवरी तिथि और स्थान भरें। सत्यापित किसान इसके बाद आवेदन कर सकते हैं।",
+
+"faq.buyer.q2": "खरीदारों के लिए प्लेटफ़ॉर्म शुल्क क्या है?",
+"faq.buyer.a2": "KrishiSetu सफल अनुबंधों पर केवल 2% लेनदेन शुल्क लेता है। कोई सदस्यता शुल्क या छिपे हुए शुल्क नहीं हैं।",
+
+"faq.buyer.q3": "मैं फसल की गुणवत्ता कैसे सुनिश्चित कर सकता हूं?",
+"faq.buyer.a3": "अनुबंध में गुणवत्ता मानक निर्धारित करें। फसल की गुणवत्ता हमारे गुणवत्ता भागीदारों के माध्यम से भी सत्यापित की जा सकती है।",
+
+"faq.buyer.q4": "क्या मैं अनुबंध अंतिम करने से पहले खेत का निरीक्षण कर सकता हूं?",
+"faq.buyer.a4": "हाँ। अनुबंध की पुष्टि करने से पहले आप वर्चुअल या व्यक्तिगत रूप से खेत का दौरा निर्धारित कर सकते हैं।",
+
+"faq.buyer.q5": "कौन-कौन से भुगतान तरीके समर्थित हैं?",
+"faq.buyer.a5": "UPI, NEFT/RTGS, क्रेडिट/डेबिट कार्ड और व्यापारिक क्रेडिट भुगतान विकल्प समर्थित हैं।",
+
+"faq.buyer.q6": "क्या मैं कई किसानों से फसल खरीद सकता हूं?",
+"faq.buyer.a6": "हाँ। बड़ी आवश्यकताओं को कई किसानों के माध्यम से पूरा किया जा सकता है और AI ऑर्डर को कुशलतापूर्वक वितरित करने में मदद करता है।",
+
+"faq.trust.q1": "किसानों और खरीदारों का सत्यापन कैसे किया जाता है?",
+"faq.trust.a1": "उपयोगकर्ताओं का सत्यापन OTP, आधार, बैंक सत्यापन और आवश्यक दस्तावेज़ों के माध्यम से किया जाता है।",
+
+"faq.trust.q2": "ट्रस्ट बैज सिस्टम कैसे काम करता है?",
+"faq.trust.a2": "सफल लेनदेन के आधार पर उपयोगकर्ताओं को Bronze, Silver, Gold और Platinum बैज प्राप्त होते हैं।",
+
+"faq.trust.q3": "यदि कोई विवाद होता है तो क्या होगा?",
+"faq.trust.a3": "विवादों का समाधान चैट, मध्यस्थता और तीसरे पक्ष की सहायता से किया जाता है।",
+
+"faq.trust.q4": "क्या मेरा डेटा सुरक्षित है?",
+"faq.trust.a4": "हाँ। KrishiSetu बैंक-स्तरीय एन्क्रिप्शन का उपयोग करता है और डेटा सुरक्षा मानकों का पालन करता है।",
+
+"faq.trust.q5": "स्मार्ट कॉन्ट्रैक्ट कैसे काम करते हैं?",
+"faq.trust.a5": "स्मार्ट कॉन्ट्रैक्ट दोनों पक्षों की सहमति के बाद भुगतान, डिलीवरी और गुणवत्ता से जुड़ी शर्तों को स्वचालित रूप से लागू करते हैं।",
+
+"faq.tech.q1": "KrishiSetu किन भाषाओं को सपोर्ट करता है?",
+"faq.tech.a1": "KrishiSetu अंग्रेजी और हिंदी सहित कई भारतीय भाषाओं को सपोर्ट करता है।",
+
+"faq.tech.q2": "क्या इसका मोबाइल ऐप उपलब्ध है?",
+"faq.tech.a2": "हाँ। KrishiSetu Android, iOS और वेब प्लेटफ़ॉर्म पर उपलब्ध है।",
+
+"faq.tech.q3": "क्या इंटरनेट की आवश्यकता होती है?",
+"faq.tech.a3": "लाइव अपडेट, मैसेजिंग और AI सुविधाओं के लिए इंटरनेट आवश्यक है, जबकि कुछ जानकारी ऑफलाइन भी उपलब्ध होती है।",
+
+"faq.tech.q4": "कौन-कौन से डिवाइस समर्थित हैं?",
+"faq.tech.a4": "KrishiSetu स्मार्टफोन, टैबलेट, लैपटॉप और डेस्कटॉप कंप्यूटर पर काम करता है।",
+
+"faq.tech.q5": "मैं अपना पासवर्ड कैसे रीसेट करूं?",
+"faq.tech.a5": "Forgot Password विकल्प का उपयोग करें, OTP से अपना मोबाइल नंबर सत्यापित करें और नया पासवर्ड बनाएं।",
+
+"faq.finance.q1": "क्या KrishiSetu फसल बीमा प्रदान करता है?",
+"faq.finance.a1": "हाँ। फसल बीमा हमारे सहयोगी बीमा प्रदाताओं के माध्यम से उपलब्ध है।",
+
+"faq.finance.q2": "क्या मैं KrishiSetu के माध्यम से ऋण प्राप्त कर सकता हूं?",
+"faq.finance.a2": "हाँ। पात्र उपयोगकर्ता हमारे बैंकिंग भागीदारों के माध्यम से कृषि ऋण के लिए आवेदन कर सकते हैं।",
+
+"faq.finance.q3": "सरकारी योजनाएँ कैसे काम करती हैं?",
+"faq.finance.a3": "अपना आधार लिंक करें और KrishiSetu आपको उन सरकारी योजनाओं की पहचान करने में मदद करेगा जिनके लिए आप पात्र हैं।",
+
+"faq.finance.q4": "क्या कोई छिपे हुए शुल्क हैं?",
+"faq.finance.a4": "नहीं। किसान प्लेटफ़ॉर्म का निःशुल्क उपयोग करते हैं, जबकि खरीदार सफल अनुबंधों पर केवल 2% शुल्क देते हैं।",
+
+"farmer.welcome": "वापसी पर स्वागत है",
+"farmer.description": "अपनी फसलों की निगरानी करें, अनुबंधों की जांच करें और AI बाजार के रुझानों को ट्रैक करें।",
+"farmer.totalContracts": "कुल अनुबंध",
+"farmer.activeAgreements": "सक्रिय समझौते",
+"farmer.activeCrops": "सक्रिय फसलें",
+"farmer.listedInMarket": "बाजार में सूचीबद्ध",
+"farmer.expectedRevenue": "अनुमानित आय",
+"farmer.fromContracts": "अनुबंधों से",
+"farmer.trustScore": "विश्वास स्कोर",
+"farmer.verifiedFarmer": "सत्यापित किसान",
+"farmer.pendingRequests": "लंबित अनुरोध",
+"farmer.awaitingApproval": "अनुमोदन की प्रतीक्षा में",
+"farmer.quickActions": "त्वरित कार्य",
+"farmer.addCrop": "फसल जोड़ें",
+"farmer.viewContracts": "अनुबंध देखें",
+"farmer.aiRecommendations": "AI सिफारिशें",
+"farmer.messages": "संदेश",
+"farmer.myActiveCrops": "मेरी सक्रिय फसलें",
+"farmer.expectedHarvest": "अपेक्षित कटाई",
+"farmer.noCrops": "अभी तक कोई फसल नहीं जोड़ी गई है। शुरू करने के लिए \"फसल जोड़ें\" पर क्लिक करें।",
+"farmer.back": "वापस",
+"farmer.loadingProfile": "प्रोफाइल डेटा लोड हो रहा है...",
+
+"farmerContracts.title": "मेरे अनुबंध",
+"farmerContracts.description": "अपने सक्रिय और पुराने कृषि अनुबंध देखें और प्रबंधित करें",
+"farmerContracts.searchPlaceholder": "फसल, खरीदार या अनुबंध आईडी खोजें...",
+"farmerContracts.loading": "बैकएंड से अनुबंध लोड हो रहे हैं...",
+"farmerContracts.noContracts": "कोई अनुबंध नहीं मिला",
+"farmerContracts.adjustFilter": "अपना फ़िल्टर या खोज शब्द बदलने का प्रयास करें।",
+"farmerContracts.buyer": "खरीदार",
+"farmerContracts.agreedPrice": "सहमत मूल्य",
+"farmerContracts.quantity": "मात्रा",
+"farmerContracts.viewDetails": "विवरण देखें",
+
+"farmerContractDetail.fetchingDetails": "अनुबंध विवरण लोड हो रहे हैं...",
+"farmerContractDetail.errorLoading": "अनुबंध लोड करने में त्रुटि",
+"farmerContractDetail.contractUnavailable": "अनुबंध डेटा उपलब्ध नहीं है",
+"farmerContractDetail.goBack": "वापस जाएं",
+"farmerContractDetail.backToContracts": "अनुबंधों पर वापस जाएं",
+"farmerContractDetail.createdOn": "बनाया गया",
+"farmerContractDetail.updating": "अपडेट हो रहा है...",
+"farmerContractDetail.acceptStart": "स्वीकार करें और शुरू करें",
+"farmerContractDetail.markCompleted": "पूरा हुआ चिन्हित करें",
+"farmerContractDetail.contractInformation": "अनुबंध जानकारी",
+"farmerContractDetail.agreedRate": "सहमत दर",
+"farmerContractDetail.totalQuantity": "कुल मात्रा",
+"farmerContractDetail.escrowActive": "एस्क्रो सुरक्षा सक्रिय है",
+"farmerContractDetail.payoutProtected": "कुल भुगतान राशि एस्क्रो में सुरक्षित है।",
+"farmerContractDetail.buyerDetails": "खरीदार विवरण",
+"farmerContractDetail.verifiedBuyer": "सत्यापित खरीदार",
+"farmerContractDetail.noPhone": "फोन उपलब्ध नहीं है",
+
+"ai.soilType": "मिट्टी का प्रकार",
+"ai.season": "मौसम",
+"ai.location": "स्थान",
+"ai.locationPlaceholder": "जैसे: महाराष्ट्र",
+"ai.crop": "फसल",
+"ai.area": "क्षेत्रफल (एकड़)",
+"ai.budget": "बजट (₹)",
+
+"ai.getRecommendation": "सिफारिश प्राप्त करें",
+"ai.getForecast": "पूर्वानुमान प्राप्त करें",
+"ai.analyzeMarket": "बाजार का विश्लेषण करें",
+"ai.estimateProfit": "लाभ का अनुमान लगाएँ",
+
+"ai.analyzing": "विश्लेषण किया जा रहा है...",
+"ai.forecasting": "पूर्वानुमान लगाया जा रहा है...",
+"ai.calculating": "गणना की जा रही है...",
+
+"ai.recommendedCrops": "अनुशंसित फसलें",
+"ai.sixMonthForecast": "6 महीने का मांग पूर्वानुमान",
+"ai.keyInsights": "मुख्य जानकारियाँ",
+"ai.currentMarketTrends": "वर्तमान बाजार रुझान",
+"ai.analysis": "विश्लेषण",
+"ai.recommendations": "सिफारिशें",
+"ai.factors": "ध्यान देने योग्य बातें",
+"ai.proTips": "विशेष सुझाव",
+
+"ai.configureParameters": "पैरामीटर सेट करें",
+"ai.analysisStreams": "विश्लेषण परिणाम",
+"ai.engineLoading": "AI इंजन विश्लेषण तैयार कर रहा है...",
+
+
 
  },
 };

@@ -347,6 +347,7 @@ import api from '@/lib/api'
 import { CropsHeader } from "../../../components/crops-header"
 import { CropCard } from "../../../components/crop-card"
 import { AddCropModal } from "../../../components/add-crop-modal"
+import { useLanguage } from '@/components/LanguageContext'
 
 interface Crop {
   id: string
@@ -358,6 +359,7 @@ interface Crop {
 }
 
 export default function MyCropsPage() {
+  const { t } = useLanguage()
   const [crops, setCrops] = useState<Crop[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -449,7 +451,9 @@ export default function MyCropsPage() {
         {/* Crops Display Matrix */}
         {loading ? (
           <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
-            <p className="text-gray-500 text-base font-medium">Loading your crops...</p>
+            <p className="text-gray-500 text-base font-medium">
+  {t('myCrops.loading')}
+</p>
           </div>
         ) : filteredCrops.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -468,15 +472,15 @@ export default function MyCropsPage() {
           <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
             <p className="text-gray-500 text-base font-medium mb-4">
               {searchQuery
-                ? 'No crops found matching your search term.'
-                : 'No crops registered yet. Get started by cataloging your first harvest!'}
+                ? t('myCrops.noSearchResult')
+                : t('myCrops.noCrops')}
             </p>
             {!searchQuery && (
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="px-6 py-2.5 rounded-xl text-white font-bold text-sm transition-all transform hover:-translate-y-0.5 shadow-sm bg-emerald-600 hover:bg-emerald-700"
               >
-                Add Your First Crop
+                {t('myCrops.addFirstCrop')}
               </button>
             )}
           </div>

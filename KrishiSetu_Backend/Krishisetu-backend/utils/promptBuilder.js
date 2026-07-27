@@ -17,24 +17,7 @@ const buildCropRecommendationPrompt = (data) => {
   }`;
 };
 
-const buildProfitEstimationPrompt = (data) => {
-  return `You are an agricultural economics expert. Estimate profit for the following farming scenario:
-  
-  Crop: ${data.crop}
-  Area (acres): ${data.areaAcres}
-  Budget: ${data.budget}
-  Location: ${data.location}
-  
-  Return a JSON object with this exact structure:
-  {
-    "estimatedYield": number (in quintals),
-    "marketPrice": number (per quintal),
-    "revenue": number,
-    "netProfit": number,
-    "roi": number (percentage),
-    "riskAlert": "string"
-  }`;
-};
+
 
 const buildMarketTrendsPrompt = (data) => {
   return `You are an agricultural market analyst. Analyze market trends for:
@@ -49,6 +32,52 @@ const buildMarketTrendsPrompt = (data) => {
     "pestAlert": "string",
     "logisticsTip": "string"
   }`;
+};
+
+const buildDemandForecastPrompt = (data) => {
+  return `You are an agricultural demand forecasting AI expert. Predict future demand for the following crop:
+
+  Crop: ${data.crop}
+  Location: ${data.location}
+
+  Return a JSON object with this exact structure:
+  {
+    "demandLevel": "string (high/medium/low)",
+    "expectedDemandPeriod": "string",
+    "demandTrend": "string",
+    "recommendation": "string"
+  }`;
+};
+
+const buildProfitEstimationPrompt = (data) => {
+  return `You are an agricultural profit estimation expert.
+
+Crop: ${data.crop}
+Area: ${data.quantity} acres
+Location: ${data.location}
+Budget: ₹${data.budget}
+
+Return a JSON object with this exact structure:
+{
+  "estimation": {
+    "totalInvestment": "string",
+    "expectedYield": "string",
+    "grossIncome": "string",
+    "netProfit": "string",
+    "profitMargin": "string",
+    "breakEven": "string"
+  },
+  "factors": [
+    "string",
+    "string",
+    "string"
+  ],
+  "tips": [
+    "string",
+    "string",
+    "string"
+  ]
+}`;
 };
 
 const buildBuyerAnalyticsPrompt = (data) => {
@@ -87,6 +116,7 @@ module.exports = {
   buildCropRecommendationPrompt,
   buildProfitEstimationPrompt,
   buildMarketTrendsPrompt,
+  buildDemandForecastPrompt,
   buildBuyerAnalyticsPrompt,
   buildChatPrompt,
 };

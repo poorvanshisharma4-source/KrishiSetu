@@ -13,37 +13,35 @@ import {
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function BuyerOnboarding() {
   const router = useRouter()
+  const { t } = useLanguage()
 
   const steps = [
     {
       icon: Building2,
-      title: 'Create a Buyer Account',
-      description:
-        'Sign up with your company details, select "Buyer" as your account type, and verify your business email.',
+      title: t('buyerOnboarding.step1.title'),
+      description: t('buyerOnboarding.step1.description'),
       color: 'bg-green-100 text-green-700',
     },
     {
       icon: FileCheck,
-      title: 'Complete Business Verification',
-      description:
-        'Submit your business registration (GSTIN/Trade License) so farmers can trust and connect with a verified buyer.',
+      title: t('buyerOnboarding.step2.title'),
+      description: t('buyerOnboarding.step2.description'),
       color: 'bg-blue-100 text-blue-700',
     },
     {
       icon: Search,
-      title: 'Post a Requirement',
-      description:
-        'Specify the crop, quantity, budget, quality grade, and delivery location you need — matched farmers will be shown automatically.',
+      title: t('buyerOnboarding.step3.title'),
+      description: t('buyerOnboarding.step3.description'),
       color: 'bg-amber-100 text-amber-700',
     },
     {
       icon: Handshake,
-      title: 'Connect & Finalize Contracts',
-      description:
-        'Chat with matched farmers, agree on terms, and finalize a contract directly through the platform.',
+      title: t('buyerOnboarding.step4.title'),
+      description: t('buyerOnboarding.step4.description'),
       color: 'bg-purple-100 text-purple-700',
     },
   ]
@@ -61,13 +59,17 @@ export default function BuyerOnboarding() {
           >
             <div className="inline-flex items-center px-4 py-2 bg-white/10 rounded-full mb-6">
               <Building2 className="w-4 h-4 mr-2" />
-              <span className="text-sm font-medium">Buyer Onboarding</span>
+              <span className="text-sm font-medium">
+                {t('buyerOnboarding.badge')}
+              </span>
             </div>
+
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Getting Started as a Buyer
+              {t('buyerOnboarding.title')}
             </h1>
+
             <p className="text-lg text-primary-100">
-              Follow these steps to set up your buyer account and start sourcing directly from farmers.
+              {t('buyerOnboarding.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -82,7 +84,7 @@ export default function BuyerOnboarding() {
               className="mb-8 flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Home
+              {t('buyerOnboarding.backToHome')}
             </Button>
 
             <div className="space-y-4">
@@ -95,13 +97,24 @@ export default function BuyerOnboarding() {
                   transition={{ delay: index * 0.1 }}
                   className="flex items-start gap-4 bg-gray-50 rounded-lg p-5 hover:bg-gray-100 transition-colors"
                 >
-                  <div className={`w-12 h-12 shrink-0 ${step.color} rounded-xl flex items-center justify-center`}>
+                  <div
+                    className={`w-12 h-12 shrink-0 ${step.color} rounded-xl flex items-center justify-center`}
+                  >
                     <step.icon className="w-6 h-6" />
                   </div>
+
                   <div>
-                    <p className="text-xs font-medium text-gray-400 mb-1">STEP {index + 1}</p>
-                    <h3 className="text-lg font-display font-bold text-gray-900">{step.title}</h3>
-                    <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                    <p className="text-xs font-medium text-gray-400 mb-1">
+                      {t('buyerOnboarding.step')} {index + 1}
+                    </p>
+
+                    <h3 className="text-lg font-display font-bold text-gray-900">
+                      {step.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 mt-1">
+                      {step.description}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -109,9 +122,9 @@ export default function BuyerOnboarding() {
 
             <div className="mt-6 flex items-start gap-3 bg-green-50 rounded-lg p-5">
               <CheckCircle2 className="w-5 h-5 shrink-0 text-green-600 mt-0.5" />
+
               <p className="text-sm text-gray-700">
-                Once onboarded, the buyer&apos;s dashboard shows connected farmers, active orders, and
-                spending analytics — all in one place.
+                {t('buyerOnboarding.note')}
               </p>
             </div>
           </div>

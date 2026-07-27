@@ -532,6 +532,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { FarmerSidebar } from "@/components/FarmerSidebar"; 
+import { useLanguage } from '@/components/LanguageContext';
 import { 
   FileText, 
   Sprout, 
@@ -563,6 +564,7 @@ interface CropItem {
 
 export default function FarmerDashboardPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   
   const [loading, setLoading] = useState<boolean>(true);
   const [stats, setStats] = useState<DashboardStats>({
@@ -676,10 +678,11 @@ export default function FarmerDashboardPage() {
         {/* Welcome Banner */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            Welcome Back, {stats.userName}!
-          </h1>
+  {t("farmer.welcome")}, {stats.userName}!
+</h1>
+          
           <p className="text-xs sm:text-sm font-semibold text-gray-500 mt-1">
-            Monitor your crops, check contracts, and track AI market trends.
+            {t("farmer.description")}
           </p>
         </div>
 
@@ -692,11 +695,11 @@ export default function FarmerDashboardPage() {
               <FileText size={20} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">Total Contracts</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">{t("farmer.totalContracts")}</p>
               <p className="text-lg font-black text-gray-900 leading-tight">
                 {loading ? <Loader2 size={16} className="animate-spin text-gray-400 mt-1" /> : stats.totalContracts}
               </p>
-              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">Active Agreements</span>
+              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">{t("farmer.activeAgreements")}</span>
             </div>
           </div>
 
@@ -706,11 +709,11 @@ export default function FarmerDashboardPage() {
               <Sprout size={20} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">Active Crops</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">{t("farmer.activeCrops")}</p>
               <p className="text-lg font-black text-gray-900 leading-tight">
                 {loading ? <Loader2 size={16} className="animate-spin text-gray-400 mt-1" /> : stats.activeCropsCount}
               </p>
-              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">Listed in market</span>
+              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">{t("farmer.listedInMarket")}</span>
             </div>
           </div>
 
@@ -720,11 +723,11 @@ export default function FarmerDashboardPage() {
               <Coins size={20} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">Expected Revenue</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">{t("farmer.expectedRevenue")}</p>
               <p className="text-lg font-black text-gray-900 leading-tight">
                 {loading ? <Loader2 size={16} className="animate-spin text-gray-400 mt-1" /> : `₹${stats.expectedRevenue.toLocaleString('en-IN')}`}
               </p>
-              <span className="text-[10px] font-bold text-amber-600 block mt-0.5 truncate">From contracts</span>
+              <span className="text-[10px] font-bold text-amber-600 block mt-0.5 truncate">{t("farmer.fromContracts")}</span>
             </div>
           </div>
 
@@ -734,9 +737,9 @@ export default function FarmerDashboardPage() {
               <ShieldCheck size={20} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">Trust Score</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">{t("farmer.trustScore")}</p>
               <p className="text-lg font-black text-gray-900 leading-tight">4.8</p>
-              <span className="text-[10px] font-bold text-blue-600 block mt-0.5 truncate">Verified Farmer</span>
+              <span className="text-[10px] font-bold text-blue-600 block mt-0.5 truncate">{t("farmer.verifiedFarmer")}</span>
             </div>
           </div>
 
@@ -746,11 +749,11 @@ export default function FarmerDashboardPage() {
               <UserPlus size={20} />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">Pending Requests</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">{t("farmer.pendingRequests")}</p>
               <p className="text-lg font-black text-gray-900 leading-tight">
                 {loading ? <Loader2 size={16} className="animate-spin text-gray-400 mt-1" /> : stats.newRequestsCount}
               </p>
-              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">Awaiting approval</span>
+              <span className="text-[10px] font-bold text-emerald-600 block mt-0.5 truncate">{t("farmer.awaitingApproval")}</span>
             </div>
           </div>
 
@@ -758,35 +761,37 @@ export default function FarmerDashboardPage() {
 
         {/* Quick Actions Wrapper */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-base font-black text-gray-900 mb-4">Quick Actions</h3>
+          <h3 className="text-base font-black text-gray-900 mb-4">
+  {t("farmer.quickActions")}
+</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <button 
               onClick={() => router.push('/farmer/my-crops')}
               className="flex flex-col items-center justify-center p-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm gap-2 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <PlusCircle size={20} /> Add Crop
+              <PlusCircle size={20} /> {t("farmer.addCrop")}
             </button>
 
             <button 
               onClick={() => router.push('/farmer/contracts')}
               className="flex flex-col items-center justify-center p-4 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-sm gap-2 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <Eye size={20} /> View Contracts
+              <Eye size={20} /> {t("farmer.viewContracts")}
             </button>
 
             <button 
               onClick={() => router.push('/farmer/ai')}
               className="flex flex-col items-center justify-center p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-bold text-sm gap-2 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <Brain size={20} /> AI Recommendations
+              <Brain size={20} /> {t("farmer.aiRecommendations")}
             </button>
 
             <button 
               onClick={() => router.push('/farmer/messages')}
               className="flex flex-col items-center justify-center p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-sm gap-2 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
-              <MessageSquare size={20} /> Messages
+              <MessageSquare size={20} /> {t("farmer.messages")}
             </button>
 
           </div>
@@ -794,7 +799,9 @@ export default function FarmerDashboardPage() {
 
         {/* My Active Crops List */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-          <h3 className="text-base font-black text-gray-900 mb-4">My Active Crops</h3>
+          <h3 className="text-base font-black text-gray-900 mb-4">
+  {t("farmer.myActiveCrops")}
+</h3>
           
           {loading ? (
             <div className="flex items-center justify-center py-6">
@@ -807,7 +814,7 @@ export default function FarmerDashboardPage() {
                   <div>
                     <p className="font-bold text-gray-900 text-sm">{crop.name}</p>
                     <p className="text-xs text-gray-400 font-medium mt-0.5">
-                      {crop.area} • Expected Harvest: {crop.harvestDate}
+                      {crop.area} • {t("farmer.expectedHarvest")}: {crop.harvestDate}
                     </p>
                   </div>
                   <span className="px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-xs font-bold text-emerald-700">
@@ -818,7 +825,7 @@ export default function FarmerDashboardPage() {
             </div>
           ) : (
             <div className="p-6 text-center text-sm text-gray-500 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-              No crops added yet. Click on "Add Crop" to get started.
+              {t("farmer.noCrops")}
             </div>
           )}
         </div>

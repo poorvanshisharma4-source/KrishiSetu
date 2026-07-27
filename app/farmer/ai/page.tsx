@@ -1242,10 +1242,12 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/components/LanguageContext';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function FarmerAIPage() {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [activeFeature, setActiveFeature] = useState<string | null>(null);
   const [result, setResult] = useState<Record<string, any> | null>(null);
@@ -1264,7 +1266,7 @@ export default function FarmerAIPage() {
 
   const [profitForm, setProfitForm] = useState({
     crop: 'Tomatoes',
-    quantity: 5,
+    areaAcres: 5,
     location: 'Maharashtra',
     budget: 100000,
   });
@@ -1273,50 +1275,61 @@ export default function FarmerAIPage() {
     {
       id: 'crop-recommendation',
       icon: Brain,
-      title: 'Crop Recommendation',
-      description: 'AI suggests the most profitable crops based on soil, season and demand.',
+      title: t("ai.cropRecommendation"),
+      description: t("ai.cropRecommendationDesc"),
       color: 'bg-purple-100 text-purple-700',
       glowColor: 'shadow-purple-500/30',
     },
     {
       id: 'demand-forecast',
       icon: LineChart,
-      title: 'Demand Forecasting',
-      description: 'Predict upcoming market demand so you plant exactly what sells.',
+      title: t("ai.demandForecasting"),
+      description: t('ai.demandForecastingDesc'),
       color: 'bg-blue-100 text-blue-700',
       glowColor: 'shadow-blue-500/30',
     },
     {
       id: 'market-analysis',
       icon: BarChart3,
-      title: 'Market Trend Analysis',
-      description: 'Track price movements and trends across regions in real time.',
-      color: 'bg-green-100 text-green-700',
+      title: t('ai.marketTrendAnalysis'),
+      description: t('ai.marketTrendAnalysisDesc'),
       glowColor: 'shadow-green-500/30',
     },
     {
       id: 'profit-estimation',
       icon: Coins,
-      title: 'Profit Estimation',
-      description: 'Estimate returns before you sow with data-backed projections.',
+      title: t('ai.profitEstimation'),
+      description: t('ai.profitEstimationDesc'),
       color: 'bg-amber-100 text-amber-700',
       glowColor: 'shadow-amber-500/30',
     },
   ];
 
   const callAI = async (type: string, data: object) => {
+    console.log("AI BUTTON CLICKED:", type, data);
+
     setLoading(true);
-    setActiveFeature(type);
+    console.log("SENDING TO BACKEND:", JSON.stringify(data, null, 2));
+    setActiveFeature(
+  type === 'market-trends' ? 'market-analysis' : type
+);
     setResult(null);
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-recommendations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, data }),
+      console.log("AI API called:", type, data);
+
+const response = await fetch(`http://localhost:5000/api/ai/${type}`, {
+  method: 'POST',
+        headers: { 
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${localStorage.getItem("token")}`,
+},
+        body: JSON.stringify(data),
       });
 
       const json = await response.json();
+      console.log("AI response:", json);
+      console.log("RESULT SET:", json.data);
       setResult(json.data);
     } catch (error) {
       console.error('AI call failed:', error);
@@ -1362,11 +1375,11 @@ export default function FarmerAIPage() {
         'profit-estimation': {
           estimation: {
             totalInvestment: `₹${profitForm.budget.toLocaleString()}`,
-            expectedYield: `${profitForm.quantity * 5000} kg`,
-            grossIncome: `₹${(profitForm.quantity * 5000 * 25).toLocaleString()}`,
-            netProfit: `₹${(((profitForm.quantity * 5000 * 25) - profitForm.budget) * 0.6).toLocaleString()}`,
-            profitMargin: '60%',
-            breakEven: '4 months',
+            expectedYield: `${profitForm.areaAcres * 5000} kg`,
+grossIncome: `₹${(profitForm.areaAcres * 5000 * 25).toLocaleString()}`,
+netProfit: `₹${(((profitForm.areaAcres * 5000 * 25) - profitForm.budget) * 0.6).toLocaleString()}`,
+profitMargin: '60%',
+breakEven: '4 months'
           },
           factors: [
             'Weather conditions during growing season',
@@ -1392,7 +1405,9 @@ export default function FarmerAIPage() {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Soil Type</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+  {t("ai.soilType")}
+</label>
               <select
                 value={cropForm.soil}
                 onChange={(e) => setCropForm({ ...cropForm, soil: e.target.value })}
@@ -1406,7 +1421,9 @@ export default function FarmerAIPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Season</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+  {t("ai.season")}
+</label>
               <select
                 value={cropForm.season}
                 onChange={(e) => setCropForm({ ...cropForm, season: e.target.value })}
@@ -1418,29 +1435,38 @@ export default function FarmerAIPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+             <label className="block text-sm font-semibold text-gray-700 mb-2">
+  {t("ai.location")}
+</label>
               <input
                 type="text"
                 value={cropForm.location}
                 onChange={(e) => setCropForm({ ...cropForm, location: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-sm"
-                placeholder="e.g., Maharashtra"
+                placeholder={t("ai.locationPlaceholder")}
               />
             </div>
             <Button
-              onClick={() => callAI('crop-recommendation', cropForm)}
+              onClick={() =>
+  callAI('crop-recommendation', {
+    soilType: cropForm.soil,
+    season: cropForm.season,
+    state: cropForm.location,
+    district: cropForm.location
+  })
+}
               disabled={loading}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3 font-bold text-sm"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" />
-                  Analyzing...
+                  {t("ai.analyzing")}
                 </>
               ) : (
                 <>
                   <Brain className="w-4 h-4 mr-2 shrink-0" />
-                  Get Recommendation
+                  {t("ai.getRecommendation")}
                 </>
               )}
             </Button>
@@ -1457,7 +1483,7 @@ export default function FarmerAIPage() {
                 value={forecastForm.crop}
                 onChange={(e) => setForecastForm({ ...forecastForm, crop: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-sm"
-                placeholder="e.g., Tomatoes"
+                placeholder={t("ai.cropPlaceholder")}
               />
             </div>
             <div>
@@ -1467,23 +1493,23 @@ export default function FarmerAIPage() {
                 value={forecastForm.location}
                 onChange={(e) => setForecastForm({ ...forecastForm, location: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-sm"
-                placeholder="e.g., Maharashtra"
+                placeholder={t("ai.locationPlaceholder")}
               />
             </div>
             <Button
-              onClick={() => callAI('demand-forecast', forecastForm)}
+  onClick={() => callAI('demand-forecast', forecastForm)}
               disabled={loading}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3 font-bold text-sm"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" />
-                  Forecasting...
+                  {t("ai.forecasting")}
                 </>
               ) : (
                 <>
                   <LineChart className="w-4 h-4 mr-2 shrink-0" />
-                  Get Forecast
+                  {t("ai.getForecast")}
                 </>
               )}
             </Button>
@@ -1491,22 +1517,22 @@ export default function FarmerAIPage() {
         );
 
       case 'market-analysis':
-        return (
-          <div className="space-y-4">
-            <Button
-              onClick={() => callAI('market-analysis', {})}
+  return (
+    <div className="space-y-4">
+      <Button
+        onClick={() => callAI('market-trends', forecastForm)}
               disabled={loading}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3 font-bold text-sm"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" />
-                  Analyzing...
+                  {t("ai.analyzing")}
                 </>
               ) : (
                 <>
                   <BarChart3 className="w-4 h-4 mr-2 shrink-0" />
-                  Analyze Market Trends
+                  {t("ai.analyzeMarket")}
                 </>
               )}
             </Button>
@@ -1530,8 +1556,14 @@ export default function FarmerAIPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Area (Acres)</label>
                 <input
                   type="number"
-                  value={profitForm.quantity}
-                  onChange={(e) => setProfitForm({ ...profitForm, quantity: parseInt(e.target.value) || 0 })}
+                  value={profitForm.areaAcres}
+
+onChange={(e) =>
+  setProfitForm({
+    ...profitForm,
+    areaAcres: parseInt(e.target.value) || 0,
+  })
+}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-sm"
                 />
               </div>
@@ -1579,125 +1611,168 @@ export default function FarmerAIPage() {
     }
   };
 
-  const renderResult = () => {
+  const renderResult = () => { 
     if (!result) return null;
 
-    if (activeFeature === 'crop-recommendation' && 'recommendations' in result) {
-      const data = result as { recommendations: Array<{ crop: string; reason: string; expectedProfit: string; difficulty: string }> };
+    if (activeFeature === 'demand-forecast' && 'demandLevel' in result) {
+  const data = result as {
+    demandLevel: string;
+    expectedDemandPeriod: string;
+    demandTrend: string;
+    recommendation: string;
+  };
+
+  return (
+    <div className="space-y-4">
+
+      <h4 className="font-bold text-gray-900 flex items-center gap-2 text-base">
+        <LineChart className="w-5 h-5 text-blue-600" />
+        Demand Forecast
+      </h4>
+
+      <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-3">
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Demand Level
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.demandLevel}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Expected Demand Period
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.expectedDemandPeriod}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Demand Trend
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.demandTrend}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Recommendation
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.recommendation}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+    if (activeFeature === 'crop-recommendation' && 'recommendedCrop' in result) {
+      const data = result as {
+  recommendedCrop: string;
+  confidenceScore: number;
+  strategyTitle: string;
+  reasoning: string;
+  soilCompatibility: string;
+};
       return (
         <div className="space-y-3">
           <h4 className="font-bold text-gray-900 flex items-center gap-2 text-base">
             <Target className="w-5 h-5 text-purple-600 shrink-0" />
-            Recommended Crops
+            {t('ai.recommendedCrops')}
           </h4>
-          {data.recommendations.map((rec, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="p-4 bg-purple-50/60 rounded-xl border border-purple-100"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-gray-900">{rec.crop}</span>
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                    rec.difficulty === 'easy'
-                      ? 'bg-green-50 text-green-700 border-green-200'
-                      : rec.difficulty === 'medium'
-                      ? 'bg-amber-50 text-amber-700 border-amber-200'
-                      : 'bg-red-50 text-red-700 border-red-200'
-                  }`}
-                >
-                  {rec.difficulty}
-                </span>
-              </div>
-              <p className="text-xs text-gray-600 font-medium mb-1">{rec.reason}</p>
-              <p className="text-sm font-bold text-purple-700">{rec.expectedProfit}</p>
-            </motion.div>
-          ))}
+          <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
+  <p className="font-bold text-gray-900">
+    {data.recommendedCrop}
+  </p>
+
+  <p className="text-sm text-gray-600 mt-2">
+    {data.reasoning}
+  </p>
+
+  <p className="text-sm font-bold text-purple-700 mt-2">
+    Confidence: {data.confidenceScore}%
+  </p>
+
+  <p className="text-sm text-green-700 mt-1">
+    {data.soilCompatibility}
+  </p>
+</div>
         </div>
       );
     }
 
-    if (activeFeature === 'demand-forecast' && 'forecast' in result) {
-      const data = result as { forecast: Array<{ month: string; demand: string; expectedPrice: string; trend: string }>; insights: string[] };
-      return (
-        <div className="space-y-4">
-          <h4 className="font-bold text-gray-900 flex items-center gap-2 text-base">
-            <LineChart className="w-5 h-5 text-blue-600 shrink-0" />
-            6-Month Demand Forecast
-          </h4>
-          <div className="space-y-2">
-            {data.forecast.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-blue-50/50 border border-blue-100/60 rounded-xl">
-                <span className="font-bold text-gray-900 text-sm">{item.month}</span>
-                <div className="flex items-center gap-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${item.demand === 'high' ? 'bg-green-100 text-green-700' : item.demand === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-700'}`}>
-                    {item.demand}
-                  </span>
-                  <span className="text-xs font-semibold text-gray-600">{item.expectedPrice}</span>
-                  <TrendingUp className={`w-4 h-4 shrink-0 ${item.trend === 'upward' ? 'text-green-500' : item.trend === 'downward' ? 'text-red-500 rotate-180' : 'text-gray-400'}`} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl">
-            <h5 className="font-bold text-blue-900 mb-2 text-sm">Key Insights</h5>
-            <ul className="space-y-1.5">
-              {data.insights.map((insight, i) => (
-                <li key={i} className="text-xs font-semibold text-blue-800 flex items-start gap-2">
-                  <Zap className="w-4 h-4 mt-0.5 shrink-0 text-blue-600" />
-                  {insight}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      );
-    }
+    if (activeFeature === 'market-analysis' && 'demandStatus' in result) {
+  const data = result as {
+    demandStatus: string;
+    priceForecast: string;
+    pestAlert: string;
+    logisticsTip: string;
+  };
 
-    if (activeFeature === 'market-analysis' && 'trends' in result) {
-      const data = result as { trends: Array<{ crop: string; currentPrice: string; change30Days: string; volume: string }>; analysis: string; recommendations: string[] };
-      return (
-        <div className="space-y-4">
-          <h4 className="font-bold text-gray-900 flex items-center gap-2 text-base">
-            <BarChart3 className="w-5 h-5 text-green-600 shrink-0" />
-            Current Market Trends
-          </h4>
-          <div className="space-y-2">
-            {data.trends.map((trend, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-green-50/50 border border-green-100/60 rounded-xl">
-                <div>
-                  <span className="font-bold text-gray-900 text-sm">{trend.crop}</span>
-                  <p className="text-[11px] text-gray-400 font-medium">Volume: {trend.volume}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-gray-900 text-sm">{trend.currentPrice}</span>
-                  <span className={`text-xs font-bold ${trend.change30Days.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                    {trend.change30Days}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-4 bg-green-50 border border-green-100 rounded-xl">
-            <h5 className="font-bold text-green-900 mb-1.5 text-sm">Analysis</h5>
-            <p className="text-xs text-green-800 mb-3 font-semibold leading-relaxed">{data.analysis}</p>
-            <h5 className="font-bold text-green-900 mb-2 text-sm">Recommendations</h5>
-            <ul className="space-y-1.5">
-              {data.recommendations.map((rec, i) => (
-                <li key={i} className="text-xs font-semibold text-green-800 flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-green-600" />
-                  {rec}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      );
-    }
+  return (
+    <div className="space-y-4">
 
+      <h4 className="font-bold text-gray-900 flex items-center gap-2 text-base">
+        <BarChart3 className="w-5 h-5 text-green-600" />
+        Market Trend Analysis
+      </h4>
+
+
+      <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-3">
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Demand Status
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.demandStatus}
+          </p>
+        </div>
+
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Price Forecast
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.priceForecast}
+          </p>
+        </div>
+
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Pest Alert
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.pestAlert}
+          </p>
+        </div>
+
+
+        <div>
+          <p className="text-xs text-gray-500 font-bold">
+            Logistics Tip
+          </p>
+          <p className="font-semibold text-gray-900">
+            {data.logisticsTip}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+    
     if (activeFeature === 'profit-estimation' && 'estimation' in result) {
       const data = result as { estimation: Record<string, string>; factors: string[]; tips: string[] };
       return (
@@ -1748,12 +1823,13 @@ export default function FarmerAIPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black tracking-tight mb-1 flex items-center gap-3">
-              <Brain className="w-8 h-8 shrink-0" />
-              AI Intelligence Center
-            </h1>
-            <p className="text-sm font-medium text-emerald-100/90">
-              Leverage AI-powered insights to make smarter farming decisions.
-            </p>
+  <Brain className="w-8 h-8 shrink-0" />
+  {t('ai.title')}
+</h1>
+
+<p className="text-sm font-medium text-emerald-100/90">
+  {t('ai.description')}
+</p>
           </div>
         </div>
       </div>
@@ -1804,7 +1880,7 @@ export default function FarmerAIPage() {
 
           {/* Real-time Dynamic Results Matrix Column */}
           <div className="lg:pl-2">
-            <h3 className="text-base font-black text-gray-900 tracking-tight mb-4">Analysis Streams</h3>
+            <h3 className="text-base font-black text-gray-900 tracking-tight mb-4">{t('ai.analysisStreams')}</h3>
             {loading ? (
               <div className="bg-gray-50/50 rounded-xl border border-gray-200/50 flex flex-col items-center justify-center h-72">
                 <Loader2 className="w-10 h-10 animate-spin text-emerald-600 mb-3 shrink-0" />
@@ -1824,10 +1900,13 @@ export default function FarmerAIPage() {
         /* Empty Welcoming State */
         <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
           <Brain className="w-16 h-16 text-emerald-600/30 mx-auto mb-4 shrink-0" />
-          <h3 className="text-lg font-black text-gray-900 tracking-tight mb-1">Select an AI Analytics Module</h3>
-          <p className="text-xs font-semibold text-gray-400 max-w-sm mx-auto leading-relaxed">
-            Choose any operational vector above to launch localized trend predictive charts and pricing matrix models.
-          </p>
+          <h3 className="text-lg font-black text-gray-900 tracking-tight mb-1">
+  {t('ai.selectModule')}
+</h3>
+
+<p className="text-xs font-semibold text-gray-400 max-w-sm mx-auto leading-relaxed">
+  {t('ai.selectModuleDesc')}
+</p>
         </div>
       )}
     </div>

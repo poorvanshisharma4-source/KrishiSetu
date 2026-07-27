@@ -14,45 +14,47 @@ import {
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/components/LanguageContext'
 
 export default function PlatformFeatures() {
   const router = useRouter()
+  const { t } = useLanguage()
 
   const features = [
     {
       icon: Sparkles,
-      title: 'AI-Powered Matching',
-      description: 'Requirements are automatically matched with farmers based on crop category, quantity, and location.',
+      title: t('platformFeatures.aiMatching.title'),
+      description: t('platformFeatures.aiMatching.description'),
       color: 'bg-green-100 text-green-700',
     },
     {
       icon: ShieldCheck,
-      title: 'Verified Farmer Network',
-      description: 'Every farmer profile is KYC-verified, giving buyers confidence in who they are sourcing from.',
+      title: t('platformFeatures.verifiedFarmers.title'),
+      description: t('platformFeatures.verifiedFarmers.description'),
       color: 'bg-blue-100 text-blue-700',
     },
     {
       icon: MessageSquare,
-      title: 'Direct Messaging',
-      description: 'Chat directly with connected farmers to discuss quantity, pricing, and delivery — no middlemen.',
+      title: t('platformFeatures.messaging.title'),
+      description: t('platformFeatures.messaging.description'),
       color: 'bg-amber-100 text-amber-700',
     },
     {
       icon: FileSignature,
-      title: 'Digital Contracts',
-      description: 'Finalize agreements with clear terms — quantity, value, and delivery dates — tracked on your dashboard.',
+      title: t('platformFeatures.contracts.title'),
+      description: t('platformFeatures.contracts.description'),
       color: 'bg-purple-100 text-purple-700',
     },
     {
       icon: BarChart3,
-      title: 'Spending Analytics',
-      description: 'Track your order history and spending trends over time to plan future sourcing.',
+      title: t('platformFeatures.analytics.title'),
+      description: t('platformFeatures.analytics.description'),
       color: 'bg-rose-100 text-rose-700',
     },
     {
       icon: Users,
-      title: 'FPO Network Access',
-      description: 'Connect with Farmer Producer Organizations for bulk sourcing at scale.',
+      title: t('platformFeatures.fpo.title'),
+      description: t('platformFeatures.fpo.description'),
       color: 'bg-cyan-100 text-cyan-700',
     },
   ]
@@ -70,13 +72,17 @@ export default function PlatformFeatures() {
           >
             <div className="inline-flex items-center px-4 py-2 bg-white/10 rounded-full mb-6">
               <Sparkles className="w-4 h-4 mr-2" />
-              <span className="text-sm font-medium">Platform Overview</span>
+              <span className="text-sm font-medium">
+                {t('platformFeatures.badge')}
+              </span>
             </div>
+
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Platform Features
+              {t('platformFeatures.title')}
             </h1>
+
             <p className="text-lg text-primary-100">
-              Everything you can do on KrishiSetu, in one place.
+              {t('platformFeatures.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -90,7 +96,7 @@ export default function PlatformFeatures() {
             className="mb-8 flex items-center gap-2 bg-white"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            {t('platformFeatures.backToHome')}
           </Button>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -103,11 +109,19 @@ export default function PlatformFeatures() {
                 transition={{ delay: index * 0.1 }}
               >
                 <div className="bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 h-full">
-                  <div className={`w-14 h-14 ${feature.color} rounded-xl flex items-center justify-center mb-4`}>
+                  <div
+                    className={`w-14 h-14 ${feature.color} rounded-xl flex items-center justify-center mb-4`}
+                  >
                     <feature.icon className="w-7 h-7" />
                   </div>
-                  <h3 className="text-lg font-display font-bold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
+
+                  <h3 className="text-lg font-display font-bold text-gray-900 mb-2">
+                    {feature.title}
+                  </h3>
+
+                  <p className="text-sm text-gray-600">
+                    {feature.description}
+                  </p>
                 </div>
               </motion.div>
             ))}

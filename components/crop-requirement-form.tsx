@@ -388,7 +388,7 @@
 //                   <div className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-amber-100 dark:border-amber-900/40 shadow-sm">
 //                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Suggested Price</span>
 //                     <div className="text-base font-extrabold text-amber-700 dark:text-amber-400">
-//                       ₹24 / kg
+//                       
 //                     </div>
 //                     <p className="text-[10px] text-gray-500 mt-1 leading-normal">
 //                       Your current input of <strong className="text-gray-700 dark:text-gray-300">₹{formData.targetPrice || '0.00'}</strong> is below the current micro-cluster average. Adjusting to ₹24 will increase response velocity by 84%.
@@ -483,10 +483,19 @@ export default function CropRequirementForm() {
   ]
 
   const unitOptions = [
-    'Tons',
-    'Quintals',
-    'Kilograms',
-  ]
+  {
+    value: 'Tons',
+    label: t('cropRequirement.tons'),
+  },
+  {
+    value: 'Quintals',
+    label: t('cropRequirement.quintals'),
+  },
+  {
+    value: 'Kilograms',
+    label: t('cropRequirement.kilograms'),
+  },
+]
 
   const isTomatoCase = formData.crop
     .toLowerCase()
@@ -582,8 +591,8 @@ export default function CropRequirementForm() {
         requiredBy: formData.deliveryDate,
         location: formData.deliveryLocation,
         description:
-          formData.additionalTerms ||
-          'High quality requirement',
+  formData.additionalTerms ||
+  t('cropRequirement.defaultDescription'),
       }
 
       try {
@@ -809,21 +818,19 @@ export default function CropRequirementForm() {
 
                     <select
                       name="unit"
-                      aria-label="Select Unit"
+                      aria-label={t('cropRequirement.selectUnit')}
                       value={formData.unit}
                       onChange={handleChange}
                       className="w-[32%] rounded-lg border border-border bg-input px-3 py-3 text-foreground transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                     >
-                      {unitOptions.map(
-                        (option) => (
-                          <option
-                            key={option}
-                            value={option}
-                          >
-                            {option}
-                          </option>
-                        )
-                      )}
+                      {unitOptions.map((option) => (
+  <option
+    key={option.value}
+    value={option.value}
+  >
+    {option.label}
+  </option>
+))}
                     </select>
                   </div>
 
@@ -1098,7 +1105,7 @@ export default function CropRequirementForm() {
                     </span>
 
                     <div className="text-base font-extrabold text-amber-700 dark:text-amber-400">
-                      ₹24 / kg
+                      {t('cropRequirement.currencyPerKg')}
                     </div>
 
                     <p className="mt-1 text-[10px] leading-normal text-gray-500">
@@ -1125,8 +1132,8 @@ export default function CropRequirementForm() {
                       'cropRequirement.typeTomato'
                     )}{' '}
                     <strong className="text-gray-600 dark:text-gray-300">
-                      "Tomato"
-                    </strong>{' '}
+  &quot;{t('cropRequirement.tomato')}&quot;
+</strong>{' '}
                     {t(
                       'cropRequirement.inCropName'
                     )}

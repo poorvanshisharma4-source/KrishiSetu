@@ -4,6 +4,7 @@ const {
   cropRecommendation,
   profitEstimation,
   marketTrends,
+  demandForecast,
   buyerAnalytics,
   chat,
 } = require("../controllers/aiController");
@@ -198,6 +199,7 @@ router.post("/profit-estimation", protect, aiRateLimiter, profitEstimation);
  *                       type: string
  */
 router.post("/market-trends", protect, aiRateLimiter, marketTrends);
+router.post("/demand-forecast", protect, aiRateLimiter, demandForecast);
 
 /**
  * @swagger
