@@ -340,13 +340,12 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import api from '@/lib/api'
-import { CropsHeader } from "../../../components/crops-header"
-import { CropCard } from "../../../components/crop-card"
-import { AddCropModal } from "../../../components/add-crop-modal"
+import { CropsHeader } from "@/components/crops-header"
+import { CropCard } from "@/components/crop-card"
+import { AddCropModal } from "@/components/add-crop-modal"
 import { useLanguage } from '@/components/LanguageContext'
 
 interface Crop {
@@ -366,80 +365,89 @@ export default function MyCropsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // 1. Fetch Crops from Backend
-  const fetchCrops = async () => {
+  const fetchCrops = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await api.get('/crops')
-      const data = response?.data ?? []
-
-      // Normalize Backend Data to UI Format
-      const formattedCrops: Crop[] = (Array.isArray(data) ? data : []).map((item: any) => ({
-        id: item._id || item.id,
-        name: item.name || item.cropName || 'Unnamed Crop',
-        areaSize: Number(item.areaSize || item.quantity || 0),
-        harvestDate: item.harvestDate || 'Upcoming',
-        growthPercentage: Number(item.growthPercentage || 50),
-        healthStatus: item.healthStatus || 'Healthy',
-      }))
-
-      setCrops(formattedCrops)
       setError(null)
+      const response = await api.get('/crops')
+      
+      if (response && response.success) {
+        const rawData = Array.isArray(response.data) ? response.data : []
+        const formattedCrops: Crop[] = rawData.map((item: any) => ({
+          id: item._id || item.id,
+          name: item.name || 'Unnamed Crop',
+          areaSize: Number(item.areaSize || 0),
+          harvestDate: item.harvestDate 
+            ? new Date(item.harvestDate).toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })
+            : 'Upcoming',
+          growthPercentage: item.growthPercentage || 0,
+          healthStatus: item.healthStatus || 'Healthy'
+        }))
+        setCrops(formattedCrops)
+      } else {
+        throw new Error('Unexpected response format from server')
+      }
     } catch (err: any) {
-      console.error('Error fetching farmer crops:', err)
-      setError(err?.message || 'Failed to load crops.')
+      console.error('Error fetching crops:', err)
+      setError(err.message || 'Failed to load crops. Please check your connection.')
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchCrops()
-  }, [])
+  }, [fetchCrops])
 
-  // 2. Search Filter
   const filteredCrops = crops.filter((crop) =>
     crop.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  // 3. Add Crop Handler (API Post Request)
   const handleAddCrop = async (cropData: {
     name: string
     areaSize: number
     harvestDate: string
-    growthPercentage?: number
-    healthStatus?: 'Healthy' | 'Excellent' | 'Needs Attention'
   }) => {
     try {
-      // Post new crop data to backend
-      await api.post('/crops', {
+      const response = await api.post('/crops', {
         name: cropData.name,
         areaSize: cropData.areaSize,
         harvestDate: cropData.harvestDate,
-        growthPercentage: cropData.growthPercentage || 10,
-        healthStatus: cropData.healthStatus || 'Healthy',
       })
-
-      // Re-fetch crops after successful creation
-      await fetchCrops()
-      setIsModalOpen(false)
+      
+      if (response.success) {
+        await fetchCrops()
+        setIsModalOpen(false)
+      }
     } catch (err: any) {
-      console.error('Error adding new crop:', err)
-      alert(err?.message || 'Failed to add crop. Please try again.')
+      console.error('Error adding crop:', err)
+      throw err 
     }
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="space-y-6">
-        {/* Error Alert */}
+        {/* Error State */}
         {error && (
-          <div className="rounded-xl bg-red-100 p-4 text-sm text-red-700">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
+            <AlertCircle size={20} className="shrink-0" />
+            <p className="text-sm font-medium flex-1">{error}</p>
+            <button 
+              onClick={() => fetchCrops()}
+              className="p-1 hover:bg-red-100 rounded-full transition-colors"
+              title="Retry"
+            >
+              <RefreshCw size={18} />
+            </button>
           </div>
         )}
 
-        {/* Crops Interactive Header Area */}
+        {/* Crops Header Area */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm">
           <CropsHeader
             searchQuery={searchQuery}
@@ -448,14 +456,16 @@ export default function MyCropsPage() {
           />
         </div>
 
-        {/* Crops Display Matrix */}
+        {/* Loading State */}
         {loading ? (
-          <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
-            <p className="text-gray-500 text-base font-medium">
-  {t('myCrops.loading')}
-</p>
+          <div className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-gray-200/60 shadow-sm">
+            <Loader2 className="animate-spin text-emerald-600 mb-4" size={40} />
+            <p className="text-gray-500 font-medium">
+              {t('myCrops.loading') || 'Loading your harvests...'}
+            </p>
           </div>
         ) : filteredCrops.length > 0 ? (
+          /* Crops Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCrops.map((crop) => (
               <CropCard
@@ -469,24 +479,25 @@ export default function MyCropsPage() {
             ))}
           </div>
         ) : (
+          /* Empty State */
           <div className="text-center py-16 bg-white rounded-2xl p-6 border border-gray-200/60 shadow-sm">
             <p className="text-gray-500 text-base font-medium mb-4">
               {searchQuery
-                ? t('myCrops.noSearchResult')
-                : t('myCrops.noCrops')}
+                ? (t('myCrops.noSearchResult') || 'No crops found matching your search term.')
+                : (t('myCrops.noCrops') || 'No crops registered yet. Get started by cataloging your first harvest!')}
             </p>
             {!searchQuery && (
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="px-6 py-2.5 rounded-xl text-white font-bold text-sm transition-all transform hover:-translate-y-0.5 shadow-sm bg-emerald-600 hover:bg-emerald-700"
               >
-                {t('myCrops.addFirstCrop')}
+                {t('myCrops.addFirstCrop') || 'Add Your First Crop'}
               </button>
             )}
           </div>
         )}
 
-        {/* Add Crop Modal overlay */}
+        {/* Add Crop Modal */}
         <AddCropModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
@@ -496,3 +507,4 @@ export default function MyCropsPage() {
     </div>
   )
 }
+
