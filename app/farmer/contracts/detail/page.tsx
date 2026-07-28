@@ -1197,7 +1197,9 @@
   
 'use client';
 
-import { useEffect, useState } from 'react';
+export const dynamic = 'force-dynamic';
+
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useLanguage } from '@/components/LanguageContext';
@@ -1227,8 +1229,8 @@ interface ContractDetail {
   };
 }
 
-export default function FarmerContractDetailPage() {
-  const { t } = useLanguage()
+function FarmerContractDetailContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
   const contractId = searchParams.get('id');
@@ -1284,26 +1286,26 @@ export default function FarmerContractDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-green-600 mb-3" />
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <Loader2 className="mb-3 h-10 w-10 animate-spin text-green-600" />
         <p className="text-gray-500">
-  {t('farmerContractDetail.fetchingDetails')}
-</p>
+          {t('farmerContractDetail.fetchingDetails')}
+        </p>
       </div>
     );
   }
 
   if (error || !contract) {
     return (
-      <div className="p-8 max-w-lg mx-auto text-center mt-20 bg-white rounded-xl shadow-sm">
-        <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-gray-800 mb-2">
-  {t('farmerContractDetail.errorLoading')}
-</h2>
-        <p className="text-gray-500 text-sm mb-6">{error || t('farmerContractDetail.contractUnavailable')}</p>
+      <div className="mx-auto mt-20 max-w-lg rounded-xl bg-white p-8 text-center shadow-sm">
+        <AlertTriangle className="mx-auto mb-3 h-12 w-12 text-red-500" />
+        <h2 className="mb-2 text-xl font-bold text-gray-800">
+          {t('farmerContractDetail.errorLoading')}
+        </h2>
+        <p className="mb-6 text-sm text-gray-500">{error || t('farmerContractDetail.contractUnavailable')}</p>
         <button
           onClick={() => router.back()}
-          className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm"
+          className="rounded-lg bg-gray-900 px-4 py-2 text-sm text-white"
         >
           {t('farmerContractDetail.goBack')}
         </button>
@@ -1316,31 +1318,31 @@ export default function FarmerContractDetailPage() {
   const quantity = contract.quantity || contract.requirement?.quantity || 0;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto min-h-screen bg-gray-50">
+    <div className="mx-auto min-h-screen max-w-5xl bg-gray-50 p-6">
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 text-sm font-medium"
+        className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
       >
         <ArrowLeft size={16} /> {t('farmerContractDetail.backToContracts')}
       </button>
 
-      <div className="bg-white rounded-2xl p-6 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col justify-between gap-4 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:items-center">
         <div>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="mb-2 flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900">{cropName}</h1>
-            <span className="text-xs font-mono bg-gray-100 text-gray-600 px-2 py-1 rounded">
+            <span className="rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600">
               #{contract._id}
             </span>
           </div>
           <p className="text-xs text-gray-400">
-  {t('farmerContractDetail.createdOn')}: {new Date(contract.createdAt).toLocaleDateString()}
-</p>
+            {t('farmerContractDetail.createdOn')}: {new Date(contract.createdAt).toLocaleDateString()}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
           <span
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase ${
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase ${
               contract.status === 'active'
                 ? 'bg-green-100 text-green-700'
                 : contract.status === 'pending'
@@ -1358,88 +1360,103 @@ export default function FarmerContractDetailPage() {
             <button
               disabled={updating}
               onClick={() => handleStatusUpdate('active')}
-              className="px-4 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50"
+              className="rounded-lg bg-green-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50"
             >
               {updating
-  ? t('farmerContractDetail.updating')
-  : t('farmerContractDetail.acceptStart')}
+                ? t('farmerContractDetail.updating')
+                : t('farmerContractDetail.acceptStart')}
             </button>
           )}
           {contract.status === 'active' && (
             <button
               disabled={updating}
               onClick={() => handleStatusUpdate('completed')}
-              className="px-4 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
             >
               {updating
-  ? t('farmerContractDetail.updating')
-  : t('farmerContractDetail.markCompleted')}
+                ? t('farmerContractDetail.updating')
+                : t('farmerContractDetail.markCompleted')}
             </button>
           )}
         </div>
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-white rounded-2xl p-6 shadow-sm space-y-6">
-          <h2 className="text-lg font-bold text-gray-900 border-b pb-3">
-  {t('farmerContractDetail.contractInformation')}
-</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="space-y-6 rounded-2xl bg-white p-6 shadow-sm md:col-span-2">
+          <h2 className="border-b pb-3 text-lg font-bold text-gray-900">
+            {t('farmerContractDetail.contractInformation')}
+          </h2>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <span className="text-xs text-gray-400 block mb-1">
-  {t('farmerContractDetail.agreedRate')}
-</span>
+            <div className="rounded-xl bg-gray-50 p-4">
+              <span className="mb-1 block text-xs text-gray-400">
+                {t('farmerContractDetail.agreedRate')}
+              </span>
               <span className="text-xl font-bold text-gray-800">₹{price} / kg</span>
             </div>
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <span className="text-xs text-gray-400 block mb-1">
-  {t('farmerContractDetail.totalQuantity')}
-</span>
+            <div className="rounded-xl bg-gray-50 p-4">
+              <span className="mb-1 block text-xs text-gray-400">
+                {t('farmerContractDetail.totalQuantity')}
+              </span>
               <span className="text-xl font-bold text-gray-800">{quantity} kg</span>
             </div>
           </div>
 
-          <div className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
-            <ShieldCheck className="w-6 h-6 text-green-600 mt-0.5" />
+          <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4">
+            <ShieldCheck className="mt-0.5 h-6 w-6 text-green-600" />
             <div>
-              <h4 className="font-semibold text-green-900 text-sm">
-  {t('farmerContractDetail.escrowActive')}
-</h4>
-              <p className="text-xs text-green-700 mt-1">
-  {t('farmerContractDetail.payoutProtected')} ₹{(price * quantity).toLocaleString()}
-</p>
+              <h4 className="text-sm font-semibold text-green-900">
+                {t('farmerContractDetail.escrowActive')}
+              </h4>
+              <p className="mt-1 text-xs text-green-700">
+                {t('farmerContractDetail.payoutProtected')} ₹{(price * quantity).toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Buyer Info */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 h-fit">
-          <h3 className="font-bold text-gray-900 border-b pb-2">
-  {t('farmerContractDetail.buyerDetails')}
-</h3>
+        <div className="h-fit space-y-4 rounded-2xl bg-white p-6 shadow-sm">
+          <h3 className="border-b pb-2 font-bold text-gray-900">
+            {t('farmerContractDetail.buyerDetails')}
+          </h3>
 
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gray-100 rounded-full">
-              <User className="w-5 h-5 text-gray-600" />
+            <div className="rounded-full bg-gray-100 p-3">
+              <User className="h-5 w-5 text-gray-600" />
             </div>
             <div>
-              <p className="font-bold text-gray-800 text-sm">{contract.buyer?.name || 'N/A'}</p>
+              <p className="text-sm font-bold text-gray-800">{contract.buyer?.name || 'N/A'}</p>
               <p className="text-xs text-gray-400">
-  {t('farmerContractDetail.verifiedBuyer')}
-</p>
+                {t('farmerContractDetail.verifiedBuyer')}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-600 pt-2">
+          <div className="flex items-center gap-2 pt-2 text-sm text-gray-600">
             <Phone size={16} className="text-gray-400" />
             <span>
-  {contract.buyer?.phone || t('farmerContractDetail.noPhone')}
-</span>
+              {contract.buyer?.phone || t('farmerContractDetail.noPhone')}
+            </span>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FarmerContractDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen flex-col items-center justify-center">
+          <Loader2 className="mb-3 h-10 w-10 animate-spin text-green-600" />
+          <p className="text-gray-500">Loading details...</p>
+        </div>
+      }
+    >
+      <FarmerContractDetailContent />
+    </Suspense>
   );
 }
