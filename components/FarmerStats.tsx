@@ -8,14 +8,62 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { useLanguage } from '@/components/LanguageContext'
+import { useEffect, useState } from 'react'
+import api from '@/lib/api'
 
 export default function FarmerStats() {
   const { t } = useLanguage()
+  const [activeContracts, setActiveContracts] = useState(0)
+  const [completedContracts, setCompletedContracts] = useState(0)
+  const [totalEarnings, setTotalEarnings] = useState(0)
+  useEffect(() => {
+  const fetchContracts = async () => {
+    try {
+      const res = await api.get("/contracts");
+      console.log("CONTRACT RESPONSE:", res);
+
+      if (res.success) {
+        
+        const active = res.data.filter(
+          (contract: any) => contract.status === "active"
+        ).length;
+
+        setActiveContracts(active);
+
+        const completed = res.data.filter(
+  (contract: any) => contract.status === "completed"
+).length;
+
+setCompletedContracts(completed);
+
+
+const earnings = res.data
+  .filter(
+    (contract: any) =>
+      contract.status === "active" ||
+      contract.status === "completed"
+  )
+  .reduce(
+    (total: number, contract: any) =>
+      total + (contract.agreedPrice || 0),
+    0
+  );
+
+setTotalEarnings(earnings);
+      }
+
+    } catch (error) {
+      console.error("Contract fetch error:", error);
+    }
+  };
+
+  fetchContracts();
+}, []);
 
   const stats = [
     {
       title: t('farmerStats.activeContracts'),
-      value: '4',
+      value: activeContracts.toString(),
       description: t('farmerStats.currentlyRunning'),
       color: 'bg-green-50',
       icon: FileText,
@@ -23,7 +71,7 @@ export default function FarmerStats() {
     },
     {
       title: t('farmerStats.completedContracts'),
-      value: '12',
+      value: completedContracts.toString(),
       description: t('farmerStats.successfullyDelivered'),
       color: 'bg-orange-50',
       icon: CheckCircle2,
@@ -31,7 +79,7 @@ export default function FarmerStats() {
     },
     {
       title: t('farmerStats.totalEarnings'),
-      value: '₹1,24,500',
+      value: `₹${totalEarnings.toLocaleString()}`,
       description: t('farmerStats.lifetimeIncome'),
       color: 'bg-blue-50',
       icon: Wallet,
@@ -39,7 +87,7 @@ export default function FarmerStats() {
     },
     {
       title: t('farmerStats.buyerRating'),
-      value: '4.8 / 5',
+      value: 'N/A',
       description: t('farmerStats.basedOnReviews'),
       color: 'bg-yellow-50',
       icon: Star,
@@ -47,7 +95,7 @@ export default function FarmerStats() {
     },
     {
       title: t('farmerStats.connectedBuyers'),
-      value: '7',
+      value: '0',
       description: t('farmerStats.trustedPartners'),
       color: 'bg-purple-50',
       icon: Users,

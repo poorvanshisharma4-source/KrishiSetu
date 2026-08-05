@@ -2,7 +2,13 @@
 
 import { useLanguage } from '@/components/LanguageContext'
 
-export default function FarmerOverview() {
+import type { UserProfileData } from "./FarmerProfilePage";
+
+interface FarmerOverviewProps {
+  user?: UserProfileData | null;
+}
+
+export default function FarmerOverview({ user }: FarmerOverviewProps) {
   const { t } = useLanguage()
 
   return (
@@ -14,8 +20,8 @@ export default function FarmerOverview() {
         </h2>
 
         <p className="leading-7 text-gray-600">
-          {t('farmerOverview.description')}
-        </p>
+  A registered farmer on KrishiSetu committed to transparent and demand-driven farming practices.
+</p>
 
         <div className="mt-6 space-y-3">
           <div className="flex justify-between">
@@ -24,7 +30,7 @@ export default function FarmerOverview() {
             </span>
 
             <span className="font-medium">
-              +91 9876543210
+              {user?.phone || "N/A"}
             </span>
           </div>
 
@@ -34,7 +40,7 @@ export default function FarmerOverview() {
             </span>
 
             <span className="font-medium">
-              ramesh@gmail.com
+              {user?.email || "N/A"}
             </span>
           </div>
 
@@ -44,7 +50,9 @@ export default function FarmerOverview() {
             </span>
 
             <span className="font-medium">
-              Sehore, Madhya Pradesh
+              {[user?.village, user?.district, user?.state]
+  .filter(Boolean)
+  .join(", ") || "N/A"}
             </span>
           </div>
         </div>
@@ -63,7 +71,7 @@ export default function FarmerOverview() {
             </p>
 
             <h3 className="text-2xl font-bold">
-              5.2 Acres
+              {user?.landSize ? `${user.landSize} Acres` : "N/A"}
             </h3>
           </div>
 
@@ -83,7 +91,7 @@ export default function FarmerOverview() {
             </p>
 
             <h3 className="font-bold">
-              Borewell
+              {user?.waterAvailability || "N/A"}
             </h3>
           </div>
 

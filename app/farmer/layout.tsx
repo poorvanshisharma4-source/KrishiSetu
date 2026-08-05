@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, Bell, Sprout, Home, User, Settings, LogOut, ChevronDown, ArrowLeft } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
@@ -26,9 +25,9 @@ useEffect(() => {
     try {
       const res = await api.get("/auth/profile");
 
-      if (res.data.success) {
-        setUser(res.data.data);
-      }
+if (res.success) {
+  setUser(res.user);
+}
     } catch (err) {
       console.error("Profile fetch error:", err);
     }
@@ -129,20 +128,18 @@ useEffect(() => {
                       onClick={() => setIsProfileOpen((prev) => !prev)}
                       className="flex items-center space-x-3 p-1 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none cursor-pointer"
                     >
-                      <Image 
-                        src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                        alt="Farmer Profile" 
-                        width={36} 
-                        height={36} 
-                        className="rounded-full object-cover border-2 border-emerald-300" 
-                      />
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-emerald-300 bg-emerald-600 text-sm font-bold text-white">
+  {(user?.name || "F").charAt(0).toUpperCase()}
+</div>
                     <div className="hidden md:block text-left">
   <div className="text-sm font-semibold text-gray-900 leading-tight">
     {user?.name || "Farmer"}
   </div>
   <div className="text-xs text-emerald-600 font-medium">
-    Verified Farmer
-  </div>
+  {user?.role
+    ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+    : "Farmer"}
+</div>
 </div>
                       <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
                     </button>

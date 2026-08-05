@@ -18,6 +18,7 @@ export interface UserProfileData {
   name?: string;
   email?: string;
   phone?: string;
+  createdAt?: string;
   village?: string;
   district?: string;
   state?: string;
@@ -45,9 +46,11 @@ export default function FarmerProfilePage() {
         // GET request to /users/profile (as defined in userRoutes.js)
         const res = await api.get('/auth/profile');
         console.log("PROFILE API RESPONSE:", res);
+        console.log("PROFILE USER:", res.user);
         if (isMounted && res.success) {
           
           setProfileData(res.user);
+          console.log("USER DATA:", res.user);
           setError(null);
         }
       } catch (err: any) {
