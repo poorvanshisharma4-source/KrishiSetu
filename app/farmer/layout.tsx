@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,6 +7,9 @@ import { Search, Bell, Sprout, Home, User, Settings, LogOut, ChevronDown, ArrowL
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { LogoutModal } from "@/components/logout-modal";
+
+import { useEffect, useState } from "react";
+import api from "@/lib/api";
 
 export default function FarmerModuleLayout({
   children,
@@ -17,6 +19,23 @@ export default function FarmerModuleLayout({
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState<any>(null);
+
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await api.get("/auth/profile");
+
+      if (res.data.success) {
+        setUser(res.data.data);
+      }
+    } catch (err) {
+      console.error("Profile fetch error:", err);
+    }
+  };
+
+  fetchProfile();
+}, []);
   
 const [userName, setUserName] = useState("Farmer");
 
@@ -119,7 +138,7 @@ useEffect(() => {
                       />
                     <div className="hidden md:block text-left">
   <div className="text-sm font-semibold text-gray-900 leading-tight">
-    {userName}
+    {user?.name || "Farmer"}
   </div>
   <div className="text-xs text-emerald-600 font-medium">
     Verified Farmer
