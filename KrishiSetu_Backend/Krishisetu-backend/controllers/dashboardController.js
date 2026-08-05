@@ -18,14 +18,14 @@ const getContractFacets = async (matchField, userId) => {
         completed: [{ $match: { status: "completed" } }, { $count: "count" }],
         cancelled: [{ $match: { status: "cancelled" } }, { $count: "count" }],
         valueSum: [
-          { $match: { status: "completed" } },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: { $multiply: ["$agreedPrice", "$quantity"] } },
-            },
-          },
-        ],
+  { $match: { status: "completed" } },
+  {
+    $group: {
+      _id: null,
+      total: { $sum: "$agreedPrice" },
+    },
+  },
+],
       },
     },
   ]);
