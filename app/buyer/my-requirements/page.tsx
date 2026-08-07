@@ -24,6 +24,7 @@ interface Requirement {
   location: string
   description?: string
   createdAt?: string
+  status?: string
 }
 
 export default function MyRequirementsPage() {
@@ -158,9 +159,17 @@ export default function MyRequirementsPage() {
                     {item.cropName}
                   </h3>
 
-                  <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800">
-                    {t('myRequirements.active')}
-                  </span>
+                  <span
+  className={`rounded-full px-2.5 py-1 text-xs font-bold ${
+    item.status === "open"
+      ? "bg-green-100 text-green-700"
+      : item.status === "fulfilled"
+      ? "bg-blue-100 text-blue-700"
+      : "bg-red-100 text-red-700"
+  }`}
+>
+  {item.status}
+</span>
                 </div>
 
                 {/* Requirement Details */}

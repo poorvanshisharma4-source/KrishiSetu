@@ -28,35 +28,41 @@ export default function BuyerDashboard() {
   const router = useRouter()
   const pathname = usePathname()
   const { t } = useLanguage()
-
+  
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [buyerProfile, setBuyerProfile] = useState<any>(null)
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const response = await api.get('/dashboard/buyer')
-        const data = response?.data ?? response
+    useEffect(() => {
+  const fetchDashboard = async () => {
+    try {
+      const response = await api.get("/dashboard/buyer")
+      const data = response?.data ?? response
 
-        setDashboardData(data)
-        setError(null)
-      } catch (err: any) {
-        console.error('Buyer dashboard fetch error:', err)
-
-        setError(
-          err?.response?.data?.message ||
-            err?.message ||
-            t('buyerDashboard.error')
-        )
-      } finally {
-        setLoading(false)
-      }
+      setDashboardData(data)
+      setError(null)
+    } catch (err: any) {
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchDashboard()
-  }, [t])
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get("/users/profile")
+      const data = response?.data?.data ?? response?.data
+      setBuyerProfile(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  fetchDashboard()
+  fetchProfile()
+}, [t])
 
   const getValue = (value: any) => {
     if (value != null) {
@@ -231,10 +237,9 @@ export default function BuyerDashboard() {
             <p className="text-sm font-medium text-amber-100">
               {t('buyerDashboard.title')}
             </p>
-
             <h1 className="mt-2 text-3xl font-bold">
-              {t('buyerDashboard.welcome')}
-            </h1>
+  Welcome Back, {buyerProfile?.name || "Buyer"} 👋
+</h1>
 
             <p className="mt-2 max-w-2xl text-sm text-amber-100 opacity-90">
               {t('buyerDashboard.description')}

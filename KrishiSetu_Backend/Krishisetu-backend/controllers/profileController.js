@@ -1,15 +1,14 @@
 const User = require("../models/User");
-
-
+const Contract = require("../models/Contract");
+const Requirement = require("../models/Requirement");
 // Get User Profile
 const getProfile = async (req, res) => {
   try {
-
     const user = await User.findById(req.user.id)
       .select("-password")
       .populate("crops");
 
-
+    // User not found
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -17,15 +16,35 @@ const getProfile = async (req, res) => {
       });
     }
 
+    // Buyer Stats
+    const completedOrders = await Contract.countDocuments({
+      buyer: user._id,
+      status: "completed",
+    });
+
+    const activeRequirements = await Requirement.countDocuments({
+      buyer: user._id,
+      status: "open",
+    });
+
+    const connectedFarmers = await Contract.distinct("farmer", {
+      buyer: user._id,
+    });
+
+    const profileData = {
+      ...user.toObject(),
+      completedOrders,
+      activeRequirements,
+      connectedFarmers: connectedFarmers.length,
+      averageRating: "N/A",
+    };
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: profileData,
     });
 
-
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
@@ -34,7 +53,6 @@ const getProfile = async (req, res) => {
     });
   }
 };
-
 
 // Update User Profile
 const updateProfile = async (req, res) => {

@@ -121,7 +121,7 @@ export default function BuyerProfilePage() {
           {...profileUpdateProps}
         />
 
-        <BuyerStats />
+        <BuyerStats buyer={buyerProfile}/>
 
         <BuyerCompanyDetails
           buyer={buyerProfile}

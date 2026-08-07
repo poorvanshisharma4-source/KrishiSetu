@@ -343,7 +343,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+
 import { usePathname } from "next/navigation";
 import {
   Search,
@@ -359,6 +359,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { useLanguage } from "@/components/LanguageContext";
+import { useEffect, useState } from "react";
+import api from "@/lib/api";
 
 export default function BuyerRootLayout({
   children,
@@ -370,10 +372,33 @@ export default function BuyerRootLayout({
 
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [buyerProfile, setBuyerProfile] = useState<any>(null);
 
   const isAuthPage =
     pathname === "/buyer/login" || pathname === "/buyer/signup";
+  useEffect(() => {
+  if (isAuthPage) return;
 
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get("/users/profile");
+
+      const profileData =
+        response?.data ??
+        response?.user ??
+        null;
+
+      setBuyerProfile(profileData);
+    } catch (error) {
+      console.error("Failed to load buyer profile:", error);
+    }
+  };
+
+  fetchProfile();
+}, [isAuthPage]);
+
+const initial =
+  buyerProfile?.name?.charAt(0)?.toUpperCase() || "B";
   return (
     <div className="min-h-screen bg-[#F8F6F0] text-black">
 
@@ -467,65 +492,59 @@ export default function BuyerRootLayout({
                 </Link>
 
                 {/* Profile Dropdown */}
-                <div className="relative pl-3 border-l border-gray-200">
+                {/* Profile Dropdown */}
+<div className="relative pl-3 border-l border-gray-200">
 
-                  <button
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center space-x-3 p-1 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none"
-                  >
+  <button
+    onClick={() => setIsProfileOpen(!isProfileOpen)}
+    className="flex items-center space-x-3 rounded-lg p-1 transition-colors hover:bg-gray-50 focus:outline-none"
+  >
 
-                    <Image
-                      src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=100"
-                      alt={t("buyerLayout.buyerProfile")}
-                      width={36}
-                      height={36}
-                      className="rounded-full object-cover border-2 border-amber-200"
-                    />
+    {/* Initial Badge */}
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-600 text-base font-bold text-white border-2 border-amber-200">
+      {initial}
+    </div>
 
-                    <div className="hidden md:block text-left">
+    {/* Name */}
+    <div className="hidden text-left md:block">
+      <div className="text-sm font-semibold leading-tight text-gray-900">
+        {buyerProfile?.name || "Buyer"}
+      </div>
 
-                      <div className="text-sm font-semibold text-gray-900 leading-tight">
-                        FreshMart Pvt Ltd
-                      </div>
+      <div className="text-xs text-gray-500">
+        Buyer
+      </div>
+    </div>
 
-                      <div className="text-xs text-gray-500">
-                        {t("buyerLayout.verifiedBuyer")}
-                      </div>
+    <ChevronDown className="hidden h-4 w-4 text-gray-500 md:block" />
+  </button>
 
-                    </div>
+  {/* Dropdown */}
+  {isProfileOpen && (
+    <div className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
 
-                    <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
+      <Link
+        href="/buyer/profile"
+        onClick={() => setIsProfileOpen(false)}
+        className="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+      >
+        <User className="mr-2.5 h-4 w-4 text-gray-500" />
+        {t("buyerLayout.myProfile")}
+      </Link>
 
-                  </button>
+      <Link
+        href="/buyer/settings"
+        onClick={() => setIsProfileOpen(false)}
+        className="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+      >
+        <Settings className="mr-2.5 h-4 w-4 text-gray-500" />
+        {t("buyerLayout.accountSettings")}
+      </Link>
 
-                  {/* Dropdown */}
-                  {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+    </div>
+  )}
 
-                      <Link
-                        href="/buyer/profile"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <User className="w-4 h-4 mr-2.5 text-gray-500" />
-
-                        {t("buyerLayout.myProfile")}
-                      </Link>
-
-                      <Link
-                        href="/buyer/settings"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <Settings className="w-4 h-4 mr-2.5 text-gray-500" />
-
-                        {t("buyerLayout.accountSettings")}
-                      </Link>
-
-                    </div>
-                  )}
-
-                </div>
+</div>
 
               </div>
 
